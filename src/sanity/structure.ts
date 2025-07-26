@@ -11,12 +11,11 @@ import type {StructureResolver} from 'sanity/structure'
  */
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title('Blog') // Main sidebar title - change this for your e-commerce site
+    .title('E-commerce Studio')
     .items([
-      // Custom document type items with friendly titles
-      S.documentTypeListItem('post').title('Posts'),
-      S.documentTypeListItem('category').title('Categories'),
-      S.documentTypeListItem('author').title('Authors'),
+      // E-commerce content types
+      S.documentTypeListItem('product').title('Products'),
+      S.documentTypeListItem('review').title('Customer Reviews'),
       
       // Visual separator between sections
       S.divider(),
@@ -24,6 +23,6 @@ export const structure: StructureResolver = (S) =>
       // Automatically include any other document types not explicitly listed above
       // This ensures new schemas are still accessible in the studio
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['post', 'category', 'author'].includes(item.getId()!),
+        (item) => item.getId() && !['product', 'review'].includes(item.getId()!),
       ),
     ])

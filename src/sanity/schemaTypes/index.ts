@@ -1,6 +1,8 @@
 import { type SchemaTypeDefinition } from 'sanity'
 
 import {blockContentType} from './blockContentType'
+import {productType} from './productType'
+import {reviewType} from './reviewType'
 
 /**
  * Schema registry for all content types in your Sanity project
@@ -10,5 +12,5 @@ import {blockContentType} from './blockContentType'
  * imported and added to the types array to be available in Sanity Studio.
  */
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [blockContentType],
+  types: [blockContentType, productType, reviewType],
 }
