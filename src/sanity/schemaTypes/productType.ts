@@ -13,7 +13,8 @@ import {defineArrayMember, defineField, defineType} from 'sanity'
  * - images: Additional product gallery images
  * - basePrice: Base product price (before promotions)
  * - category: Men's or women's collection
- * - variants: Size/color combinations with individual stock
+ * - productType: Product category (shirts, pants, outerwear) - determines sizing options
+ * - variants: Size/color combinations with individual stock (sizing varies by productType)
  * - isActive: Product visibility toggle
  * - isFeatured: Homepage featured product flag
  * - seoTitle: Custom SEO page title
@@ -129,6 +130,20 @@ export const productType = defineType({
       description: 'Product category for gender-specific organization and promotions'
     }),
     defineField({
+      name: 'productType',
+      title: 'Product Type',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Shirts & Tops', value: 'shirts'},
+          {title: 'Pants & Bottoms', value: 'pants'},
+          {title: 'Outerwear', value: 'outerwear'},
+        ]
+      },
+      validation: Rule => Rule.required(),
+      description: 'Product type determines available size options'
+    }),
+    defineField({
       name: 'variants',
       title: 'Product Variants',
       type: 'array',
@@ -143,14 +158,32 @@ export const productType = defineType({
               title: 'Size',
               type: 'string',
               options: {
-                list: [
-                  {title: 'Extra Small', value: 'XS'},
-                  {title: 'Small', value: 'S'},
-                  {title: 'Medium', value: 'M'},
-                  {title: 'Large', value: 'L'},
-                  {title: 'Extra Large', value: 'XL'},
-                  {title: 'XXL', value: 'XXL'},
-                ]
+                list: (context: any) => {
+                  const productType = context.document?.productType;
+                  
+                  // Pants use numeric waist sizes
+                  if (productType === 'pants') {
+                    return [
+                      {title: '28', value: '28'},
+                      {title: '30', value: '30'},
+                      {title: '32', value: '32'},
+                      {title: '34', value: '34'},
+                      {title: '36', value: '36'},
+                      {title: '38', value: '38'},
+                      {title: '40', value: '40'},
+                    ];
+                  }
+                  
+                  // Shirts and Outerwear use letter sizes
+                  return [
+                    {title: 'Extra Small', value: 'XS'},
+                    {title: 'Small', value: 'S'},
+                    {title: 'Medium', value: 'M'},
+                    {title: 'Large', value: 'L'},
+                    {title: 'Extra Large', value: 'XL'},
+                    {title: 'XXL', value: 'XXL'},
+                  ];
+                }
               },
               validation: Rule => Rule.required()
             },
@@ -165,7 +198,24 @@ export const productType = defineType({
               name: 'sku',
               title: 'Variant SKU',
               type: 'string',
-              description: 'Unique SKU for this specific size/color combination',
+              description: 'Auto-generated unique SKU for this specific size/color combination',
+              initialValue: (doc, context) => {
+                // Auto-generate SKU based on product name, color, and size
+                // Access the current variant being created
+                const currentVariant = context.parent
+                const productDoc = context.document
+                
+                const productName = productDoc?.name || 'PROD'
+                const color = currentVariant?.color || 'CLR'
+                const size = currentVariant?.size || 'SIZE'
+                
+                // Create SKU: First 3 letters of product + color + size
+                const productCode = productName.substring(0, 3).toUpperCase()
+                const colorCode = color.substring(0, 3).toUpperCase()
+                const sizeCode = size.toUpperCase()
+                
+                return `${productCode}-${colorCode}-${sizeCode}`
+              },
               validation: Rule => Rule.required()
             },
             {
@@ -286,16 +336,20 @@ export const productType = defineType({
   preview: {
     select: {
       title: 'name',
-      subtitle: 'category',
+      category: 'category',
+      productType: 'productType',
       media: 'thumbnail',
       price: 'basePrice'
     },
     prepare(selection) {
-      const {title, subtitle, media, price} = selection
-      const categoryDisplay = subtitle === 'mens' ? "Men's" : subtitle === 'womens' ? "Women's" : ''
+      const {title, category, productType, media, price} = selection
+      const categoryDisplay = category === 'mens' ? "Men's" : category === 'womens' ? "Women's" : ''
+      const typeDisplay = productType === 'shirts' ? 'Shirts' : 
+                         productType === 'pants' ? 'Pants' : 
+                         productType === 'outerwear' ? 'Outerwear' : ''
       return {
         title,
-        subtitle: `${categoryDisplay} • $${price}`,
+        subtitle: `${categoryDisplay} ${typeDisplay} • $${price}`,
         media,
       }
     },
