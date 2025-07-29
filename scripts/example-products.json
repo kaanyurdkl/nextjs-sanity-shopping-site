@@ -1,0 +1,227 @@
+[
+  {
+    "_type": "product",
+    "name": "Classic Oxford Shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "classic-oxford-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A timeless Oxford shirt crafted from premium cotton. Perfect for both professional and casual settings with its clean lines and comfortable fit."
+          }
+        ]
+      }
+    ],
+    "basePrice": 85,
+    "category": "mens",
+    "productType": "shirts",
+    "variants": [
+      { "size": "S", "color": "White", "sku": "OXF-WHT-S", "stockQuantity": 15, "isActive": true },
+      { "size": "M", "color": "White", "sku": "OXF-WHT-M", "stockQuantity": 20, "isActive": true },
+      { "size": "L", "color": "White", "sku": "OXF-WHT-L", "stockQuantity": 18, "isActive": true },
+      { "size": "XL", "color": "White", "sku": "OXF-WHT-XL", "stockQuantity": 12, "isActive": true },
+      { "size": "S", "color": "Light Blue", "sku": "OXF-BLU-S", "stockQuantity": 10, "isActive": true },
+      { "size": "M", "color": "Light Blue", "sku": "OXF-BLU-M", "stockQuantity": 15, "isActive": true },
+      { "size": "L", "color": "Light Blue", "sku": "OXF-BLU-L", "stockQuantity": 14, "isActive": true },
+      { "size": "XL", "color": "Light Blue", "sku": "OXF-BLU-XL", "stockQuantity": 8, "isActive": true }
+    ],
+    "isActive": true,
+    "isFeatured": true,
+    "seoTitle": "Classic Oxford Shirt - Premium Cotton Dress Shirt",
+    "seoDescription": "Timeless Oxford shirt in white and light blue. Premium cotton construction with professional styling for work and casual wear.",
+    "keyFeatures": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "100% premium cotton construction" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Classic Oxford weave for durability" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Button-down collar design" }]
+      }
+    ],
+    "materials": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "100% Cotton Oxford Cloth" }]
+      }
+    ],
+    "sizeAndFit": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Regular fit with room for layering. Model is 6'0\" and wears size M." }]
+      }
+    ],
+    "careInstructions": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Machine wash cold, tumble dry low, iron as needed." }]
+      }
+    ]
+  },
+  {
+    "_type": "product",
+    "name": "High-Waist Chinos",
+    "slug": {
+      "_type": "slug",
+      "current": "high-waist-chinos"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "Sophisticated high-waist chinos that combine comfort with style. Tailored fit with a flattering silhouette for both office and weekend wear."
+          }
+        ]
+      }
+    ],
+    "basePrice": 95,
+    "category": "womens",
+    "productType": "pants",
+    "variants": [
+      { "size": "28", "color": "Black", "sku": "CHI-BLK-28", "stockQuantity": 8, "isActive": true },
+      { "size": "30", "color": "Black", "sku": "CHI-BLK-30", "stockQuantity": 12, "isActive": true },
+      { "size": "32", "color": "Black", "sku": "CHI-BLK-32", "stockQuantity": 15, "isActive": true },
+      { "size": "34", "color": "Black", "sku": "CHI-BLK-34", "stockQuantity": 10, "isActive": true },
+      { "size": "28", "color": "Navy", "sku": "CHI-NAV-28", "stockQuantity": 6, "isActive": true },
+      { "size": "30", "color": "Navy", "sku": "CHI-NAV-30", "stockQuantity": 11, "isActive": true },
+      { "size": "32", "color": "Navy", "sku": "CHI-NAV-32", "stockQuantity": 13, "isActive": true },
+      { "size": "34", "color": "Navy", "sku": "CHI-NAV-34", "stockQuantity": 9, "isActive": true }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "seoTitle": "High-Waist Chinos - Women's Tailored Pants",
+    "seoDescription": "Premium high-waist chinos for women in black and navy. Tailored fit with sophisticated styling for professional and casual wear.",
+    "keyFeatures": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "High-waist design for flattering silhouette" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Tailored fit through hip and thigh" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Professional and versatile styling" }]
+      }
+    ],
+    "materials": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "97% Cotton, 3% Elastane for comfort and movement" }]
+      }
+    ],
+    "sizeAndFit": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "High-waist with tailored fit. Inseam: 30\". Model is 5'7\" and wears size 30." }]
+      }
+    ],
+    "careInstructions": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Machine wash cold, hang dry, iron low heat." }]
+      }
+    ]
+  },
+  {
+    "_type": "product",
+    "name": "Wool Blend Blazer",
+    "slug": {
+      "_type": "slug",
+      "current": "wool-blend-blazer"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A sophisticated wool blend blazer perfect for layering. Classic tailoring meets modern comfort in this versatile piece suitable for any professional setting."
+          }
+        ]
+      }
+    ],
+    "basePrice": 195,
+    "category": "womens",
+    "productType": "outerwear",
+    "variants": [
+      { "size": "XS", "color": "Charcoal", "sku": "BLZ-CHR-XS", "stockQuantity": 4, "isActive": true },
+      { "size": "S", "color": "Charcoal", "sku": "BLZ-CHR-S", "stockQuantity": 8, "isActive": true },
+      { "size": "M", "color": "Charcoal", "sku": "BLZ-CHR-M", "stockQuantity": 10, "isActive": true },
+      { "size": "L", "color": "Charcoal", "sku": "BLZ-CHR-L", "stockQuantity": 6, "isActive": true },
+      { "size": "XS", "color": "Navy", "sku": "BLZ-NAV-XS", "stockQuantity": 3, "isActive": true },
+      { "size": "S", "color": "Navy", "sku": "BLZ-NAV-S", "stockQuantity": 7, "isActive": true },
+      { "size": "M", "color": "Navy", "sku": "BLZ-NAV-M", "stockQuantity": 9, "isActive": true },
+      { "size": "L", "color": "Navy", "sku": "BLZ-NAV-L", "stockQuantity": 5, "isActive": true }
+    ],
+    "isActive": true,
+    "isFeatured": true,
+    "seoTitle": "Wool Blend Blazer - Professional Women's Jacket",
+    "seoDescription": "Premium wool blend blazer for women in charcoal and navy. Professional styling with classic tailoring for business and formal occasions.",
+    "keyFeatures": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Premium wool blend construction" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Classic lapel design" }]
+      },
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Fully lined interior" }]
+      }
+    ],
+    "materials": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "70% Wool, 25% Polyester, 5% Elastane. Lining: 100% Polyester" }]
+      }
+    ],
+    "sizeAndFit": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Classic fit with room for layering. Model is 5'8\" and wears size M." }]
+      }
+    ],
+    "careInstructions": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [{ "_type": "span", "text": "Dry clean only. Professional care recommended." }]
+      }
+    ]
+  }
+]
