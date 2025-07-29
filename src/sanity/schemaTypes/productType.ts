@@ -144,6 +144,13 @@ export const productType = defineType({
       description: 'Product type determines available size options'
     }),
     defineField({
+      name: 'subcategory',
+      title: 'Subcategory',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      description: 'Subcategory (e.g., dress-shirts, casual-shirts, trousers, jeans, etc.)'
+    }),
+    defineField({
       name: 'variants',
       title: 'Product Variants',
       type: 'array',
