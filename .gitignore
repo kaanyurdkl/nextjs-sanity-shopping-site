@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # local assets (not for repository)
-/assets/
+design/assets/
