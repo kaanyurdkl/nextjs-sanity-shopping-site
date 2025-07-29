@@ -85,49 +85,29 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 ##### Men's Collection (`category: 'mens'`)
 
 **Shirts & Tops (`productType: 'shirts'`)**
-- **Dress Shirts**: Classic Oxford, Spread Collar, Button-Down
-- **Casual Shirts**: Linen Blend, Chambray, Flannel (seasonal)
-- **Polo Shirts**: Pique Cotton, Merino Wool
-- **Sweaters**: Crew Neck, V-Neck, Quarter-Zip Pullover
-- **T-Shirts**: Premium Cotton Tee, Long-Sleeve Henley
+- Dress Shirts, Casual Shirts, Polo Shirts, Sweaters, T-Shirts
 - **Sizes**: XS, S, M, L, XL, XXL
 
 **Pants & Bottoms (`productType: 'pants'`)**
-- **Dress Pants**: Wool Blend Trousers, Flat Front Chinos
-- **Casual Pants**: Cotton Chinos, 5-Pocket Pants
-- **Jeans**: Raw Denim, Dark Wash, Light Wash
-- **Shorts**: Chino Shorts, Athletic Shorts (seasonal)
+- Dress Pants, Casual Pants, Jeans, Shorts
 - **Sizes**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
 
 **Outerwear (`productType: 'outerwear'`)**
-- **Blazers**: Unstructured Sport Coat, Knit Blazer
-- **Jackets**: Bomber, Harrington, Denim Jacket
-- **Coats**: Wool Overcoat, Trench Coat, Peacoat
-- **Sweaters**: Cardigan, Zip-Up Hoodie
+- Blazers, Jackets, Coats, Cardigans
 - **Sizes**: XS, S, M, L, XL, XXL
 
 ##### Women's Collection (`category: 'womens'`)
 
 **Shirts & Tops (`productType: 'shirts'`)**
-- **Blouses**: Silk Button-Up, Cotton Poplin, Wrap Blouse
-- **Sweaters**: Cashmere Crew, Turtleneck, Cardigan
-- **T-Shirts**: Premium Cotton Tee, Long-Sleeve Basic
-- **Tops**: Tank Top, Camisole, Three-Quarter Sleeve
-- **Knitwear**: Pullover, Mock Neck, Ribbed Top
+- Blouses, Sweaters, T-Shirts, Tops, Knitwear
 - **Sizes**: XS, S, M, L, XL, XXL
 
 **Pants & Bottoms (`productType: 'pants'`)**
-- **Trousers**: Wide-Leg Pants, Straight-Leg, Cropped Pants
-- **Jeans**: High-Waist Straight, Skinny, Wide-Leg
-- **Skirts**: A-Line Midi, Pencil Skirt, Pleated Skirt
-- **Shorts**: Tailored Shorts, Bermuda Shorts (seasonal)
+- Trousers, Jeans, Skirts, Shorts
 - **Sizes**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
 
 **Outerwear (`productType: 'outerwear'`)**
-- **Blazers**: Wool Blend Blazer, Knit Blazer, Oversized Blazer
-- **Jackets**: Denim Jacket, Leather Jacket, Bomber
-- **Coats**: Wool Coat, Trench Coat, Puffer Coat
-- **Cardigans**: Long Cardigan, Wrap Cardigan
+- Blazers, Jackets, Coats, Cardigans
 - **Sizes**: XS, S, M, L, XL, XXL
 
 #### User Collection
