@@ -168,7 +168,7 @@ export const productType = defineType({
               title: "Size",
               type: "string",
               options: {
-                list: (context: any) => {
+                list: (context: { document?: { productType?: string } }) => {
                   const productType = context.document?.productType;
 
                   // Pants use numeric waist sizes

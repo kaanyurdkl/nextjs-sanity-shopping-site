@@ -72,22 +72,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Next.js 15 setup with App Router and Turbopack
 - Sanity integration with Studio v3
-- Product and review schemas with dynamic sizing system
+- **Complete Sanity schema architecture (6 schemas total)**
+  - Product schema with dynamic sizing system
+  - Review schema for customer feedback
+  - User schema with Google OAuth integration and address management
+  - Order schema with CLO-2025-XXXXXX numbering and comprehensive tracking
+  - Promotion schema with admin-controlled tags and advanced discount types
+  - Block content schema for rich text
 - Product management scripts with image upload automation
 - Complete product catalog: 13 products with variants and stock data
 - Sanity CDN integration with automated asset management
 - Geist font integration
 
-### In Progress
-
-- Creating remaining Sanity schemas (user, order, promotion)
-- Frontend component development
-
 ### Next Phase
 
-- Complete all content schemas
+- **Review and refine schemas** (order, user, promotion schemas need careful review)
+- **Frontend development** (homepage, product pages, cart, checkout)
 - Implement authentication (NextAuth.js + Google OAuth)
-- Build core e-commerce functionality
+- Build shopping cart and checkout functionality
+- Integrate Stripe payment processing
 
 ## File Organization
 
@@ -99,9 +102,13 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
-│   ├── schemaTypes/       # Content schemas
+│   ├── schemaTypes/       # Content schemas (6 total)
 │   │   ├── productType.ts # Product schema with dynamic sizing
 │   │   ├── reviewType.ts  # Customer review schema
+│   │   ├── userType.ts    # User schema with Google OAuth
+│   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering
+│   │   ├── promotionType.ts # Promotion schema with admin tags
+│   │   ├── blockContentType.ts # Rich text content schema
 │   │   └── index.ts       # Schema registry
 │   └── lib/               # Sanity client utilities
 scripts/
