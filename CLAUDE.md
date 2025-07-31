@@ -49,6 +49,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Follow single responsibility principle
 - TypeScript strict mode - all types required
 - Path aliases: `@/*` maps to `./src/*`
+- Keep code and documentation clean, technical, and simple
+- Avoid emojis, icons, or fancy formatting in comments and documentation
+- Use concise, descriptive technical language for file and function descriptions
 
 ### Development Workflow
 
@@ -65,20 +68,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Implementation Status
 
-### ✅ Completed
+### Completed
 
 - Next.js 15 setup with App Router and Turbopack
 - Sanity integration with Studio v3
 - Product and review schemas with dynamic sizing system
-- Example data generation script with JSON separation
+- Product management scripts with image upload automation
+- Complete product catalog: 13 products with variants and stock data
+- Sanity CDN integration with automated asset management
 - Geist font integration
 
-### 🔄 In Progress
+### In Progress
 
 - Creating remaining Sanity schemas (user, order, promotion)
 - Frontend component development
 
-### 📋 Next Phase
+### Next Phase
 
 - Complete all content schemas
 - Implement authentication (NextAuth.js + Google OAuth)
@@ -95,13 +100,16 @@ src/
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
 │   ├── schemaTypes/       # Content schemas
-│   │   ├── productType.ts # ✅ Product schema with dynamic sizing
-│   │   ├── reviewType.ts  # ✅ Customer review schema
+│   │   ├── productType.ts # Product schema with dynamic sizing
+│   │   ├── reviewType.ts  # Customer review schema
 │   │   └── index.ts       # Schema registry
 │   └── lib/               # Sanity client utilities
 scripts/
-├── add-example-products.ts # Data generation script
-└── example-products.json   # Sample product data
+├── add-products.ts         # Creates products and adds to Sanity
+├── delete-products.ts      # Deletes all products from Sanity
+├── example-products.json   # 13 complete products with variants
+└── shared/                 # Shared utilities
+    └── sanity-utils.ts     # Sanity client config and image processing
 design/                    # UI wireframes organized by page type
 ├── pages/                 # Individual page wireframes
 │   ├── home/             # Homepage designs
