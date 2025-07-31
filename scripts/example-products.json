@@ -1,227 +1,1418 @@
 [
   {
     "_type": "product",
-    "name": "Classic Oxford Shirt",
+    "name": "Classic Dress Shirt",
     "slug": {
       "_type": "slug",
-      "current": "classic-oxford-shirt"
+      "current": "classic-dress-shirt"
     },
     "description": [
       {
         "_type": "block",
-        "style": "normal",
         "children": [
           {
             "_type": "span",
-            "text": "A timeless Oxford shirt crafted from premium cotton. Perfect for both professional and casual settings with its clean lines and comfortable fit."
+            "text": "A timeless dress shirt crafted from premium cotton. Perfect for professional settings and formal occasions."
           }
-        ]
+        ],
+        "style": "normal"
       }
     ],
-    "basePrice": 85,
+    "basePrice": 89.99,
     "category": "mens",
     "productType": "shirts",
+    "subcategory": "dress-shirts",
+    "productFolder": "classic-dress-shirt",
     "variants": [
-      { "size": "S", "color": "White", "sku": "OXF-WHT-S", "stockQuantity": 15, "isActive": true },
-      { "size": "M", "color": "White", "sku": "OXF-WHT-M", "stockQuantity": 20, "isActive": true },
-      { "size": "L", "color": "White", "sku": "OXF-WHT-L", "stockQuantity": 18, "isActive": true },
-      { "size": "XL", "color": "White", "sku": "OXF-WHT-XL", "stockQuantity": 12, "isActive": true },
-      { "size": "S", "color": "Light Blue", "sku": "OXF-BLU-S", "stockQuantity": 10, "isActive": true },
-      { "size": "M", "color": "Light Blue", "sku": "OXF-BLU-M", "stockQuantity": 15, "isActive": true },
-      { "size": "L", "color": "Light Blue", "sku": "OXF-BLU-L", "stockQuantity": 14, "isActive": true },
-      { "size": "XL", "color": "Light Blue", "sku": "OXF-BLU-XL", "stockQuantity": 8, "isActive": true }
-    ],
-    "isActive": true,
-    "isFeatured": true,
-    "seoTitle": "Classic Oxford Shirt - Premium Cotton Dress Shirt",
-    "seoDescription": "Timeless Oxford shirt in white and light blue. Premium cotton construction with professional styling for work and casual wear.",
-    "keyFeatures": [
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "100% premium cotton construction" }]
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 25,
+        "isActive": true
       },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Classic Oxford weave for durability" }]
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 30,
+        "isActive": true
       },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Button-down collar design" }]
-      }
-    ],
-    "materials": [
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "100% Cotton Oxford Cloth" }]
-      }
-    ],
-    "sizeAndFit": [
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 15,
+        "isActive": true
+      },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Regular fit with room for layering. Model is 6'0\" and wears size M." }]
-      }
-    ],
-    "careInstructions": [
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 20,
+        "isActive": true
+      },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Machine wash cold, tumble dry low, iron as needed." }]
-      }
-    ]
-  },
-  {
-    "_type": "product",
-    "name": "High-Waist Chinos",
-    "slug": {
-      "_type": "slug",
-      "current": "high-waist-chinos"
-    },
-    "description": [
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 25,
+        "isActive": true
+      },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [
-          {
-            "_type": "span",
-            "text": "Sophisticated high-waist chinos that combine comfort with style. Tailored fit with a flattering silhouette for both office and weekend wear."
-          }
-        ]
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "light-blue",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "light-blue",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "light-blue",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "light-blue",
+        "stockQuantity": 10,
+        "isActive": true
       }
-    ],
-    "basePrice": 95,
-    "category": "womens",
-    "productType": "pants",
-    "variants": [
-      { "size": "28", "color": "Black", "sku": "CHI-BLK-28", "stockQuantity": 8, "isActive": true },
-      { "size": "30", "color": "Black", "sku": "CHI-BLK-30", "stockQuantity": 12, "isActive": true },
-      { "size": "32", "color": "Black", "sku": "CHI-BLK-32", "stockQuantity": 15, "isActive": true },
-      { "size": "34", "color": "Black", "sku": "CHI-BLK-34", "stockQuantity": 10, "isActive": true },
-      { "size": "28", "color": "Navy", "sku": "CHI-NAV-28", "stockQuantity": 6, "isActive": true },
-      { "size": "30", "color": "Navy", "sku": "CHI-NAV-30", "stockQuantity": 11, "isActive": true },
-      { "size": "32", "color": "Navy", "sku": "CHI-NAV-32", "stockQuantity": 13, "isActive": true },
-      { "size": "34", "color": "Navy", "sku": "CHI-NAV-34", "stockQuantity": 9, "isActive": true }
     ],
     "isActive": true,
     "isFeatured": false,
-    "seoTitle": "High-Waist Chinos - Women's Tailored Pants",
-    "seoDescription": "Premium high-waist chinos for women in black and navy. Tailored fit with sophisticated styling for professional and casual wear.",
-    "keyFeatures": [
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "High-waist design for flattering silhouette" }]
-      },
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Tailored fit through hip and thigh" }]
-      },
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Professional and versatile styling" }]
-      }
-    ],
-    "materials": [
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "97% Cotton, 3% Elastane for comfort and movement" }]
-      }
-    ],
-    "sizeAndFit": [
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "High-waist with tailored fit. Inseam: 30\". Model is 5'7\" and wears size 30." }]
-      }
-    ],
-    "careInstructions": [
-      {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Machine wash cold, hang dry, iron low heat." }]
-      }
-    ]
+    "images": {
+      "thumbnail": "classic-dress-shirt-1.jpg",
+      "hoverImage": "classic-dress-shirt-2.jpg",
+      "gallery": ["classic-dress-shirt-1.jpg", "classic-dress-shirt-2.jpg"]
+    }
   },
   {
     "_type": "product",
-    "name": "Wool Blend Blazer",
+    "name": "Executive Dress Shirt",
     "slug": {
       "_type": "slug",
-      "current": "wool-blend-blazer"
+      "current": "executive-dress-shirt"
     },
     "description": [
       {
         "_type": "block",
-        "style": "normal",
         "children": [
           {
             "_type": "span",
-            "text": "A sophisticated wool blend blazer perfect for layering. Classic tailoring meets modern comfort in this versatile piece suitable for any professional setting."
+            "text": "A crisp dress shirt that's a wardrobe essential. Made from high-quality cotton for comfort and durability."
           }
-        ]
+        ],
+        "style": "normal"
       }
     ],
-    "basePrice": 195,
-    "category": "womens",
-    "productType": "outerwear",
+    "basePrice": 89.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "dress-shirts",
+    "productFolder": "executive-dress-shirt",
     "variants": [
-      { "size": "XS", "color": "Charcoal", "sku": "BLZ-CHR-XS", "stockQuantity": 4, "isActive": true },
-      { "size": "S", "color": "Charcoal", "sku": "BLZ-CHR-S", "stockQuantity": 8, "isActive": true },
-      { "size": "M", "color": "Charcoal", "sku": "BLZ-CHR-M", "stockQuantity": 10, "isActive": true },
-      { "size": "L", "color": "Charcoal", "sku": "BLZ-CHR-L", "stockQuantity": 6, "isActive": true },
-      { "size": "XS", "color": "Navy", "sku": "BLZ-NAV-XS", "stockQuantity": 3, "isActive": true },
-      { "size": "S", "color": "Navy", "sku": "BLZ-NAV-S", "stockQuantity": 7, "isActive": true },
-      { "size": "M", "color": "Navy", "sku": "BLZ-NAV-M", "stockQuantity": 9, "isActive": true },
-      { "size": "L", "color": "Navy", "sku": "BLZ-NAV-L", "stockQuantity": 5, "isActive": true }
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 25,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 15,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "light-blue",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "light-blue",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "light-blue",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "light-blue",
+        "stockQuantity": 10,
+        "isActive": true
+      }
     ],
     "isActive": true,
     "isFeatured": true,
-    "seoTitle": "Wool Blend Blazer - Professional Women's Jacket",
-    "seoDescription": "Premium wool blend blazer for women in charcoal and navy. Professional styling with classic tailoring for business and formal occasions.",
-    "keyFeatures": [
+    "images": {
+      "thumbnail": "executive-dress-shirt-1.jpg",
+      "hoverImage": "executive-dress-shirt-2.jpg",
+      "gallery": ["executive-dress-shirt-1.jpg", "executive-dress-shirt-2.jpg"]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Weekend Casual Shirt",
+    "productFolder": "weekend-casual-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "weekend-casual-shirt"
+    },
+    "description": [
       {
         "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Premium wool blend construction" }]
+        "children": [
+          {
+            "_type": "span",
+            "text": "A versatile casual shirt perfect for weekend wear and relaxed office environments. Comfortable fit with modern styling."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 69.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "casual-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
       },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Classic lapel design" }]
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 25,
+        "isActive": true
       },
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Fully lined interior" }]
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 10,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 8,
+        "isActive": true
       }
     ],
-    "materials": [
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "weekend-casual-shirt-1.jpg",
+      "hoverImage": "weekend-casual-shirt-2.jpg",
+      "gallery": [
+        "weekend-casual-shirt-1.jpg",
+        "weekend-casual-shirt-2.jpg",
+        "weekend-casual-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Modern Casual Shirt",
+    "productFolder": "modern-casual-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "modern-casual-shirt"
+    },
+    "description": [
       {
         "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "70% Wool, 25% Polyester, 5% Elastane. Lining: 100% Polyester" }]
+        "children": [
+          {
+            "_type": "span",
+            "text": "A clean casual shirt that pairs well with any outfit. Lightweight fabric with a comfortable relaxed fit."
+          }
+        ],
+        "style": "normal"
       }
     ],
-    "sizeAndFit": [
+    "basePrice": 69.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "casual-shirts",
+    "variants": [
       {
-        "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Classic fit with room for layering. Model is 5'8\" and wears size M." }]
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 15,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "light-blue",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "light-blue",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "light-blue",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "light-blue",
+        "stockQuantity": 10,
+        "isActive": true
       }
     ],
-    "careInstructions": [
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "modern-casual-shirt-1.jpg",
+      "hoverImage": "modern-casual-shirt-2.jpg",
+      "gallery": ["modern-casual-shirt-1.jpg", "modern-casual-shirt-2.jpg"]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Smart Casual Shirt",
+    "productFolder": "smart-casual-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "smart-casual-shirt"
+    },
+    "description": [
       {
         "_type": "block",
-        "style": "normal",
-        "children": [{ "_type": "span", "text": "Dry clean only. Professional care recommended." }]
+        "children": [
+          {
+            "_type": "span",
+            "text": "A sophisticated casual shirt that bridges the gap between formal and casual wear. Perfect for smart-casual occasions."
+          }
+        ],
+        "style": "normal"
       }
-    ]
+    ],
+    "basePrice": 69.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "casual-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 10,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 8,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "smart-casual-shirt-1.jpg",
+      "hoverImage": "smart-casual-shirt-2.jpg",
+      "gallery": [
+        "smart-casual-shirt-1.jpg",
+        "smart-casual-shirt-2.jpg",
+        "smart-casual-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Classic Polo Shirt",
+    "productFolder": "classic-polo-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "classic-polo-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A classic polo shirt made from premium cotton pique fabric. Perfect for golf, casual outings, or smart-casual events."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 59.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "polo-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 25,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 25,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "black",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "black",
+        "stockQuantity": 26,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "black",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "black",
+        "stockQuantity": 14,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": true,
+    "images": {
+      "thumbnail": "classic-polo-shirt-1.jpg",
+      "hoverImage": "classic-polo-shirt-2.jpg",
+      "gallery": [
+        "classic-polo-shirt-1.jpg",
+        "classic-polo-shirt-2.jpg",
+        "classic-polo-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Essential Polo Shirt",
+    "productFolder": "essential-polo-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "essential-polo-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A crisp polo shirt that's a versatile addition to any wardrobe. Features a comfortable fit and classic styling."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 59.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "polo-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 12,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "essential-polo-shirt-1.jpg",
+      "hoverImage": "essential-polo-shirt-2.jpg",
+      "gallery": [
+        "essential-polo-shirt-1.jpg",
+        "essential-polo-shirt-2.jpg",
+        "essential-polo-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Performance Polo Shirt",
+    "productFolder": "performance-polo-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "performance-polo-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A modern polo shirt with excellent breathability and moisture-wicking properties. Ideal for active lifestyles."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 59.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "polo-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 26,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 26,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 10,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "performance-polo-shirt-1.jpg",
+      "hoverImage": "performance-polo-shirt-2.jpg",
+      "gallery": [
+        "performance-polo-shirt-1.jpg",
+        "performance-polo-shirt-2.jpg",
+        "performance-polo-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Premium T-Shirt",
+    "productFolder": "premium-t-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "premium-t-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A premium t-shirt made from soft, breathable cotton. Perfect for layering or wearing on its own."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 29.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "t-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 40,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 45,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 40,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 25,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "black",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "black",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "black",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "black",
+        "stockQuantity": 20,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "premium-t-shirt-1.jpg",
+      "hoverImage": "premium-t-shirt-2.jpg",
+      "gallery": [
+        "premium-t-shirt-1.jpg",
+        "premium-t-shirt-2.jpg",
+        "premium-t-shirt-3.jpg",
+        "premium-t-shirt-4.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Essential T-Shirt",
+    "productFolder": "essential-t-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "essential-t-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A classic t-shirt that's a wardrobe staple. Made from high-quality cotton for lasting comfort and durability."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 29.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "t-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 42,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 48,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 38,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 38,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 42,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 26,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 34,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 38,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 22,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": true,
+    "images": {
+      "thumbnail": "essential-t-shirt-1.jpg",
+      "hoverImage": "essential-t-shirt-2.jpg",
+      "gallery": [
+        "essential-t-shirt-1.jpg",
+        "essential-t-shirt-2.jpg",
+        "essential-t-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Modern Fit T-Shirt",
+    "productFolder": "modern-fit-t-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "modern-fit-t-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A versatile t-shirt that pairs well with any outfit. Features a modern fit and premium cotton construction."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 29.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "t-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 38,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 44,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 36,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 38,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 22,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 36,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 20,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "modern-fit-t-shirt-1.jpg",
+      "hoverImage": "modern-fit-t-shirt-2.jpg",
+      "gallery": ["modern-fit-t-shirt-1.jpg", "modern-fit-t-shirt-2.jpg"]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Luxury T-Shirt",
+    "productFolder": "luxury-t-shirt",
+    "slug": {
+      "_type": "slug",
+      "current": "luxury-t-shirt"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A sleek t-shirt that's perfect for any casual occasion. Made from premium cotton with reinforced seams for durability."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 29.99,
+    "category": "mens",
+    "productType": "shirts",
+    "subcategory": "t-shirts",
+    "variants": [
+      {
+        "size": "S",
+        "color": "black",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "black",
+        "stockQuantity": 40,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "black",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "black",
+        "stockQuantity": 25,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 30,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 35,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "white",
+        "stockQuantity": 28,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "white",
+        "stockQuantity": 32,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "white",
+        "stockQuantity": 24,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "white",
+        "stockQuantity": 18,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": false,
+    "images": {
+      "thumbnail": "luxury-t-shirt-1.jpg",
+      "hoverImage": "luxury-t-shirt-2.jpg",
+      "gallery": [
+        "luxury-t-shirt-1.jpg",
+        "luxury-t-shirt-2.jpg",
+        "luxury-t-shirt-3.jpg"
+      ]
+    }
+  },
+  {
+    "_type": "product",
+    "name": "Premium Knit Sweater",
+    "productFolder": "premium-knit-sweater",
+    "slug": {
+      "_type": "slug",
+      "current": "premium-knit-sweater"
+    },
+    "description": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "A luxurious knit sweater made from premium wool blend. Perfect for cooler weather and sophisticated casual looks."
+          }
+        ],
+        "style": "normal"
+      }
+    ],
+    "basePrice": 129.99,
+    "category": "mens",
+    "productType": "outerwear",
+    "subcategory": "sweaters",
+    "variants": [
+      {
+        "size": "S",
+        "color": "navy",
+        "stockQuantity": 15,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "navy",
+        "stockQuantity": 20,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "navy",
+        "stockQuantity": 18,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "navy",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "charcoal",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "charcoal",
+        "stockQuantity": 16,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "charcoal",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "charcoal",
+        "stockQuantity": 8,
+        "isActive": true
+      },
+      {
+        "size": "S",
+        "color": "gray",
+        "stockQuantity": 10,
+        "isActive": true
+      },
+      {
+        "size": "M",
+        "color": "gray",
+        "stockQuantity": 14,
+        "isActive": true
+      },
+      {
+        "size": "L",
+        "color": "gray",
+        "stockQuantity": 12,
+        "isActive": true
+      },
+      {
+        "size": "XL",
+        "color": "gray",
+        "stockQuantity": 6,
+        "isActive": true
+      }
+    ],
+    "isActive": true,
+    "isFeatured": true,
+    "images": {
+      "thumbnail": "premium-knit-sweater-1.jpg",
+      "hoverImage": "premium-knit-sweater-2.jpg",
+      "gallery": [
+        "premium-knit-sweater-1.jpg",
+        "premium-knit-sweater-2.jpg",
+        "premium-knit-sweater-3.jpg",
+        "premium-knit-sweater-4.jpg"
+      ]
+    }
   }
 ]
