@@ -99,8 +99,23 @@ export const promotionType = defineType({
       name: 'applicableProducts',
       title: 'Applicable Products',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'product' }] }],
-      description: 'Products this promotion applies to (leave empty for all products)',
+      of: [{ 
+        type: 'reference', 
+        to: [{ type: 'product' }],
+        options: {
+          filter: ({ document }) => {
+            const selectedGender = document?.gender
+            if (!selectedGender || selectedGender === 'both') {
+              return {} // Show all products
+            }
+            return {
+              filter: 'category == $gender',
+              params: { gender: selectedGender }
+            }
+          }
+        }
+      }],
+      description: 'Products this promotion applies to (filtered by selected gender category)',
     }),
     defineField({
       name: 'applicableCategories',
