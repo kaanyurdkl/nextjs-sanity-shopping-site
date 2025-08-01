@@ -176,13 +176,6 @@ export const userType = defineType({
 
     // Privacy and Preferences
     defineField({
-      name: 'marketingEmails',
-      title: 'Marketing Emails',
-      type: 'boolean',
-      description: 'User consent for marketing communications',
-      initialValue: false,
-    }),
-    defineField({
       name: 'orderEmails',
       title: 'Order Emails',
       type: 'boolean',
