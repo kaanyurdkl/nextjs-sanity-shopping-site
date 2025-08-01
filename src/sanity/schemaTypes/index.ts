@@ -1,5 +1,6 @@
 import { type SchemaTypeDefinition } from 'sanity'
 
+import {addressType} from './addressType'
 import {blockContentType} from './blockContentType'
 import {productType} from './productType'
 import {reviewType} from './reviewType'
@@ -16,6 +17,9 @@ import {promotionType} from './promotionType'
  */
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    // Object types (reusable components)
+    addressType,
+    
     // Content types
     blockContentType,
     
