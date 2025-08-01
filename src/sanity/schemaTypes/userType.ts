@@ -21,11 +21,18 @@ export const userType = defineType({
       validation: (rule) => rule.required().email(),
     }),
     defineField({
-      name: 'fullName',
-      title: 'Full Name',
+      name: 'firstName',
+      title: 'First Name',
       type: 'string',
       description: 'User can edit this field',
-      validation: (rule) => rule.required().min(2).max(100),
+      validation: (rule) => rule.required().min(1).max(50),
+    }),
+    defineField({
+      name: 'lastName',
+      title: 'Last Name',
+      type: 'string',
+      description: 'User can edit this field',
+      validation: (rule) => rule.required().min(1).max(50),
     }),
     defineField({
       name: 'phoneNumber',
@@ -186,13 +193,15 @@ export const userType = defineType({
 
   preview: {
     select: {
-      fullName: 'fullName',
+      firstName: 'firstName',
+      lastName: 'lastName',
       email: 'email',
       isActive: 'isActive',
     },
-    prepare({ fullName, email, isActive }) {
+    prepare({ firstName, lastName, email, isActive }) {
+      const fullName = `${firstName || ''} ${lastName || ''}`.trim()
       return {
-        title: fullName,
+        title: fullName || 'Unnamed User',
         subtitle: `${email}${!isActive ? ' (Inactive)' : ''}`,
         media: undefined,
       }
