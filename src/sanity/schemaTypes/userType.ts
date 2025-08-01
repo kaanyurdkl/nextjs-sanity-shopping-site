@@ -167,12 +167,6 @@ export const userType = defineType({
 
     // Account Metadata
     defineField({
-      name: 'lastLogin',
-      title: 'Last Login',
-      type: 'datetime',
-      description: 'When the user last logged in',
-    }),
-    defineField({
       name: 'isActive',
       title: 'Account Active',
       type: 'boolean',
