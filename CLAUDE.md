@@ -57,6 +57,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **IMPORTANT**: Always run `npm run lint` before committing code
 - **IMPORTANT**: Test schema changes with example data script
+- **IMPORTANT**: Use minimal commit messages (e.g., "Remove marketingEmails field from user schema")
 - Prefer editing existing files over creating new ones
 - Follow existing patterns in Sanity schemas
 - Use TypeScript for all new files
