@@ -1,10 +1,30 @@
 import { defineField, defineType } from 'sanity'
 
+/**
+ * Reusable address schema for shipping and billing addresses
+ * 
+ * Used by:
+ * - User saved addresses
+ * - Order shipping addresses  
+ * - Order billing addresses
+ * 
+ * Fields:
+ * - nickname: User-defined address name (e.g., "Home", "Office")
+ * - firstName/lastName: Recipient name
+ * - streetAddress: Street address line
+ * - aptUnit: Optional apartment/unit number
+ * - city: City name
+ * - province: Canadian province (dropdown)
+ * - postalCode: Canadian postal code with validation
+ * - country: Fixed to "Canada"
+ * - isDefault: Default address flag (for user addresses)
+ */
 export const addressType = defineType({
   name: 'address',
   title: 'Address',
   type: 'object',
   fields: [
+    // Address Identification
     defineField({
       name: 'nickname',
       title: 'Address Nickname',
@@ -12,6 +32,8 @@ export const addressType = defineType({
       description: 'User-defined name (e.g., "Home", "Office")',
       validation: (rule) => rule.required().max(50),
     }),
+
+    // Recipient Information
     defineField({
       name: 'firstName',
       title: 'First Name',
@@ -24,6 +46,8 @@ export const addressType = defineType({
       type: 'string',
       validation: (rule) => rule.required().max(50),
     }),
+
+    // Address Details
     defineField({
       name: 'streetAddress',
       title: 'Street Address',
@@ -84,6 +108,8 @@ export const addressType = defineType({
       initialValue: 'Canada',
       readOnly: true,
     }),
+
+    // Address Settings
     defineField({
       name: 'isDefault',
       title: 'Default Address',
