@@ -250,6 +250,61 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 }
 ```
 
+### Advanced Promotion System Details
+
+**🏷️ Promotion Engine Overview**
+
+The promotion system is a sophisticated e-commerce engine with **6 different promotion types** and powerful targeting capabilities, designed specifically for Canadian fashion e-commerce.
+
+**🎯 Available Promotion Types:**
+
+1. **Percentage Discount** (`percentage`)
+   - Simple percentage off (e.g., "25% OFF")
+   - Uses `discountValue` field (0-100)
+
+2. **Fixed Amount Off** (`fixed_amount`)  
+   - Dollar amount discount (e.g., "$10 OFF")
+   - Uses `discountValue` field (dollar amount)
+
+3. **Bundle Pricing** (`bundle`)
+   - Fixed price for multiple items (e.g., "2 FOR $95")
+   - Configuration: `buyQuantity`, `getQuantity`, `bundlePrice`
+
+4. **Buy One Get One** (`bogo`)
+   - BOGO deals (e.g., "Buy 2 Get 1 Free")
+   - Uses same bundle configuration with different logic
+
+5. **Tiered Discount** (`tiered`)
+   - Volume discounts: "Buy 3+ get 10% off, Buy 5+ get 20% off"
+   - Array of `minimumQuantity` → `discountPercentage` tiers
+
+6. **Spend Threshold** (`threshold`)
+   - Minimum spend required (e.g., "Spend $100, Get 15% OFF")
+   - Uses `spendThreshold` field
+
+**🎨 Visual Tag System:**
+- `tagLabel`: Custom text displayed on products (e.g., "2 FOR $95", "25% OFF")
+- `tagBackgroundColor`/`tagTextColor`: Hex colors for complete styling control
+- `showTag`: Toggle to show/hide promotion tags on products
+
+**🎯 Product Targeting & Scope:**
+- `gender`: Apply to Men's, Women's, or Both categories
+- `applicableProducts`: Target specific product references
+- `applicableCategories`: Target product categories (shirts, pants, outerwear)
+- `requiresPromoCode`: Optional promo code requirement with usage limits
+- `priority`: Handle conflicts when multiple promotions apply to same products
+- `stackable`: Control whether promotions can be combined
+
+**⚡ Key Business Features:**
+- **Automatic Visual Tags**: Promotions display custom-styled tags on product listings
+- **Smart Scheduling**: Start/end dates with automatic activation/deactivation
+- **Free Shipping Integration**: Optional free shipping inclusion with promotions
+- **Usage Analytics**: Track promotion usage counts and total customer savings
+- **Admin Control**: Complete control over tag appearance and promotion rules
+- **Customer Experience**: Visual tags show deals immediately without requiring codes
+
+This system supports everything from simple percentage discounts to complex bundle deals, making it ideal for fashion e-commerce promotional strategies.
+
 ### System Architecture
 
 #### Application Flow
