@@ -167,14 +167,6 @@ export const userType = defineType({
 
     // Account Metadata
     defineField({
-      name: 'createdAt',
-      title: 'Account Created',
-      type: 'datetime',
-      description: 'When the account was first created',
-      validation: (rule) => rule.required(),
-      initialValue: () => new Date().toISOString(),
-    }),
-    defineField({
       name: 'lastLogin',
       title: 'Last Login',
       type: 'datetime',
@@ -209,14 +201,12 @@ export const userType = defineType({
     select: {
       fullName: 'fullName',
       email: 'email',
-      createdAt: 'createdAt',
       isActive: 'isActive',
     },
-    prepare({ fullName, email, createdAt, isActive }) {
-      const createdDate = createdAt ? new Date(createdAt).toLocaleDateString() : 'Unknown'
+    prepare({ fullName, email, isActive }) {
       return {
         title: fullName,
-        subtitle: `${email} • Joined ${createdDate}${!isActive ? ' (Inactive)' : ''}`,
+        subtitle: `${email}${!isActive ? ' (Inactive)' : ''}`,
         media: undefined,
       }
     },
