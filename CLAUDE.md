@@ -73,12 +73,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Next.js 15 setup with App Router and Turbopack
 - Sanity integration with Studio v3
-- **Complete Sanity schema architecture (6 schemas total)**
+- **Complete Sanity schema architecture (7 schemas total)**
   - Product schema with dynamic sizing system
   - Review schema for customer feedback
-  - User schema with Google OAuth integration and address management
+  - User schema with Google OAuth integration and reusable address management
   - Order schema with CLO-2025-XXXXXX numbering and comprehensive tracking
   - Promotion schema with admin-controlled tags and advanced discount types
+  - Address schema as reusable object type for shipping/billing addresses
   - Block content schema for rich text
 - Product management scripts with image upload automation
 - Complete product catalog: 13 products with variants and stock data
@@ -87,7 +88,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Next Phase
 
-- **Review and refine schemas** (order, user, promotion schemas need careful review)
+- **Review and refine remaining schemas** (order, review, promotion schemas need careful review)
 - **Frontend development** (homepage, product pages, cart, checkout)
 - Implement authentication (NextAuth.js + Google OAuth)
 - Build shopping cart and checkout functionality
@@ -103,7 +104,8 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
-│   ├── schemaTypes/       # Content schemas (6 total)
+│   ├── schemaTypes/       # Content schemas (7 total)
+│   │   ├── addressType.ts # Reusable address schema for shipping/billing
 │   │   ├── productType.ts # Product schema with dynamic sizing
 │   │   ├── reviewType.ts  # Customer review schema
 │   │   ├── userType.ts    # User schema with Google OAuth

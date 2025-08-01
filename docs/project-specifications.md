@@ -117,16 +117,33 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
   // Google OAuth integration
   googleId: string
   email: string (read-only)
-  fullName: string (editable)
-  phoneNumber: string (editable)
+  firstName: string (editable)
+  lastName: string (editable)
+  phoneNumber: string (editable, optional)
   
   // Address management
-  addresses: Address[] // Multiple saved addresses
-  defaultAddressId: string
+  addresses: Address[] // Multiple saved addresses with isDefault flag
   
   // Account metadata
-  createdAt: datetime
-  lastLogin: datetime
+  isActive: boolean
+  orderEmails: boolean // Email preferences
+}
+```
+
+#### Address Object Type
+```typescript
+// Reusable address schema for user addresses and order shipping/billing
+{
+  nickname: string // User-defined name (e.g., "Home", "Office")
+  firstName: string
+  lastName: string
+  streetAddress: string
+  aptUnit?: string // Optional apartment/unit
+  city: string
+  province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NT' | 'NS' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT'
+  postalCode: string // Canadian format validation
+  country: 'Canada' (read-only)
+  isDefault: boolean // Default address flag
 }
 ```
 
