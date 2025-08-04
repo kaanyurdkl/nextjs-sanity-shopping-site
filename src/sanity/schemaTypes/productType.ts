@@ -211,7 +211,7 @@ export const productType = defineType({
               type: "string",
               description:
                 "Auto-generated unique SKU for this specific size/color combination",
-              initialValue: (doc, context) => {
+              initialValue: (doc: any, context: any) => {
                 // Auto-generate SKU based on product name, color, and size
                 // Access the current variant being created
                 const currentVariant = context.parent;

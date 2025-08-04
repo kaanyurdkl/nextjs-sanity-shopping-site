@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import TailwindColorPicker from '../components/TailwindColorPicker'
 
 export const promotionType = defineType({
   name: 'promotion',
@@ -50,27 +51,23 @@ export const promotionType = defineType({
       name: 'tagBackgroundColor',
       title: 'Tag Background Color',
       type: 'string',
-      description: 'Hex color code for tag background',
-      validation: (rule) => 
-        rule.required().custom((color) => {
-          if (!color) return 'Background color is required'
-          const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-          return hexRegex.test(color) || 'Please enter a valid hex color (e.g., #FF0000)'
-        }),
-      initialValue: '#000000',
+      description: 'Select a Tailwind CSS background color for the promotion tag',
+      components: {
+        input: TailwindColorPicker,
+      },
+      validation: (rule) => rule.required(),
+      initialValue: 'bg-zinc-950',
     }),
     defineField({
       name: 'tagTextColor',
       title: 'Tag Text Color',
       type: 'string',
-      description: 'Hex color code for tag text',
-      validation: (rule) => 
-        rule.required().custom((color) => {
-          if (!color) return 'Text color is required'
-          const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-          return hexRegex.test(color) || 'Please enter a valid hex color (e.g., #FFFFFF)'
-        }),
-      initialValue: '#FFFFFF',
+      description: 'Select a Tailwind CSS text color for the promotion tag',
+      components: {
+        input: TailwindColorPicker,
+      },
+      validation: (rule) => rule.required(),
+      initialValue: 'text-zinc-50',
     }),
     defineField({
       name: 'showTag',
