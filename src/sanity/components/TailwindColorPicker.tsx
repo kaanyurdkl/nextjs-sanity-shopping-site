@@ -1,26 +1,34 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StringInputProps, set } from "sanity";
+import tailwindColors from "tailwindcss/colors";
 
-// Import Tailwind colors
-let tailwindColors: Record<string, any> = {};
-try {
-  tailwindColors = require("tailwindcss/colors");
-} catch (error) {
-  console.error("Failed to import Tailwind colors:", error);
-}
+// Constants
+const EXCLUDED_COLORS = ["inherit", "current", "transparent", "black", "white"];
+
+const SPECIAL_COLOR_MAP: Record<string, string> = {
+  "bg-black": "#000000",
+  "bg-white": "#ffffff",
+  "text-black": "#000000",
+  "text-white": "#ffffff",
+};
+
+// Types
+type TailwindColorShades = Record<string, string>;
+type ColorInfo = {
+  name: string;
+  shade: string;
+  className: string;
+};
 
 // Filter out non-color values and create color palette
-const getTailwindColorPalette = () => {
-  if (!tailwindColors || typeof tailwindColors !== "object") return [];
-
+const getTailwindColorPalette = (): [string, TailwindColorShades][] => {
   return Object.entries(tailwindColors).filter(
     ([key, value]) =>
       typeof value === "object" &&
       value !== null &&
-      !["inherit", "current", "transparent", "black", "white"].includes(key) &&
-      typeof value === "object" &&
+      !EXCLUDED_COLORS.includes(key) &&
       Object.keys(value).some((k) => /^\d+$/.test(k)) // Has numeric shade keys
-  );
+  ) as [string, TailwindColorShades][];
 };
 
 // Helper function to extract hex value from Tailwind class
@@ -28,26 +36,25 @@ const getHexFromTailwindClass = (tailwindClass: string): string => {
   if (!tailwindClass) return "#000000";
 
   // Handle special cases
-  if (tailwindClass === "bg-black") return "#000000";
-  if (tailwindClass === "bg-white") return "#ffffff";
-  if (tailwindClass === "text-black") return "#000000";
-  if (tailwindClass === "text-white") return "#ffffff";
+  if (SPECIAL_COLOR_MAP[tailwindClass]) {
+    return SPECIAL_COLOR_MAP[tailwindClass];
+  }
 
   const match = tailwindClass.match(/(?:bg-|text-)(\w+)-(\d+)/);
   if (!match) return "#000000";
 
   const [, colorName, shade] = match;
-  const shadeCollection = tailwindColors[colorName];
+  const shadeCollection = tailwindColors[colorName as keyof typeof tailwindColors];
 
   if (typeof shadeCollection === "object" && shadeCollection !== null) {
-    return (shadeCollection as Record<string, string>)[shade] || "#000000";
+    return (shadeCollection as TailwindColorShades)[shade] || "#000000";
   }
 
   return "#000000";
 };
 
 // Helper function to parse color information from Tailwind class
-const parseTailwindClass = (tailwindClass: string) => {
+const parseTailwindClass = (tailwindClass: string): ColorInfo => {
   if (!tailwindClass) return { name: "None", shade: "None", className: "None" };
 
   const match = tailwindClass.match(/(?:bg-|text-)(\w+)-(\d+)/);
@@ -65,9 +72,11 @@ const parseTailwindClass = (tailwindClass: string) => {
 
 const TailwindColorPicker = (props: StringInputProps) => {
   const { value, onChange } = props;
-  const colorPalette = getTailwindColorPalette();
-  const selectedColorInfo = parseTailwindClass(value);
-  const selectedColorHex = getHexFromTailwindClass(value);
+  
+  // Memoize expensive computations
+  const colorPalette = useMemo(() => getTailwindColorPalette(), []);
+  const selectedColorInfo = useMemo(() => parseTailwindClass(value || ""), [value]);
+  const selectedColorHex = useMemo(() => getHexFromTailwindClass(value || ""), [value]);
 
   // Determine if this is for text or background colors based on field name
   const isTextColor =
@@ -126,12 +135,14 @@ const TailwindColorPicker = (props: StringInputProps) => {
               {colorName}
             </h4>
             <div className="grid grow grid-cols-[repeat(auto-fit,minmax(20px,1fr))] gap-0.5 sm:gap-2 max-w-full">
-              {Object.entries(shades as Record<string, string>)
+              {Object.entries(shades)
                 .filter(([shade]) => /^\d+$/.test(shade)) // Only numeric shades
                 .sort(([a], [b]) => parseInt(a) - parseInt(b)) // Sort by shade number
                 .map(([shade, hex]) => {
                   const tailwindClass = `${cssClassPrefix}-${colorName}-${shade}`;
-                  const isSelected = value === tailwindClass;
+                  // Check if this color matches the selected value (regardless of prefix)
+                  const isSelected = value === tailwindClass || 
+                    (value && value.endsWith(`-${colorName}-${shade}`));
 
                   return (
                     <button
