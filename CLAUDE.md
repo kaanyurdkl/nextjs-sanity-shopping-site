@@ -53,6 +53,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Avoid emojis, icons, or fancy formatting in comments and documentation
 - Use concise, descriptive technical language for file and function descriptions
 
+### Type File Conventions
+
+- Type files use `.types.ts` suffix (e.g., `components.types.ts`, `tailwind.types.ts`)
+- Always use explicit `type` keyword when importing types: `import type { CustomStringOptions } from "../types/components.types"`
+- Organize types in `/types/` folder with descriptive domain-based naming
+
 ### Development Workflow
 
 - **IMPORTANT**: Always run `npm run lint` before committing code
@@ -104,23 +110,34 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
+│   ├── schemaTypes/       # Content schemas (7 total)
+│   │   ├── documents/     # Document types (top-level content)
+│   │   │   ├── productType.ts # Product schema with dynamic sizing
+│   │   │   ├── reviewType.ts  # Customer review schema
+│   │   │   ├── userType.ts    # User schema with Google OAuth
+│   │   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering
+│   │   │   └── promotionType.ts # Promotion schema with custom color picker
+│   │   ├── objects/       # Object types (embedded content)
+│   │   │   ├── addressType.ts # Reusable address schema for shipping/billing
+│   │   │   └── blockContentType.ts # Rich text content schema
+│   │   └── index.ts       # Schema registry
+│   ├── lib/               # Sanity client utilities
+│   │   ├── client.ts      # Sanity client configuration
+│   │   ├── image.ts       # Image URL builder utilities
+│   │   └── live.ts        # Live content functionality
 │   ├── components/        # Custom Sanity components
 │   │   └── TailwindColorPicker.tsx # Color picker for promotion tags
+│   ├── types/             # Type definitions
+│   │   ├── components.types.ts # Component-related types
+│   │   ├── tailwind.types.ts   # Tailwind-related types
+│   │   ├── sanity.types.ts     # Generated Sanity types
+│   │   └── schema.json         # Generated schema
 │   ├── constants/         # Shared constants
 │   │   └── tailwind.ts    # Tailwind-related constants
-│   ├── types/             # Custom type definitions
-│   │   ├── components.ts  # Component-related types
-│   │   └── tailwind.ts    # Tailwind-related types
-│   ├── schemaTypes/       # Content schemas (7 total)
-│   │   ├── addressType.ts # Reusable address schema for shipping/billing
-│   │   ├── productType.ts # Product schema with dynamic sizing
-│   │   ├── reviewType.ts  # Customer review schema
-│   │   ├── userType.ts    # User schema with Google OAuth
-│   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering
-│   │   ├── promotionType.ts # Promotion schema with custom color picker
-│   │   ├── blockContentType.ts # Rich text content schema
-│   │   └── index.ts       # Schema registry
-│   └── lib/               # Sanity client utilities
+│   ├── config/            # Configuration files
+│   │   ├── env.ts         # Environment variables
+│   │   └── structure.ts   # Studio structure configuration
+│   └── queries/           # GROQ queries (ready for use)
 scripts/
 ├── add-products.ts         # Creates products and adds to Sanity
 ├── delete-products.ts      # Deletes all products from Sanity

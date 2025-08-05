@@ -2,10 +2,10 @@
 import { defineField, defineType } from "sanity";
 
 // COMPONENTS
-import TailwindColorPicker from "../components/TailwindColorPicker";
+import TailwindColorPicker from "../../components/TailwindColorPicker";
 
 // TYPES
-import { CustomStringOptions } from "../types/components";
+import type { CustomStringOptions } from "../../types/components.types";
 
 /**
  * Promotion schema for advanced e-commerce discounts and deals

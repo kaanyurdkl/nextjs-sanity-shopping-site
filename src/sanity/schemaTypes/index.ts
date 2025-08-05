@@ -1,12 +1,15 @@
 import { type SchemaTypeDefinition } from 'sanity'
 
-import {addressType} from './addressType'
-import {blockContentType} from './blockContentType'
-import {productType} from './productType'
-import {reviewType} from './reviewType'
-import {userType} from './userType'
-import {orderType} from './orderType'
-import {promotionType} from './promotionType'
+// Object types (embedded content)
+import {addressType} from './objects/addressType'
+import {blockContentType} from './objects/blockContentType'
+
+// Document types (top-level content)
+import {productType} from './documents/productType'
+import {reviewType} from './documents/reviewType'
+import {userType} from './documents/userType'
+import {orderType} from './documents/orderType'
+import {promotionType} from './documents/promotionType'
 
 /**
  * Schema registry for all content types in your Sanity project
@@ -15,19 +18,20 @@ import {promotionType} from './promotionType'
  * and other schema definitions. Every schema you create must be
  * imported and added to the types array to be available in Sanity Studio.
  */
+export const schemaTypes: SchemaTypeDefinition[] = [
+  // Object types (reusable components)
+  addressType,
+  blockContentType,
+  
+  // Document types (top-level content)
+  productType,
+  reviewType,
+  userType,
+  orderType,
+  promotionType,
+]
+
+// Legacy export for compatibility
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [
-    // Object types (reusable components)
-    addressType,
-    
-    // Content types
-    blockContentType,
-    
-    // E-commerce core
-    productType,
-    reviewType,
-    userType,
-    orderType,
-    promotionType,
-  ],
+  types: schemaTypes,
 }

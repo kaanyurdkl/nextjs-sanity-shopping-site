@@ -1,13 +1,11 @@
-// REACT
-import React, { useMemo } from "react";
-
 // LIBRARIES
+import React, { useMemo } from "react";
 import { StringInputProps, set } from "sanity";
 import tailwindColors from "tailwindcss/colors";
 
 // TYPES
-import { CustomStringOptions } from "../types/components";
-import { TailwindColorShades, ColorInfo } from "../types/tailwind";
+import type { CustomStringOptions } from "../types/components.types";
+import type { TailwindColorShades, ColorInfo } from "../types/tailwind.types";
 
 // CONSTANTS
 import { EXCLUDED_COLORS } from "../constants/tailwind";
@@ -61,7 +59,8 @@ const TailwindColorPicker = (props: StringInputProps) => {
   );
 
   // Get CSS class prefix from schema options (e.g., 'bg', 'text')
-  const cssClassPrefix = (props.schemaType.options as CustomStringOptions)?.cssClassPrefix;
+  const cssClassPrefix = (props.schemaType.options as CustomStringOptions)
+    ?.cssClassPrefix;
 
   const handleColorSelect = (colorName: string, shade: string) => {
     const tailwindClass = `${cssClassPrefix}-${colorName}-${shade}`;
