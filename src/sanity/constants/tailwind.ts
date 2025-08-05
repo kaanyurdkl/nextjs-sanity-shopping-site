@@ -1,0 +1,1 @@
+export const EXCLUDED_COLORS = ["inherit", "current", "transparent", "black", "white"];

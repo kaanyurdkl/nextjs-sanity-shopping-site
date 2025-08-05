@@ -1,20 +1,18 @@
+// REACT
 import React, { useMemo } from "react";
+
+// LIBRARIES
 import { StringInputProps, set } from "sanity";
 import tailwindColors from "tailwindcss/colors";
 
-// Constants
-const EXCLUDED_COLORS = ["inherit", "current", "transparent", "black", "white"];
+// TYPES
+import { CustomStringOptions } from "../component-types";
+import { TailwindColorShades, ColorInfo } from "../types/tailwind";
 
-// Types
-type TailwindColorShades = Record<string, string>;
-type ColorInfo = {
-  name: string;
-  shade: string;
-  className: string;
-  colorValue: string;
-};
+// CONSTANTS
+import { EXCLUDED_COLORS } from "../constants/tailwind";
 
-// Filter out non-color values and create color palette
+// Get filtered Tailwind color palette excluding non-color values
 const getTailwindColorPalette = (): [string, TailwindColorShades][] => {
   return Object.entries(tailwindColors).filter(
     ([key, value]) =>
@@ -24,23 +22,25 @@ const getTailwindColorPalette = (): [string, TailwindColorShades][] => {
   ) as [string, TailwindColorShades][];
 };
 
-// Helper function to parse color information from Tailwind class
+// Parse Tailwind class name to extract color information
 const parseTailwindClass = (tailwindClass: string): ColorInfo => {
   if (!tailwindClass)
     return {
       name: "None",
       shade: "None",
       className: "None",
-      colorValue: "#000000",
+      colorValue: "oklch(0 0 0)", // Fallback to black in oklch format
     };
 
   const parts = tailwindClass.split("-");
   const colorName = parts[1];
   const shade = parts[2];
 
-  // Extract color value directly here instead of calling separate function
-  const shadeCollection = tailwindColors[colorName as keyof typeof tailwindColors];
-  const colorValue = (shadeCollection as TailwindColorShades)?.[shade] || "#000000";
+  // Extract color value from Tailwind colors object (oklch format)
+  const shadeCollection =
+    tailwindColors[colorName as keyof typeof tailwindColors];
+  const colorValue =
+    (shadeCollection as TailwindColorShades)?.[shade] || "oklch(0 0 0)"; // Fallback to black in oklch format
 
   return {
     name: colorName,
@@ -53,18 +53,15 @@ const parseTailwindClass = (tailwindClass: string): ColorInfo => {
 const TailwindColorPicker = (props: StringInputProps) => {
   const { value, onChange } = props;
 
-  // Memoize expensive computations
+  // Memoize color palette generation and selected color parsing
   const colorPalette = useMemo(() => getTailwindColorPalette(), []);
   const selectedColorInfo = useMemo(
     () => parseTailwindClass(value || ""),
     [value]
   );
 
-  // Determine if this is for text or background colors based on field name
-  const fieldName = props.elementProps?.id || "";
-  const isTextColor = fieldName.includes("text") || fieldName.includes("Text");
-  // QUESTION: Can this variable not be retrieved from the value using split method?
-  const cssClassPrefix = isTextColor ? "text" : "bg";
+  // Get CSS class prefix from schema options (e.g., 'bg', 'text')
+  const cssClassPrefix = (props.schemaType.options as CustomStringOptions)?.cssClassPrefix;
 
   const handleColorSelect = (colorName: string, shade: string) => {
     const tailwindClass = `${cssClassPrefix}-${colorName}-${shade}`;
