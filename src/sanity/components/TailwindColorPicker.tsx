@@ -6,7 +6,7 @@ import { StringInputProps, set } from "sanity";
 import tailwindColors from "tailwindcss/colors";
 
 // TYPES
-import { CustomStringOptions } from "../component-types";
+import { CustomStringOptions } from "../types/components";
 import { TailwindColorShades, ColorInfo } from "../types/tailwind";
 
 // CONSTANTS
