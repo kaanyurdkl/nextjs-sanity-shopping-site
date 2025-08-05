@@ -88,7 +88,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Next Phase
 
-- **Review and refine remaining schemas** (order, review, promotion schemas need careful review)
+- **Review and refine remaining schemas** (order and review schemas need careful review; promotion schema significantly improved)
 - **Frontend development** (homepage, product pages, cart, checkout)
 - Implement authentication (NextAuth.js + Google OAuth)
 - Build shopping cart and checkout functionality
@@ -104,13 +104,20 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
+│   ├── components/        # Custom Sanity components
+│   │   └── TailwindColorPicker.tsx # Color picker for promotion tags
+│   ├── constants/         # Shared constants
+│   │   └── tailwind.ts    # Tailwind-related constants
+│   ├── types/             # Custom type definitions
+│   │   ├── components.ts  # Component-related types
+│   │   └── tailwind.ts    # Tailwind-related types
 │   ├── schemaTypes/       # Content schemas (7 total)
 │   │   ├── addressType.ts # Reusable address schema for shipping/billing
 │   │   ├── productType.ts # Product schema with dynamic sizing
 │   │   ├── reviewType.ts  # Customer review schema
 │   │   ├── userType.ts    # User schema with Google OAuth
 │   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering
-│   │   ├── promotionType.ts # Promotion schema with admin tags
+│   │   ├── promotionType.ts # Promotion schema with custom color picker
 │   │   ├── blockContentType.ts # Rich text content schema
 │   │   └── index.ts       # Schema registry
 │   └── lib/               # Sanity client utilities

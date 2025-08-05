@@ -284,8 +284,9 @@ The promotion system is a sophisticated e-commerce engine with **6 different pro
 
 **🎨 Visual Tag System:**
 - `tagLabel`: Custom text displayed on products (e.g., "2 FOR $95", "25% OFF")
-- `tagBackgroundColor`/`tagTextColor`: Hex colors for complete styling control
+- `tagBackgroundColor`/`tagTextColor`: Tailwind CSS classes with custom color picker (oklch format)
 - `showTag`: Toggle to show/hide promotion tags on products
+- **Custom TailwindColorPicker Component**: Admin-friendly color selection with visual preview
 
 **🎯 Product Targeting & Scope:**
 - `gender`: Apply to Men's, Women's, or Both categories
