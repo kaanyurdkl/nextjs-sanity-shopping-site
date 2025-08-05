@@ -1,12 +1,45 @@
 import { defineField, defineType } from 'sanity'
 import TailwindColorPicker from '../components/TailwindColorPicker'
 
+/**
+ * Promotion schema for advanced e-commerce discounts and deals
+ *
+ * Fields:
+ * - name: Internal promotion name
+ * - description: Internal promotion description
+ * - type: Promotion type (percentage, bundle, bogo, tiered, threshold, fixed_amount)
+ * - tagLabel: Custom text displayed on product tags
+ * - tagBackgroundColor: Tailwind CSS background color for tags
+ * - tagTextColor: Tailwind CSS text color for tags
+ * - showTag: Toggle to display promotion tags on products
+ * - gender: Target gender category (mens, womens, both)
+ * - applicableProducts: Specific products this promotion applies to
+ * - applicableCategories: Product categories this promotion applies to
+ * - discountValue: Percentage or fixed amount discount
+ * - minimumQuantity: Minimum items required to trigger promotion
+ * - maximumDiscount: Cap on discount amount
+ * - freeShipping: Whether promotion includes free shipping
+ * - bundleConfiguration: Bundle/BOGO configuration (buy/get quantities, bundle price)
+ * - tieredDiscounts: Tiered discount rules with quantity thresholds
+ * - spendThreshold: Minimum cart value for threshold promotions
+ * - priority: Precedence when multiple promotions apply (1-100)
+ * - stackable: Whether promotion can be combined with others
+ * - exclusiveWith: Promotions this cannot be combined with
+ * - requiresPromoCode: Whether customers need to enter a code
+ * - promoCode: Code customers must enter
+ * - codeUsageLimit: Maximum number of times code can be used
+ * - codeUsageCount: Current code usage count
+ * - isActive: Whether promotion is currently active
+ * - startDate: When promotion becomes active
+ * - endDate: When promotion expires
+ * - usageCount: Total times promotion has been used
+ * - totalSavings: Total amount saved by customers
+ */
 export const promotionType = defineType({
   name: 'promotion',
   title: 'Promotion',
   type: 'document',
   fields: [
-    // Basic Information
     defineField({
       name: 'name',
       title: 'Promotion Name',
@@ -20,8 +53,6 @@ export const promotionType = defineType({
       type: 'text',
       description: 'Internal description of this promotion',
     }),
-
-    // Promotion Type and Configuration
     defineField({
       name: 'type',
       title: 'Promotion Type',
@@ -39,7 +70,6 @@ export const promotionType = defineType({
       validation: (rule) => rule.required(),
     }),
 
-    // Admin-Controlled Display Tags
     defineField({
       name: 'tagLabel',
       title: 'Tag Label',
@@ -77,7 +107,6 @@ export const promotionType = defineType({
       initialValue: true,
     }),
 
-    // Targeting and Scope
     defineField({
       name: 'gender',
       title: 'Gender Category',
@@ -133,7 +162,6 @@ export const promotionType = defineType({
       description: 'Product categories this promotion applies to',
     }),
 
-    // Discount Configuration
     defineField({
       name: 'discountValue',
       title: 'Discount Value',
@@ -164,7 +192,6 @@ export const promotionType = defineType({
       initialValue: false,
     }),
 
-    // Bundle and Tiered Configuration
     defineField({
       name: 'bundleConfiguration',
       title: 'Bundle Configuration',
@@ -231,7 +258,6 @@ export const promotionType = defineType({
       hidden: ({ document }) => document?.type !== 'tiered',
     }),
 
-    // Threshold Configuration
     defineField({
       name: 'spendThreshold',
       title: 'Minimum Spend Amount',
@@ -241,7 +267,6 @@ export const promotionType = defineType({
       hidden: ({ document }) => document?.type !== 'threshold',
     }),
 
-    // Priority and Conflicts
     defineField({
       name: 'priority',
       title: 'Priority',
@@ -265,7 +290,6 @@ export const promotionType = defineType({
       description: 'Promotions this cannot be combined with',
     }),
 
-    // Promo Code Integration
     defineField({
       name: 'requiresPromoCode',
       title: 'Requires Promo Code',
@@ -309,7 +333,6 @@ export const promotionType = defineType({
       hidden: ({ document }) => !document?.requiresPromoCode,
     }),
 
-    // Status and Scheduling
     defineField({
       name: 'isActive',
       title: 'Active',
@@ -339,7 +362,6 @@ export const promotionType = defineType({
         }),
     }),
 
-    // Analytics and Tracking
     defineField({
       name: 'usageCount',
       title: 'Total Usage Count',
