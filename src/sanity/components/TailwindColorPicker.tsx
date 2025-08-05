@@ -5,19 +5,13 @@ import tailwindColors from "tailwindcss/colors";
 // Constants
 const EXCLUDED_COLORS = ["inherit", "current", "transparent", "black", "white"];
 
-const SPECIAL_COLOR_MAP: Record<string, string> = {
-  "bg-black": "#000000",
-  "bg-white": "#ffffff",
-  "text-black": "#000000",
-  "text-white": "#ffffff",
-};
-
 // Types
 type TailwindColorShades = Record<string, string>;
 type ColorInfo = {
   name: string;
   shade: string;
   className: string;
+  colorValue: string;
 };
 
 // Filter out non-color values and create color palette
@@ -26,62 +20,50 @@ const getTailwindColorPalette = (): [string, TailwindColorShades][] => {
     ([key, value]) =>
       typeof value === "object" &&
       value !== null &&
-      !EXCLUDED_COLORS.includes(key) &&
-      Object.keys(value).some((k) => /^\d+$/.test(k)) // Has numeric shade keys
+      !EXCLUDED_COLORS.includes(key)
   ) as [string, TailwindColorShades][];
-};
-
-// Helper function to extract hex value from Tailwind class
-const getHexFromTailwindClass = (tailwindClass: string): string => {
-  if (!tailwindClass) return "#000000";
-
-  // Handle special cases
-  if (SPECIAL_COLOR_MAP[tailwindClass]) {
-    return SPECIAL_COLOR_MAP[tailwindClass];
-  }
-
-  const match = tailwindClass.match(/(?:bg-|text-)(\w+)-(\d+)/);
-  if (!match) return "#000000";
-
-  const [, colorName, shade] = match;
-  const shadeCollection = tailwindColors[colorName as keyof typeof tailwindColors];
-
-  if (typeof shadeCollection === "object" && shadeCollection !== null) {
-    return (shadeCollection as TailwindColorShades)[shade] || "#000000";
-  }
-
-  return "#000000";
 };
 
 // Helper function to parse color information from Tailwind class
 const parseTailwindClass = (tailwindClass: string): ColorInfo => {
-  if (!tailwindClass) return { name: "None", shade: "None", className: "None" };
-
-  const match = tailwindClass.match(/(?:bg-|text-)(\w+)-(\d+)/);
-  if (match) {
-    const [, colorName, shadeNumber] = match;
+  if (!tailwindClass)
     return {
-      name: colorName,
-      shade: shadeNumber,
-      className: tailwindClass,
+      name: "None",
+      shade: "None",
+      className: "None",
+      colorValue: "#000000",
     };
-  }
 
-  return { name: "Unknown", shade: "Unknown", className: tailwindClass };
+  const parts = tailwindClass.split("-");
+  const colorName = parts[1];
+  const shade = parts[2];
+
+  // Extract color value directly here instead of calling separate function
+  const shadeCollection = tailwindColors[colorName as keyof typeof tailwindColors];
+  const colorValue = (shadeCollection as TailwindColorShades)?.[shade] || "#000000";
+
+  return {
+    name: colorName,
+    shade: shade,
+    className: tailwindClass,
+    colorValue: colorValue,
+  };
 };
 
 const TailwindColorPicker = (props: StringInputProps) => {
   const { value, onChange } = props;
-  
+
   // Memoize expensive computations
   const colorPalette = useMemo(() => getTailwindColorPalette(), []);
-  const selectedColorInfo = useMemo(() => parseTailwindClass(value || ""), [value]);
-  const selectedColorHex = useMemo(() => getHexFromTailwindClass(value || ""), [value]);
+  const selectedColorInfo = useMemo(
+    () => parseTailwindClass(value || ""),
+    [value]
+  );
 
   // Determine if this is for text or background colors based on field name
-  const isTextColor =
-    props.schemaType?.name?.includes("text") ||
-    props.schemaType?.name?.includes("Text");
+  const fieldName = props.elementProps?.id || "";
+  const isTextColor = fieldName.includes("text") || fieldName.includes("Text");
+  // QUESTION: Can this variable not be retrieved from the value using split method?
   const cssClassPrefix = isTextColor ? "text" : "bg";
 
   const handleColorSelect = (colorName: string, shade: string) => {
@@ -100,8 +82,8 @@ const TailwindColorPicker = (props: StringInputProps) => {
           <div>
             <div
               className="w-10 mb-3 aspect-square border border-[var(--card-border-color)] rounded-md"
-              style={{ backgroundColor: selectedColorHex }}
-              title={`${value} (${selectedColorHex})`}
+              style={{ backgroundColor: selectedColorInfo.colorValue }}
+              title={`${value} (${selectedColorInfo.colorValue})`}
             />
             <div className="grid grid-cols-3 text-xs text-[var(--card-muted-fg-color)]">
               <div>
@@ -135,20 +117,15 @@ const TailwindColorPicker = (props: StringInputProps) => {
               {colorName}
             </h4>
             <div className="grid grow grid-cols-[repeat(auto-fit,minmax(20px,1fr))] gap-0.5 sm:gap-2 max-w-full">
-              {Object.entries(shades)
-                .filter(([shade]) => /^\d+$/.test(shade)) // Only numeric shades
-                .sort(([a], [b]) => parseInt(a) - parseInt(b)) // Sort by shade number
-                .map(([shade, hex]) => {
-                  const tailwindClass = `${cssClassPrefix}-${colorName}-${shade}`;
-                  // Check if this color matches the selected value (regardless of prefix)
-                  const isSelected = value === tailwindClass || 
-                    (value && value.endsWith(`-${colorName}-${shade}`));
+              {Object.entries(shades).map(([shade, colorValue]) => {
+                const tailwindClass = `${cssClassPrefix}-${colorName}-${shade}`;
+                const isSelected = value === tailwindClass;
 
-                  return (
-                    <button
-                      key={`${colorName}-${shade}`}
-                      type="button"
-                      className={`
+                return (
+                  <button
+                    key={`${colorName}-${shade}`}
+                    type="button"
+                    className={`
                         w-full aspect-square rounded-sm cursor-pointer transition-all duration-100 outline-none
                         border border-[var(--card-border-color)]
                         ${
@@ -157,12 +134,12 @@ const TailwindColorPicker = (props: StringInputProps) => {
                             : ""
                         }
                       `}
-                      onClick={() => handleColorSelect(colorName, shade)}
-                      style={{ backgroundColor: hex }}
-                      title={`${colorName}-${shade} (${hex})`}
-                    />
-                  );
-                })}
+                    onClick={() => handleColorSelect(colorName, shade)}
+                    style={{ backgroundColor: colorValue }}
+                    title={`${colorName}-${shade} (${colorValue})`}
+                  />
+                );
+              })}
             </div>
           </div>
         ))}
