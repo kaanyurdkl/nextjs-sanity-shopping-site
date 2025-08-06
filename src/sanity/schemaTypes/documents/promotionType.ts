@@ -38,8 +38,6 @@ import type { CustomStringOptions } from "../../types/components.types";
  * - isActive: Whether promotion is currently active
  * - startDate: When promotion becomes active
  * - endDate: When promotion expires
- * - usageCount: Total times promotion has been used
- * - totalSavings: Total amount saved by customers
  */
 export const promotionType = defineType({
   name: "promotion",
@@ -387,22 +385,6 @@ export const promotionType = defineType({
         }),
     }),
 
-    defineField({
-      name: "usageCount",
-      title: "Total Usage Count",
-      type: "number",
-      description: "How many times this promotion has been used",
-      initialValue: 0,
-      readOnly: true,
-    }),
-    defineField({
-      name: "totalSavings",
-      title: "Total Savings Generated",
-      type: "number",
-      description: "Total amount saved by customers using this promotion",
-      initialValue: 0,
-      readOnly: true,
-    }),
   ],
 
   preview: {
