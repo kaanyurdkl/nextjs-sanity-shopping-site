@@ -1,9 +1,10 @@
 // LIBRARIES
-import React, { useMemo } from "react";
-import { StringInputProps, set } from "sanity";
+import { useMemo } from "react";
+import { set } from "sanity";
 import tailwindColors from "tailwindcss/colors";
 
 // TYPES
+import type { StringInputProps } from "sanity";
 import type { CustomStringOptions } from "../types/components.types";
 import type { TailwindColorShades, ColorInfo } from "../types/tailwind.types";
 
@@ -22,23 +23,15 @@ const getTailwindColorPalette = (): [string, TailwindColorShades][] => {
 
 // Parse Tailwind class name to extract color information
 const parseTailwindClass = (tailwindClass: string): ColorInfo => {
-  if (!tailwindClass)
-    return {
-      name: "None",
-      shade: "None",
-      className: "None",
-      colorValue: "oklch(0 0 0)", // Fallback to black in oklch format
-    };
-
   const parts = tailwindClass.split("-");
+
   const colorName = parts[1];
   const shade = parts[2];
 
   // Extract color value from Tailwind colors object (oklch format)
   const shadeCollection =
     tailwindColors[colorName as keyof typeof tailwindColors];
-  const colorValue =
-    (shadeCollection as TailwindColorShades)?.[shade] || "oklch(0 0 0)"; // Fallback to black in oklch format
+  const colorValue = (shadeCollection as TailwindColorShades)[shade];
 
   return {
     name: colorName,
@@ -54,7 +47,7 @@ const TailwindColorPicker = (props: StringInputProps) => {
   // Memoize color palette generation and selected color parsing
   const colorPalette = useMemo(() => getTailwindColorPalette(), []);
   const selectedColorInfo = useMemo(
-    () => parseTailwindClass(value || ""),
+    () => (value ? parseTailwindClass(value) : null),
     [value]
   );
 
@@ -70,11 +63,11 @@ const TailwindColorPicker = (props: StringInputProps) => {
   return (
     <div>
       {/* Current Selection Display */}
-      <div className="mb-3 p-3 bg-[var(--card-bg-color)] border border-[var(--card-border-color)] rounded-md">
-        <div className="text-xs font-medium mb-3 text-[var(--card-muted-fg-color)]">
-          Selected color
-        </div>
-        {value && (
+      {selectedColorInfo && (
+        <div className="mb-3 p-3 bg-[var(--card-bg-color)] border border-[var(--card-border-color)] rounded-md">
+          <div className="text-xs font-medium mb-3 text-[var(--card-muted-fg-color)]">
+            Selected color
+          </div>
           <div>
             <div
               className="w-10 mb-3 aspect-square border border-[var(--card-border-color)] rounded-md"
@@ -102,8 +95,8 @@ const TailwindColorPicker = (props: StringInputProps) => {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Color Palette Grid */}
       <div className="max-h-96 overflow-y-auto border border-[var(--card-border-color)] rounded-md p-3">
