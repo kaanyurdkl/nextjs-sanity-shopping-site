@@ -1,5 +1,7 @@
 import { PackageIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { DynamicSizeInput } from "../../components/DynamicSizeInput";
+import { ComputedSkuInput } from "../../components/ComputedSkuInput";
 
 /**
  * Product schema for fashion e-commerce catalog
@@ -120,38 +122,19 @@ export const productType = defineType({
     defineField({
       name: "category",
       title: "Category",
-      type: "string",
-      options: {
-        list: [
-          { title: "Men's Collection", value: "mens" },
-          { title: "Women's Collection", value: "womens" },
-        ],
-      },
+      type: "reference",
+      to: [{ type: "category" }],
       validation: (Rule) => Rule.required(),
       description:
-        "Product category for gender-specific organization and promotions",
+        "Main category for URL structure and navigation - should be the most specific category",
     }),
     defineField({
-      name: "productType",
-      title: "Product Type",
-      type: "string",
-      options: {
-        list: [
-          { title: "Shirts & Tops", value: "shirts" },
-          { title: "Pants & Bottoms", value: "pants" },
-          { title: "Outerwear", value: "outerwear" },
-        ],
-      },
+      name: "sizeGroup",
+      title: "Size Group",
+      type: "reference",
+      to: [{ type: "size" }],
       validation: (Rule) => Rule.required(),
-      description: "Product type determines available size options",
-    }),
-    defineField({
-      name: "subcategory",
-      title: "Subcategory",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      description:
-        "Subcategory (e.g., dress-shirts, casual-shirts, trousers, jeans, etc.)",
+      description: "Select which size group this product uses",
     }),
     defineField({
       name: "variants",
@@ -167,66 +150,28 @@ export const productType = defineType({
               name: "size",
               title: "Size",
               type: "string",
-              options: {
-                list: (context: { document?: { productType?: string } }) => {
-                  const productType = context.document?.productType;
-
-                  // Pants use numeric waist sizes
-                  if (productType === "pants") {
-                    return [
-                      { title: "28", value: "28" },
-                      { title: "30", value: "30" },
-                      { title: "32", value: "32" },
-                      { title: "34", value: "34" },
-                      { title: "36", value: "36" },
-                      { title: "38", value: "38" },
-                      { title: "40", value: "40" },
-                    ];
-                  }
-
-                  // Shirts and Outerwear use letter sizes
-                  return [
-                    { title: "Extra Small", value: "XS" },
-                    { title: "Small", value: "S" },
-                    { title: "Medium", value: "M" },
-                    { title: "Large", value: "L" },
-                    { title: "Extra Large", value: "XL" },
-                    { title: "XXL", value: "XXL" },
-                  ];
-                },
+              components: {
+                input: DynamicSizeInput,
               },
               validation: (Rule) => Rule.required(),
+              description: "Select size from the chosen size group",
             },
             {
               name: "color",
               title: "Color",
-              type: "string",
+              type: "reference",
+              to: [{ type: "color" }],
               validation: (Rule) => Rule.required(),
-              description:
-                "Must match one of the colors defined in the Available Colors field",
+              description: "Select color from available options",
             },
             {
               name: "sku",
               title: "Variant SKU",
               type: "string",
               description:
-                "Auto-generated unique SKU for this specific size/color combination",
-              initialValue: (doc: any, context: any) => {
-                // Auto-generate SKU based on product name, color, and size
-                // Access the current variant being created
-                const currentVariant = context.parent;
-                const productDoc = context.document;
-
-                const productName = productDoc?.name || "PROD";
-                const color = currentVariant?.color || "CLR";
-                const size = currentVariant?.size || "SIZE";
-
-                // Create SKU: First 3 letters of product + color + size
-                const productCode = productName.substring(0, 3).toUpperCase();
-                const colorCode = color.substring(0, 3).toUpperCase();
-                const sizeCode = size.toUpperCase();
-
-                return `${productCode}-${colorCode}-${sizeCode}`;
+                "Auto-generated SKU (format: PRODUCT-COLOR-SIZE-SEQUENCE)",
+              components: {
+                input: ComputedSkuInput,
               },
               validation: (Rule) => Rule.required(),
             },
@@ -248,19 +193,19 @@ export const productType = defineType({
           preview: {
             select: {
               size: "size",
-              color: "color",
+              colorName: "color.name",
               stock: "stockQuantity",
               active: "isActive",
             },
             prepare(selection) {
-              const { size, color, stock, active } = selection;
+              const { size, colorName, stock, active } = selection;
               const status = active
                 ? stock > 0
                   ? "✅"
                   : "❌ Out of Stock"
                 : "🚫 Inactive";
               return {
-                title: `${color} - ${size}`,
+                title: `${colorName || "No Color"} - ${size}`,
                 subtitle: `Stock: ${stock} ${status}`,
               };
             },
@@ -358,26 +303,41 @@ export const productType = defineType({
   preview: {
     select: {
       title: "name",
-      category: "category",
-      productType: "productType",
+      primaryCategory: "primaryCategory.title",
+      categoryParent: "primaryCategory.parent.title",
+      categoryGrandparent: "primaryCategory.parent.parent.title",
+      categoryGreatGrandparent: "primaryCategory.parent.parent.parent.title",
       media: "thumbnail",
       price: "basePrice",
+      isActive: "isActive",
     },
     prepare(selection) {
-      const { title, category, productType, media, price } = selection;
-      const categoryDisplay =
-        category === "mens" ? "Men's" : category === "womens" ? "Women's" : "";
-      const typeDisplay =
-        productType === "shirts"
-          ? "Shirts"
-          : productType === "pants"
-            ? "Pants"
-            : productType === "outerwear"
-              ? "Outerwear"
-              : "";
+      const {
+        title,
+        primaryCategory,
+        categoryParent,
+        categoryGrandparent,
+        categoryGreatGrandparent,
+        media,
+        price,
+        isActive,
+      } = selection;
+
+      // Build category breadcrumb
+      const categoryPath = [
+        categoryGreatGrandparent,
+        categoryGrandparent,
+        categoryParent,
+        primaryCategory,
+      ]
+        .filter(Boolean)
+        .join(" > ");
+
+      const statusIcon = isActive ? "✅" : "🚫";
+
       return {
         title,
-        subtitle: `${categoryDisplay} ${typeDisplay} • $${price}`,
+        subtitle: `${categoryPath || "Uncategorized"} • $${price} ${statusIcon}`,
         media,
       };
     },

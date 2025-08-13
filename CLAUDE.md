@@ -79,14 +79,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Next.js 15 setup with App Router and Turbopack
 - Sanity integration with Studio v3
-- **Complete Sanity schema architecture (7 schemas total)**
+- **Complete Sanity schema architecture (8 schemas total)**
   - Product schema with dynamic sizing system
+  - Category schema for hierarchical product categorization
   - Review schema for customer feedback
   - User schema with Google OAuth integration and reusable address management
   - Order schema with CLO-2025-XXXXXX numbering and comprehensive tracking
   - Promotion schema with admin-controlled tags and advanced discount types
   - Address schema as reusable object type for shipping/billing addresses
   - Block content schema for rich text
+- **Complete 4-level category hierarchy**
+  - Level 1: Men's, Women's
+  - Level 2: Men's Tops/Bottoms, Women's Tops/Bottoms/Dresses  
+  - Level 3: Men's T-Shirts/Shirts/Jeans, Women's T-Shirts/Blouses/Jeans
+  - Level 4: Men's Dress Shirts/Casual Shirts
 - Product management scripts with image upload automation
 - Complete product catalog: 13 products with variants and stock data
 - Sanity CDN integration with automated asset management
@@ -110,9 +116,10 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
-│   ├── schemaTypes/       # Content schemas (7 total)
+│   ├── schemaTypes/       # Content schemas (8 total)
 │   │   ├── documents/     # Document types (top-level content)
 │   │   │   ├── productType.ts # Product schema with dynamic sizing
+│   │   │   ├── categoryType.ts # Category schema for hierarchical categorization
 │   │   │   ├── reviewType.ts  # Customer review schema
 │   │   │   ├── userType.ts    # User schema with Google OAuth
 │   │   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering

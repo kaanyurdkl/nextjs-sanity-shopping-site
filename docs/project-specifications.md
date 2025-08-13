@@ -80,35 +80,47 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 
 ### Data Architecture (Sanity CMS)
 
-#### Product Catalog Structure
+#### Category Hierarchy Structure
 
-##### Men's Collection (`category: 'mens'`)
+The platform uses a 4-level hierarchical category system for organized product classification and SEO-friendly URLs.
 
-**Shirts & Tops (`productType: 'shirts'`)**
-- Dress Shirts, Casual Shirts, Polo Shirts, Sweaters, T-Shirts
-- **Sizes**: XS, S, M, L, XL, XXL
+##### **Level 1: Root Categories**
+- **Men's** (`mens`)
+- **Women's** (`womens`)
 
-**Pants & Bottoms (`productType: 'pants'`)**
-- Dress Pants, Casual Pants, Jeans, Shorts
-- **Sizes**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
+##### **Level 2: Main Product Areas**
+- **Men's Tops** (`mens/tops`)
+- **Men's Bottoms** (`mens/bottoms`) 
+- **Women's Tops** (`womens/tops`)
+- **Women's Bottoms** (`womens/bottoms`)
+- **Women's Dresses** (`womens/dresses`)
 
-**Outerwear (`productType: 'outerwear'`)**
-- Blazers, Jackets, Coats, Cardigans
-- **Sizes**: XS, S, M, L, XL, XXL
+##### **Level 3: Product Categories**
+- **Men's T-Shirts** (`mens/tops/t-shirts`)
+- **Men's Shirts** (`mens/tops/shirts`)
+- **Men's Jeans** (`mens/bottoms/jeans`)
+- **Women's T-Shirts** (`womens/tops/t-shirts`) 
+- **Women's Blouses** (`womens/tops/blouses`)
+- **Women's Jeans** (`womens/bottoms/jeans`)
 
-##### Women's Collection (`category: 'womens'`)
+##### **Level 4: Specific Categories**
+- **Men's Dress Shirts** (`mens/tops/shirts/dress-shirts`)
+- **Men's Casual Shirts** (`mens/tops/shirts/casual-shirts`)
 
-**Shirts & Tops (`productType: 'shirts'`)**
-- Blouses, Sweaters, T-Shirts, Tops, Knitwear
-- **Sizes**: XS, S, M, L, XL, XXL
+#### Product Collection Structure
 
-**Pants & Bottoms (`productType: 'pants'`)**
-- Trousers, Jeans, Skirts, Shorts
-- **Sizes**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
+Products are assigned to the most specific category level (leaf categories) with the following sizing conventions:
 
-**Outerwear (`productType: 'outerwear'`)**
-- Blazers, Jackets, Coats, Cardigans
-- **Sizes**: XS, S, M, L, XL, XXL
+##### **Sizing by Product Type**
+- **T-Shirts & Tops**: XS, S, M, L, XL, XXL
+- **Shirts & Blouses**: XS, S, M, L, XL, XXL  
+- **Jeans & Bottoms**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
+- **Dresses**: XS, S, M, L, XL, XXL
+
+##### **URL Structure Examples**
+- Product URLs follow category hierarchy: `/mens/tops/shirts/dress-shirts/executive-dress-shirt`
+- Category URLs: `/mens/tops/shirts/dress-shirts`
+- Automatic breadcrumb generation from hierarchy
 
 #### User Collection
 ```typescript

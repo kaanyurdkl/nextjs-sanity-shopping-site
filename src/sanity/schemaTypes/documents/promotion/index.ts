@@ -86,100 +86,24 @@ export const promotionType = defineType({
     bogoConfig,
     tieredConfig,
     thresholdConfig,
-    defineField({
-      name: "gender",
-      title: "Gender Category",
-      type: "string",
-      options: {
-        list: [
-          { title: "Men's", value: "mens" },
-          { title: "Women's", value: "womens" },
-          { title: "Both", value: "both" },
-        ],
-      },
-      description: "Which gender category this promotion applies to",
-      validation: (rule) => rule.required(),
-      hidden: ({ document }) => !document?.type,
-    }),
+    // === FLEXIBLE CATEGORY SELECTION ===
     defineField({
       name: "applicableCategories",
-      title: "Applicable Categories",
+      title: "Target Categories",
       type: "array",
       of: [
         {
-          type: "string",
-          options: {
-            list: [
-              { title: "Shirts & Tops", value: "shirts" },
-              { title: "Pants & Bottoms", value: "pants" },
-              { title: "Outerwear", value: "outerwear" },
-            ],
-          },
+          type: "reference",
+          to: [{ type: "category" }],
         },
       ],
       description:
-        "Product categories this promotion applies to (optional - leave empty to apply to all categories)",
+        "Select categories this promotion applies to. You can select at any hierarchy level - broader categories (e.g., 'Men's') include all subcategories, while specific categories (e.g., 'Dress Shirts') target only those items.",
       hidden: ({ document }) => !document?.type,
-    }),
-    defineField({
-      name: "applicableSubcategories",
-      title: "Applicable Subcategories",
-      type: "array",
-      of: [
-        {
-          type: "string",
-          options: {
-            list: ({ document }) => {
-              const selectedCategories = document?.applicableCategories || [];
-              
-              // Define subcategories by parent category
-              const subcategoryMap = {
-                shirts: [
-                  { title: "Dress Shirts", value: "dress-shirts" },
-                  { title: "Casual Shirts", value: "casual-shirts" },
-                  { title: "Polo Shirts", value: "polo-shirts" },
-                  { title: "T-Shirts", value: "t-shirts" },
-                  { title: "Sweaters", value: "sweaters" },
-                  { title: "Blouses", value: "blouses" },
-                  { title: "Knitwear", value: "knitwear" },
-                  { title: "Tops", value: "tops" },
-                ],
-                pants: [
-                  { title: "Dress Pants", value: "dress-pants" },
-                  { title: "Casual Pants", value: "casual-pants" },
-                  { title: "Trousers", value: "trousers" },
-                  { title: "Jeans", value: "jeans" },
-                  { title: "Shorts", value: "shorts" },
-                  { title: "Skirts", value: "skirts" },
-                ],
-                outerwear: [
-                  { title: "Blazers", value: "blazers" },
-                  { title: "Jackets", value: "jackets" },
-                  { title: "Coats", value: "coats" },
-                  { title: "Cardigans", value: "cardigans" },
-                ],
-              };
-
-              // If no categories selected, show all subcategories
-              if (selectedCategories.length === 0) {
-                return Object.values(subcategoryMap).flat();
-              }
-
-              // Return only subcategories for selected categories
-              return selectedCategories
-                .map((category) => subcategoryMap[category] || [])
-                .flat();
-            },
-          },
-        },
-      ],
-      description:
-        "Specific subcategories this promotion applies to (optional - leave empty to apply to all subcategories in selected categories)",
-      hidden: ({ document }) => !document?.type || !document?.applicableCategories?.length,
     }),
     defineField({
       name: "applicableProducts",
-      title: "Applicable Products",
+      title: "Specific Products (Optional)",
       type: "array",
       of: [
         {
@@ -187,20 +111,33 @@ export const promotionType = defineType({
           to: [{ type: "product" }],
           options: {
             filter: ({ document }) => {
-              const selectedGender = document?.gender;
-              if (!selectedGender || selectedGender === "both") {
-                return {};
+              // Filter products based on selected categories
+              const selectedCategories = document?.applicableCategories || [];
+              
+              if (selectedCategories.length === 0) {
+                return "true"; // Show all products if no categories selected
               }
-              return {
-                filter: "category == $gender",
-                params: { gender: selectedGender },
-              };
+              
+              // Build filter to match products that belong to any of the selected categories
+              // This includes products that are directly in the category or in any subcategory
+              const categoryFilters = selectedCategories.map((cat: { _ref: string }) => {
+                const categoryId = cat._ref;
+                return `(
+                  "${categoryId}" in categories[]._ref ||
+                  "${categoryId}" in categories[].parent._ref ||
+                  "${categoryId}" in categories[].parent.parent._ref ||
+                  "${categoryId}" in categories[].parent.parent.parent._ref ||
+                  "${categoryId}" in categories[].parent.parent.parent.parent._ref
+                )`;
+              });
+              
+              return `(${categoryFilters.join(" || ")})`;
             },
           },
         },
       ],
       description:
-        "Specific products this promotion applies to (optional - leave empty to apply to all products in selected categories)",
+        "Target specific products (optional - leave empty to apply to all products matching the category selection above)",
       hidden: ({ document }) => !document?.type,
     }),
     defineField({
@@ -304,9 +241,9 @@ export const promotionType = defineType({
       isActive: "isActive",
       startDate: "startDate",
       endDate: "endDate",
-      gender: "gender",
+      categories: "applicableCategories",
     },
-    prepare({ name, tagLabel, type, isActive, startDate, endDate, gender }) {
+    prepare({ name, tagLabel, type, isActive, startDate, endDate, categories }) {
       const now = new Date();
       const start = startDate ? new Date(startDate) : null;
       const end = endDate ? new Date(endDate) : null;
@@ -336,11 +273,16 @@ export const promotionType = defineType({
       const displayName = name || "New Promotion";
       const displayTagLabel = tagLabel || "No tag";
       const displayType = type ? type.toUpperCase() : "NO TYPE";
-      const displayGender = gender || "No target";
+      
+      // Build category summary
+      const categoryCount = categories?.length || 0;
+      const categoryDisplay = categoryCount === 0 
+        ? "All categories" 
+        : `${categoryCount} categor${categoryCount === 1 ? 'y' : 'ies'}`;
 
       return {
         title: `${displayName} (${displayTagLabel})`,
-        subtitle: `${status} ${typeEmojis[type] || "🏷️"} ${displayType} • ${displayGender}`,
+        subtitle: `${status} ${typeEmojis[type] || "🏷️"} ${displayType} • ${categoryDisplay}`,
       };
     },
   },

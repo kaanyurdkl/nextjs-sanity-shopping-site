@@ -5,7 +5,10 @@ import { addressType } from "./objects/addressType";
 import { blockContentType } from "./objects/blockContentType";
 
 // Document types (top-level content)
+import { categoryType } from "./documents/categoryType";
+import { colorType } from "./documents/colorType";
 import { productType } from "./documents/productType";
+import { sizeType } from "./documents/sizeType";
 import { reviewType } from "./documents/reviewType";
 import { userType } from "./documents/userType";
 import { orderType } from "./documents/orderType";
@@ -25,7 +28,10 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   blockContentType,
 
   // Document types (top-level content)
+  categoryType,
+  colorType,
   productType,
+  sizeType,
   reviewType,
   userType,
   orderType,
