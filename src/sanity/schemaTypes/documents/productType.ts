@@ -256,14 +256,6 @@ export const productType = defineType({
       description: "Description for search engines and social media",
     }),
     defineField({
-      name: "reviews",
-      title: "Customer Reviews",
-      type: "array",
-      of: [{ type: "reference", to: [{ type: "review" }] }],
-      description:
-        "Customer reviews - average rating and count calculated dynamically from this array",
-    }),
-    defineField({
       name: "keyFeatures",
       title: "Key Features",
       type: "blockContent",
