@@ -110,28 +110,60 @@ export const promotionType = defineType({
           type: "reference",
           to: [{ type: "product" }],
           options: {
-            filter: ({ document }) => {
+            filter: async ({ document, getClient }) => {
               // Filter products based on selected categories
-              const selectedCategories = document?.applicableCategories || [];
-              
+              const selectedCategories = document.applicableCategories as {
+                _ref: string;
+              }[];
+
               if (selectedCategories.length === 0) {
-                return "true"; // Show all products if no categories selected
+                // If no categories selected, show all products
+                return {
+                  filter: "true",
+                  params: {},
+                };
               }
-              
-              // Build filter to match products that belong to any of the selected categories
-              // This includes products that are directly in the category or in any subcategory
-              const categoryFilters = selectedCategories.map((cat: { _ref: string }) => {
-                const categoryId = cat._ref;
-                return `(
-                  "${categoryId}" in categories[]._ref ||
-                  "${categoryId}" in categories[].parent._ref ||
-                  "${categoryId}" in categories[].parent.parent._ref ||
-                  "${categoryId}" in categories[].parent.parent.parent._ref ||
-                  "${categoryId}" in categories[].parent.parent.parent.parent._ref
-                )`;
-              });
-              
-              return `(${categoryFilters.join(" || ")})`;
+
+              try {
+                // Get category details using getClient
+                const client = getClient({ apiVersion: "2024-01-01" });
+                const categoryIds = selectedCategories.map((cat) => cat._ref);
+
+                const categoryDetails = await client.fetch(
+                  `*[_type == "category" && _id in $categoryIds]{
+                    _id,
+                    title,
+                    "slug": slug.current
+                  }`,
+                  { categoryIds }
+                );
+
+                // Generate descendant-matching filters - show products UNDER selected categories
+                const categoryFilters = categoryDetails.map((category: any) => {
+                  // Use GROQ startsWith function for exact string prefix matching
+                  // This matches the exact category OR categories that start with "category/"
+                  const filter = `category->slug.current == "${category.slug}" || string::startsWith(category->slug.current, "${category.slug}/")`;
+
+                  return filter;
+                });
+
+                const finalFilter =
+                  categoryFilters.length > 1
+                    ? `(${categoryFilters.join(" || ")})`
+                    : categoryFilters[0];
+
+                return {
+                  filter: finalFilter,
+                  params: {},
+                };
+              } catch (error) {
+                console.error("Failed to fetch category details:", error);
+
+                return {
+                  filter: "true",
+                  params: {},
+                };
+              }
             },
           },
         },
@@ -243,7 +275,15 @@ export const promotionType = defineType({
       endDate: "endDate",
       categories: "applicableCategories",
     },
-    prepare({ name, tagLabel, type, isActive, startDate, endDate, categories }) {
+    prepare({
+      name,
+      tagLabel,
+      type,
+      isActive,
+      startDate,
+      endDate,
+      categories,
+    }) {
       const now = new Date();
       const start = startDate ? new Date(startDate) : null;
       const end = endDate ? new Date(endDate) : null;
@@ -273,12 +313,13 @@ export const promotionType = defineType({
       const displayName = name || "New Promotion";
       const displayTagLabel = tagLabel || "No tag";
       const displayType = type ? type.toUpperCase() : "NO TYPE";
-      
+
       // Build category summary
       const categoryCount = categories?.length || 0;
-      const categoryDisplay = categoryCount === 0 
-        ? "All categories" 
-        : `${categoryCount} categor${categoryCount === 1 ? 'y' : 'ies'}`;
+      const categoryDisplay =
+        categoryCount === 0
+          ? "All categories"
+          : `${categoryCount} categor${categoryCount === 1 ? "y" : "ies"}`;
 
       return {
         title: `${displayName} (${displayTagLabel})`,
