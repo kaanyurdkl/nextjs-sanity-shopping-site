@@ -295,41 +295,32 @@ export const productType = defineType({
   preview: {
     select: {
       title: "name",
-      primaryCategory: "primaryCategory.title",
-      categoryParent: "primaryCategory.parent.title",
-      categoryGrandparent: "primaryCategory.parent.parent.title",
-      categoryGreatGrandparent: "primaryCategory.parent.parent.parent.title",
+      categorySlug: "category.slug.current",
       media: "thumbnail",
       price: "basePrice",
-      isActive: "isActive",
     },
     prepare(selection) {
-      const {
-        title,
-        primaryCategory,
-        categoryParent,
-        categoryGrandparent,
-        categoryGreatGrandparent,
-        media,
-        price,
-        isActive,
-      } = selection;
+      const { title, categorySlug, media, price } = selection;
 
-      // Build category breadcrumb
-      const categoryPath = [
-        categoryGreatGrandparent,
-        categoryGrandparent,
-        categoryParent,
-        primaryCategory,
-      ]
-        .filter(Boolean)
-        .join(" > ");
-
-      const statusIcon = isActive ? "✅" : "🚫";
+      // Build full category path from slug
+      let categoryPath = "Uncategorized";
+      if (categorySlug) {
+        categoryPath = categorySlug
+          .split("/")
+          .map((segment: string) =>
+            segment
+              .split("-")
+              .map(
+                (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
+              )
+              .join(" ")
+          )
+          .join(" > ");
+      }
 
       return {
-        title,
-        subtitle: `${categoryPath || "Uncategorized"} • $${price} ${statusIcon}`,
+        title: `${title} • $${price}`,
+        subtitle: categoryPath,
         media,
       };
     },
