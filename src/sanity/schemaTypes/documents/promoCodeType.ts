@@ -25,33 +25,97 @@ export const promoCodeType = defineType({
   name: "promoCode",
   title: "Promo Code",
   type: "document",
+  fieldsets: [
+    {
+      name: "basic",
+      title: "Basic Information",
+      description: "Essential promo code details",
+      options: { collapsible: false }
+    },
+    {
+      name: "discount",
+      title: "Discount Configuration", 
+      description: "Set discount type, amount, and optional caps",
+      options: { collapsible: false }
+    },
+    {
+      name: "constraints",
+      title: "Constraints & Limits",
+      description: "Optional restrictions (minimum purchase, usage limits)",
+      options: { collapsible: true, collapsed: false }
+    },
+    {
+      name: "schedule",
+      title: "Scheduling & Status",
+      description: "When the promo code is active",
+      options: { collapsible: true, collapsed: false }
+    },
+    {
+      name: "analytics",
+      title: "Usage Analytics",
+      description: "Track promo code performance",
+      options: { collapsible: true, collapsed: true }
+    }
+  ],
   fields: [
+    // === BASIC INFORMATION ===
     defineField({
       name: "name",
       title: "Promo Code Name",
       type: "string",
       description: "Internal name for this promo code",
       validation: (rule) => rule.required().max(100),
+      fieldset: "basic",
     }),
     defineField({
       name: "description",
       title: "Description",
       type: "text",
       description: "Internal description of this promo code",
+      fieldset: "basic",
     }),
     defineField({
       name: "code",
       title: "Promo Code",
       type: "string",
       description: "The code customers must enter (e.g., SAVE15, WELCOME10)",
-      validation: (rule) =>
+      validation: (rule) => [
         rule
           .required()
           .min(3)
           .max(20)
           .uppercase()
-          .regex(/^[A-Z0-9]+$/),
+          .regex(/^[A-Z0-9]+$/, "Code must contain only uppercase letters and numbers"),
+        rule.custom(async (value, context) => {
+          if (!value) return true; // Skip if empty (handled by required())
+          
+          const { document, getClient } = context;
+          const client = getClient({ apiVersion: '2024-01-01' });
+          
+          // Get current document ID (handle both draft and published)
+          const currentId = document?._id?.replace(/^drafts\./, '');
+          
+          const params = {
+            code: value,
+            currentId: currentId,
+            draftId: `drafts.${currentId}`,
+          };
+          
+          // Check for existing promo codes with the same code (excluding current document)
+          const query = `*[_type == "promoCode" && code == $code && _id != $currentId && _id != $draftId]`;
+          const existingCodes = await client.fetch(query, params);
+          
+          if (existingCodes.length > 0) {
+            return `Promo code "${value}" is already in use. Please choose a different code.`;
+          }
+          
+          return true;
+        }),
+      ],
+      fieldset: "basic",
     }),
+
+    // === DISCOUNT CONFIGURATION ===
     defineField({
       name: "discountType",
       title: "Discount Type",
@@ -64,6 +128,7 @@ export const promoCodeType = defineType({
       },
       validation: (rule) => rule.required(),
       initialValue: "fixed_amount",
+      fieldset: "discount",
     }),
     defineField({
       name: "discountValue",
@@ -85,13 +150,64 @@ export const promoCodeType = defineType({
             }
             return true;
           }),
+      fieldset: "discount",
     }),
+    defineField({
+      name: "hasMaximumDiscount",
+      title: "Set Maximum Discount Cap",
+      type: "boolean",
+      description: "Limit the maximum discount amount to protect profit margins",
+      initialValue: ({ parent }) => {
+        // Auto-suggest cap for percentage discounts and large fixed amounts
+        if (parent?.discountType === "percentage") return true;
+        if (parent?.discountType === "fixed_amount" && parent?.discountValue > 50) return true;
+        return false;
+      },
+      fieldset: "discount",
+    }),
+    defineField({
+      name: "maximumDiscount",
+      title: "Maximum Discount Amount",
+      type: "number",
+      description: "Maximum dollar amount this discount can provide (e.g., $50 cap on 25% off)",
+      initialValue: ({ parent }) => {
+        // Smart defaults based on discount type
+        if (parent?.discountType === "percentage") return 50;
+        if (parent?.discountType === "fixed_amount") return parent?.discountValue;
+        return undefined;
+      },
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          const parent = context.parent as { 
+            hasMaximumDiscount?: boolean;
+            discountType?: string;
+            discountValue?: number;
+          };
+          
+          if (parent?.hasMaximumDiscount) {
+            if (!value || value <= 0) {
+              return "Maximum discount amount is required when cap is enabled";
+            }
+            
+            // For fixed amounts, cap shouldn't be higher than the discount itself
+            if (parent?.discountType === "fixed_amount" && parent?.discountValue && value > parent.discountValue) {
+              return `Maximum discount cannot exceed the discount amount ($${parent.discountValue})`;
+            }
+          }
+          return true;
+        }),
+      hidden: ({ parent }) => !parent?.hasMaximumDiscount,
+      fieldset: "discount",
+    }),
+
+    // === CONSTRAINTS & LIMITS ===
     defineField({
       name: "hasMinimumPurchase",
       title: "Require Minimum Purchase",
       type: "boolean",
       description: "Toggle to require a minimum purchase amount",
       initialValue: false,
+      fieldset: "constraints",
     }),
     defineField({
       name: "minimumPurchase",
@@ -107,17 +223,19 @@ export const promoCodeType = defineType({
           return true;
         }),
       hidden: ({ parent }) => !parent?.hasMinimumPurchase,
+      fieldset: "constraints",
     }),
     defineField({
       name: "hasUsageLimit",
-      title: "Require Usage Limit",
+      title: "Set Usage Limit",
       type: "boolean",
-      description: "Toggle to require a usage limit",
+      description: "Limit how many times this code can be used",
       initialValue: false,
+      fieldset: "constraints",
     }),
     defineField({
       name: "usageLimit",
-      title: "Usage Limit",
+      title: "Maximum Uses",
       type: "number",
       description: "Maximum number of times this code can be used",
       validation: (rule) =>
@@ -129,21 +247,17 @@ export const promoCodeType = defineType({
           return true;
         }),
       hidden: ({ parent }) => !parent?.hasUsageLimit,
+      fieldset: "constraints",
     }),
-    defineField({
-      name: "usageCount",
-      title: "Current Usage Count",
-      type: "number",
-      description: "How many times this code has been used",
-      initialValue: 0,
-      readOnly: true,
-    }),
+
+    // === SCHEDULING & STATUS ===
     defineField({
       name: "isActive",
       title: "Active",
       type: "boolean",
       description: "Whether this promo code is currently active",
       initialValue: true,
+      fieldset: "schedule",
     }),
     defineField({
       name: "startDate",
@@ -151,12 +265,13 @@ export const promoCodeType = defineType({
       type: "datetime",
       description: "When this promo code becomes active",
       validation: (rule) => rule.required(),
+      fieldset: "schedule",
     }),
     defineField({
       name: "endDate",
       title: "End Date",
       type: "datetime",
-      description: "When this promo code expires",
+      description: "When this promo code expires (optional)",
       validation: (rule) =>
         rule.custom((endDate, context) => {
           const startDate = (context.document as { startDate?: string })
@@ -170,6 +285,18 @@ export const promoCodeType = defineType({
           }
           return true;
         }),
+      fieldset: "schedule",
+    }),
+
+    // === USAGE ANALYTICS ===
+    defineField({
+      name: "usageCount",
+      title: "Times Used",
+      type: "number",
+      description: "How many times this code has been used",
+      initialValue: 0,
+      readOnly: true,
+      fieldset: "analytics",
     }),
   ],
 
