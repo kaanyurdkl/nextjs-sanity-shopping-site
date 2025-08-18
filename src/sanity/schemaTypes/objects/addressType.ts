@@ -108,6 +108,18 @@ export const addressType = defineType({
       initialValue: 'Canada',
       readOnly: true,
     }),
+    defineField({
+      name: 'phoneNumber',
+      title: 'Phone Number',
+      type: 'string',
+      description: 'Contact phone number for this address (optional)',
+      validation: (rule) => 
+        rule.custom((phone) => {
+          if (!phone) return true // Optional field
+          const canadianPhoneRegex = /^(\+1|1)?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/
+          return canadianPhoneRegex.test(phone) || 'Please enter a valid Canadian phone number'
+        }),
+    }),
 
     // Address Settings
     defineField({
@@ -124,12 +136,14 @@ export const addressType = defineType({
       streetAddress: 'streetAddress',
       city: 'city',
       province: 'province',
+      phoneNumber: 'phoneNumber',
       isDefault: 'isDefault',
     },
-    prepare({ nickname, streetAddress, city, province, isDefault }) {
+    prepare({ nickname, streetAddress, city, province, phoneNumber, isDefault }) {
+      const phoneInfo = phoneNumber ? ` • ${phoneNumber}` : '';
       return {
         title: nickname + (isDefault ? ' (Default)' : ''),
-        subtitle: `${streetAddress}, ${city}, ${province}`,
+        subtitle: `${streetAddress}, ${city}, ${province}${phoneInfo}`,
       }
     },
   },
