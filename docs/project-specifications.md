@@ -1,7 +1,7 @@
 # E-Commerce Project Specifications
 
 **Fashion E-commerce Platform - Technical Requirements & Design Specifications**  
-*Version 2.7 - Updated July 16, 2025*
+*Version 3.0 - Updated January 2025*
 
 ## Table of Contents
 
@@ -82,45 +82,34 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 
 #### Category Hierarchy Structure
 
-The platform uses a 4-level hierarchical category system for organized product classification and SEO-friendly URLs.
+The platform uses a flexible hierarchical category system that supports unlimited nesting levels for organized product classification and SEO-friendly URLs.
 
-##### **Level 1: Root Categories**
-- **Men's** (`mens`)
-- **Women's** (`womens`)
+##### **Key Features:**
+- **Flexible Depth**: Categories can be nested to any level (no fixed limit)
+- **Parent-Child Relationships**: Each category can optionally reference a parent category
+- **Future-Proof**: New categories can be added at any level without structural changes
+- **Manual Slug Management**: Admins manually construct hierarchical slugs by extending parent category paths
 
-##### **Level 2: Main Product Areas**
-- **Men's Tops** (`mens/tops`)
-- **Men's Bottoms** (`mens/bottoms`) 
-- **Women's Tops** (`womens/tops`)
-- **Women's Bottoms** (`womens/bottoms`)
-- **Women's Dresses** (`womens/dresses`)
+##### **Current Category Examples:**
+- **Root Level**: Men's (`mens`), Women's (`womens`)
+- **Nested Examples**:
+  - `mens/tops` → `mens/tops/shirts` → `mens/tops/shirts/dress-shirts`
+  - `womens/bottoms` → `womens/bottoms/jeans`
+  - `womens/dresses` (could expand to `womens/dresses/formal`, etc.)
 
-##### **Level 3: Product Categories**
-- **Men's T-Shirts** (`mens/tops/t-shirts`)
-- **Men's Shirts** (`mens/tops/shirts`)
-- **Men's Jeans** (`mens/bottoms/jeans`)
-- **Women's T-Shirts** (`womens/tops/t-shirts`) 
-- **Women's Blouses** (`womens/tops/blouses`)
-- **Women's Jeans** (`womens/bottoms/jeans`)
-
-##### **Level 4: Specific Categories**
-- **Men's Dress Shirts** (`mens/tops/shirts/dress-shirts`)
-- **Men's Casual Shirts** (`mens/tops/shirts/casual-shirts`)
-
-#### Product Collection Structure
-
-Products are assigned to the most specific category level (leaf categories) with the following sizing conventions:
-
-##### **Sizing by Product Type**
-- **T-Shirts & Tops**: XS, S, M, L, XL, XXL
-- **Shirts & Blouses**: XS, S, M, L, XL, XXL  
-- **Jeans & Bottoms**: 28, 30, 32, 34, 36, 38, 40 (waist measurements)
-- **Dresses**: XS, S, M, L, XL, XXL
+##### **Category Schema Features:**
+- **Manual Slug Construction**: Admins manually create hierarchical slugs by extending parent paths
+  - Example: Parent category `mens/tops/shirts` → Child category `mens/tops/shirts/dress-shirts`
+  - Process: Admin looks at parent slug and appends current category name
+- **Page Type Configuration**: Categories can be product listings or landing pages
+- **Flexible Management**: Add, remove, or reorganize categories without code changes
+- **Self-Preventing Loops**: Categories cannot reference themselves as parents
+- **Slug Field**: Has generate button but is used for manual entry of hierarchical paths
 
 ##### **URL Structure Examples**
-- Product URLs follow category hierarchy: `/mens/tops/shirts/dress-shirts/executive-dress-shirt`
-- Category URLs: `/mens/tops/shirts/dress-shirts`
-- Automatic breadcrumb generation from hierarchy
+- **Product URLs**: Use `/product/` prefix with product slug: `/product/luxury-t-shirt`, `/product/executive-dress-shirt`
+- **Category URLs**: Follow hierarchical path: `/mens/tops/shirts/dress-shirts`, `/womens/bottoms/jeans`
+- Automatic breadcrumb generation from hierarchical slug paths
 
 #### User Collection
 ```typescript
@@ -159,39 +148,68 @@ Products are assigned to the most specific category level (leaf categories) with
 }
 ```
 
-#### Product Collection
+#### Product Schema
 ```typescript
-// Enhanced product schema
+// Enhanced product schema with dynamic sizing
 {
   name: string
   slug: slug
   description: blockContent
   basePrice: number
-  category: 'mens' | 'womens'
-  productType: 'shirts' | 'pants' | 'outerwear' // Determines sizing
-  subcategory?: string // Optional: dress-shirts, casual-shirts, trousers, jeans, etc.
+  category: reference // Reference to category schema for hierarchical categorization
+  sizeGroup: reference // Reference to size schema for dynamic sizing
   
-  // Variant system
+  // Variant system with auto-generated SKUs
   variants: {
-    size: string // Dynamic based on productType
-    color: string
-    sku: string
+    size: string // Dynamic based on selected size group
+    color: reference // Reference to color schema
+    sku: string // Auto-generated: PRODUCT-COLOR-SIZE-SEQUENCE
     stockQuantity: number
     isActive: boolean
   }[]
   
-  // Promotion integration
-  promotions: reference[] // Links to active promotions
-  
-  // Media and content
+  // Content and media
   thumbnail: image
   hoverImage: image
   images: image[]
-  reviews: reference[] // Customer reviews
+  keyFeatures: blockContent
+  materials: blockContent
+  sizeAndFit: blockContent
+  careInstructions: blockContent
+  relatedProducts: reference[]
+  reviews: reference[]
+  
+  // Status
+  isActive: boolean
+  isFeatured: boolean
+  seoTitle?: string
+  seoDescription?: string
 }
 ```
 
-#### Order Collection
+#### Color Schema
+```typescript
+// Color schema for product variant management
+{
+  name: string // Display name (e.g., "Navy Blue", "Forest Green")
+  code: string // 3-letter uppercase code for SKU generation (e.g., "NAV", "RED")
+  hexCode: string // Hex color code for swatches (e.g., "#FF0000")
+}
+```
+
+#### Size Schema
+```typescript
+// Size schema with flexible size groups
+{
+  name: string // Size group name (e.g., "Letter Sizes", "Waist Sizes")
+  sizes: {
+    name: string // Display name (e.g., "Medium", "32 Waist")
+    code: string // 1-3 char code for SKU generation (e.g., "M", "L", "32")
+  }[]
+}
+```
+
+#### Order Schema
 ```typescript
 // Comprehensive order management
 {
@@ -232,33 +250,63 @@ Products are assigned to the most specific category level (leaf categories) with
 }
 ```
 
-#### Promotion Collection
+#### Promotion Schema
 ```typescript
-// Advanced promotion system
+// Advanced promotion system with 6 promotion types
 {
   name: string
-  type: 'percentage' | 'bundle' | 'bogo' | 'tiered' | 'threshold'
+  description: string
+  type: 'percentage' | 'fixed_amount' | 'bundle' | 'bogo' | 'tiered' | 'threshold'
   
-  // Admin-controlled display
-  tagLabel: string // Custom admin-defined text
-  tagBackgroundColor: string
-  tagTextColor: string
-  showTag: boolean
+  // Type-specific configurations (conditional based on type)
+  percentageConfig?: { discountPercentage: number }
+  fixedAmountConfig?: { discountAmount: number }
+  bundleConfig?: { buyQuantity: number, getQuantity: number, bundlePrice: number }
+  bogoConfig?: { buyQuantity: number, getQuantity: number, getDiscount: number }
+  tieredConfig?: { tiers: { minimumQuantity: number, discountPercentage: number }[] }
+  thresholdConfig?: { spendThreshold: number, discountPercentage: number }
   
   // Targeting
-  gender: 'mens' | 'womens'
-  applicableProducts: reference[]
-  priority: number // For conflict resolution
+  applicableCategories: reference[] // Hierarchical category targeting
+  applicableProducts: reference[] // Specific product targeting (optional)
   
-  // Configuration
-  discountValue: number
-  minimumQuantity?: number
-  maximumDiscount?: number
+  // Visual display
+  showTag: boolean
+  tagLabel: string // Custom admin-defined text (e.g., "2 FOR $95", "25% OFF")
+  tagBackgroundColor: string // Tailwind CSS class
+  tagTextColor: string // Tailwind CSS class
+  priority: number // 1-100, higher wins for multiple promotions
   
-  // Status
+  // Scheduling
   isActive: boolean
   startDate: datetime
-  endDate: datetime
+  endDate?: datetime
+}
+```
+
+#### Promo Code Schema
+```typescript
+// Customer-entered discount codes
+{
+  name: string
+  description?: string
+  code: string // Customer-facing code (e.g., "SAVE20", "WELCOME10")
+  discountType: 'fixed_amount' | 'percentage'
+  discountValue: number
+  
+  // Optional constraints
+  hasMaximumDiscount: boolean
+  maximumDiscount?: number
+  hasMinimumPurchase: boolean
+  minimumPurchase?: number
+  hasUsageLimit: boolean
+  usageLimit?: number
+  
+  // Scheduling and tracking
+  isActive: boolean
+  startDate: datetime
+  endDate?: datetime
+  usageCount: number // Auto-updated
 }
 ```
 
@@ -301,12 +349,10 @@ The promotion system is a sophisticated e-commerce engine with **6 different pro
 - **Custom TailwindColorPicker Component**: Admin-friendly color selection with visual preview
 
 **🎯 Product Targeting & Scope:**
-- `gender`: Apply to Men's, Women's, or Both categories
-- `applicableProducts`: Target specific product references
-- `applicableCategories`: Target product categories (shirts, pants, outerwear)
-- `requiresPromoCode`: Optional promo code requirement with usage limits
-- `priority`: Handle conflicts when multiple promotions apply to same products
-- `stackable`: Control whether promotions can be combined
+- `applicableCategories`: Target specific product categories with hierarchical support
+- `applicableProducts`: Target specific product references (optional, filters by selected categories)
+- `priority`: Handle conflicts when multiple promotions apply to same products (1-100, higher wins)
+- **Hierarchical Targeting**: Select broader categories (e.g., "Men's") to include all subcategories, or specific categories (e.g., "Dress Shirts") for precise targeting
 
 **⚡ Key Business Features:**
 - **Automatic Visual Tags**: Promotions display custom-styled tags on product listings
@@ -360,14 +406,16 @@ Email Notifications ← Resend API ← Order/Shipping Updates
 - **Featured Products**: Curated product grid with hover effects
 - **Value Propositions**: Premium materials, timeless design, satisfaction guarantee
 
-#### Product Listing Pages
-- **Men's/Women's Collections**: `/men`, `/women`
+#### Category Landing Pages
+- **Men's/Women's Landing Pages**: `/mens`, `/womens` (category landing pages with navigation and featured content)
+
+#### Product Listing Pages  
 - **Category Pages**: 
-  - Men's: `/men/shirts`, `/men/pants`, `/men/outerwear`
-  - Women's: `/women/shirts`, `/women/pants`, `/women/outerwear`
+  - Men's: `/mens/tops`, `/mens/bottoms`, `/mens/tops/shirts`
+  - Women's: `/womens/tops`, `/womens/bottoms`, `/womens/dresses`
 - **Subcategory Pages**:
-  - `/men/shirts/dress-shirts`, `/men/shirts/casual-shirts`, `/men/shirts/sweaters`
-  - `/women/pants/trousers`, `/women/pants/jeans`, `/women/pants/skirts`
+  - `/mens/tops/shirts/dress-shirts`, `/mens/tops/shirts/casual-shirts`
+  - `/womens/bottoms/jeans`, `/womens/tops/blouses`
 - **Special Collections**: 
   - `/deals` (promotion-tagged products)
   - `/new-arrivals` (recently added products)
