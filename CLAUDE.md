@@ -79,32 +79,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Next.js 15 setup with App Router and Turbopack
 - Sanity integration with Studio v3
-- **Complete Sanity schema architecture (8 schemas total)**
-  - Product schema with dynamic sizing system
-  - Category schema for hierarchical product categorization
-  - Review schema for customer feedback
-  - User schema with Google OAuth integration and reusable address management
-  - Order schema with CLO-2025-XXXXXX numbering and comprehensive tracking
-  - Promotion schema with admin-controlled tags and advanced discount types
-  - Address schema as reusable object type for shipping/billing addresses
-  - Block content schema for rich text
-- **Complete 4-level category hierarchy**
-  - Level 1: Men's, Women's
-  - Level 2: Men's Tops/Bottoms, Women's Tops/Bottoms/Dresses  
-  - Level 3: Men's T-Shirts/Shirts/Jeans, Women's T-Shirts/Blouses/Jeans
-  - Level 4: Men's Dress Shirts/Casual Shirts
-- Product management scripts with image upload automation
-- Complete product catalog: 13 products with variants and stock data
-- Sanity CDN integration with automated asset management
-- Geist font integration
+- Sanity schema structure (11 schemas total)
+- Product catalog with sample data
+- Custom Sanity components for admin workflow
 
 ### Next Phase
 
-- **Review and refine remaining schemas** (order and review schemas need careful review; promotion schema significantly improved)
 - **Frontend development** (homepage, product pages, cart, checkout)
 - Implement authentication (NextAuth.js + Google OAuth)
 - Build shopping cart and checkout functionality
 - Integrate Stripe payment processing
+- Connect Sanity schemas to frontend components
+- Implement promotion engine and pricing calculations
 
 ## File Organization
 
@@ -116,14 +102,18 @@ src/
 │   ├── globals.css        # Global styles
 │   └── studio/            # Sanity Studio integration
 ├── sanity/                # Sanity CMS configuration
-│   ├── schemaTypes/       # Content schemas (8 total)
+│   ├── schemaTypes/       # Content schemas (11 total)
 │   │   ├── documents/     # Document types (top-level content)
-│   │   │   ├── productType.ts # Product schema with dynamic sizing
+│   │   │   ├── productType.ts # Product schema with dynamic sizing and SKU generation
 │   │   │   ├── categoryType.ts # Category schema for hierarchical categorization
-│   │   │   ├── reviewType.ts  # Customer review schema
-│   │   │   ├── userType.ts    # User schema with Google OAuth
+│   │   │   ├── colorType.ts   # Color schema for product variants
+│   │   │   ├── sizeType.ts    # Size schema with flexible size groups
+│   │   │   ├── reviewType.ts  # Customer review schema with verification
+│   │   │   ├── userType.ts    # User schema with Google OAuth integration
 │   │   │   ├── orderType.ts   # Order schema with CLO-2025-XXXXXX numbering
-│   │   │   └── promotionType.ts # Promotion schema with custom color picker
+│   │   │   ├── promoCodeType.ts # Promo code schema with usage tracking
+│   │   │   └── promotion/     # Advanced promotion system
+│   │   │       └── index.ts   # Main promotion schema with 6 types
 │   │   ├── objects/       # Object types (embedded content)
 │   │   │   ├── addressType.ts # Reusable address schema for shipping/billing
 │   │   │   └── blockContentType.ts # Rich text content schema
@@ -133,7 +123,9 @@ src/
 │   │   ├── image.ts       # Image URL builder utilities
 │   │   └── live.ts        # Live content functionality
 │   ├── components/        # Custom Sanity components
-│   │   └── TailwindColorPicker.tsx # Color picker for promotion tags
+│   │   ├── TailwindColorPicker.tsx # Color picker for promotion tags
+│   │   ├── DynamicSizeInput.tsx    # Dynamic size selection based on size group
+│   │   └── ComputedSkuInput.tsx    # Auto-generated SKU computation
 │   ├── types/             # Type definitions
 │   │   ├── components.types.ts # Component-related types
 │   │   ├── tailwind.types.ts   # Tailwind-related types
