@@ -360,21 +360,6 @@ export const orderType = defineType({
       description: 'Track all status changes',
     }),
 
-    // Timestamps
-    defineField({
-      name: 'createdAt',
-      title: 'Order Date',
-      type: 'datetime',
-      validation: (rule) => rule.required(),
-      initialValue: () => new Date().toISOString(),
-    }),
-    defineField({
-      name: 'updatedAt',
-      title: 'Last Updated',
-      type: 'datetime',
-      validation: (rule) => rule.required(),
-      initialValue: () => new Date().toISOString(),
-    }),
   ],
 
   preview: {
@@ -382,7 +367,7 @@ export const orderType = defineType({
       orderNumber: 'orderNumber',
       status: 'status',
       grandTotal: 'grandTotal',
-      createdAt: 'createdAt',
+      createdAt: '_createdAt',
       customerName: 'shippingAddress.firstName',
       guestEmail: 'guestEmail',
     },
