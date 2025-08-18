@@ -222,19 +222,6 @@ export const productType = defineType({
       initialValue: true,
       description: "Uncheck to hide product from storefront",
     }),
-    // TODO: Uncomment when promotionType schema is created
-    // defineField({
-    //   name: 'promotions',
-    //   title: 'Active Promotions',
-    //   type: 'array',
-    //   of: [
-    //     {
-    //       type: 'reference',
-    //       to: [{type: 'promotion'}]
-    //     }
-    //   ],
-    //   description: 'Assign multiple promotions to this product for dynamic pricing'
-    // }),
     defineField({
       name: "isFeatured",
       title: "Featured Product",

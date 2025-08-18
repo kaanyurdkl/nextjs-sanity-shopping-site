@@ -1,25 +1,27 @@
 import { defineField, defineType } from "sanity";
 
 /**
- * Promo Code Schema
+ * Promo code schema for customer-entered discount codes
  *
  * Customer-entered discount codes for order-level discounts.
  * Supports fixed amount and percentage discounts with optional constraints.
  *
- * Schema Fields:
+ * Fields:
  * - name: Internal admin name for the promo code
  * - description: Internal admin description/notes
- * - code: Customer-facing code (e.g., SAVE20, WELCOME10)
+ * - code: Customer-facing code (e.g., SAVE20, WELCOME10) with duplicate prevention
  * - discountType: Fixed amount or percentage discount
  * - discountValue: Dollar amount or percentage value
+ * - hasMaximumDiscount: Toggle for maximum discount cap
+ * - maximumDiscount: Maximum discount amount to protect profit margins
  * - hasMinimumPurchase: Toggle for minimum purchase requirement
  * - minimumPurchase: Required cart value (conditional)
  * - hasUsageLimit: Toggle for usage limit constraint
  * - usageLimit: Maximum number of uses (conditional)
- * - usageCount: Current usage tracking (auto-updated)
  * - isActive: Enable/disable the promo code
  * - startDate: When the code becomes active
  * - endDate: When the code expires
+ * - usageCount: Current usage tracking (auto-updated)
  */
 export const promoCodeType = defineType({
   name: "promoCode",

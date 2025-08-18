@@ -16,30 +16,34 @@ import { tieredConfig } from "./configs/tieredConfig";
 import { thresholdConfig } from "./configs/thresholdConfig";
 
 /**
- * Refactored Promotion schema with type-specific configurations
+ * Advanced promotion schema with 6 promotion types and sophisticated targeting
  *
- * SHARED FIELDS (always visible):
+ * CORE FIELDS (always visible):
  * - name: Internal promotion name
  * - description: Internal promotion description
- * - type: Promotion type selection
+ * - type: Promotion type selection (percentage, fixed_amount, bundle, bogo, tiered, threshold)
  *
- * TYPE-SPECIFIC CONFIGURATIONS (only one visible based on type):
+ * TYPE-SPECIFIC CONFIGURATIONS (conditional based on type):
  * - percentageConfig: For percentage discounts (25% off)
  * - fixedAmountConfig: For fixed amount discounts ($10 off)
  * - bundleConfig: For bundle pricing (2 for $50)
  * - bogoConfig: For buy-one-get-one deals (free or percentage discount)
- * - tieredConfig: For quantity-based discounts
- * - thresholdConfig: For spend-based discounts
+ * - tieredConfig: For quantity-based discounts (buy more, save more)
+ * - thresholdConfig: For spend-based discounts ($150+ for 15% off)
  *
- * SHARED SECTIONS (conditional visibility):
- * - Target Selection: gender, categories, products (automatic promotions only)
- * - Visual Display: tag styling (automatic promotions only)
- * - Priority: ranking for automatic promotions (automatic promotions only)
- * - Schedule & Status: dates and activation (always visible)
+ * TARGETING & DISPLAY:
+ * - applicableCategories: Target specific product categories (hierarchical support)
+ * - applicableProducts: Target specific products (optional, filters by selected categories)
+ * - showTag: Toggle to display promotion tags on products
+ * - tagLabel: Custom text for promotion tags (e.g., "2 FOR $95", "25% OFF")
+ * - tagBackgroundColor: Tailwind CSS background color for tags
+ * - tagTextColor: Tailwind CSS text color for tags
+ * - priority: Ranking for multiple promotions (1-100, higher wins)
  *
- * PROMOTION RULES:
- * - Multiple automatic promotions can target the same product
- * - Highest priority automatic promotion wins (1-100, higher = better)
+ * SCHEDULING:
+ * - isActive: Enable/disable promotion
+ * - startDate: When promotion becomes active
+ * - endDate: When promotion expires
  */
 export const promotionType = defineType({
   name: "promotion",

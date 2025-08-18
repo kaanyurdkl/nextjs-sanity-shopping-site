@@ -1,11 +1,88 @@
 import { defineField, defineType } from 'sanity'
 
+/**
+ * Order schema for comprehensive e-commerce order management
+ *
+ * Fields:
+ * - orderNumber: Professional CLO-2025-XXXXXX format order numbering
+ * - status: Current order status (confirmation, processing, shipped, delivered, etc.)
+ * - userId: Reference to registered user (for logged-in customers)
+ * - guestEmail: Email address for guest checkout orders
+ * - items: Array of ordered products with variants, quantities, and pricing
+ * - subtotal: Sum of all item prices before discounts
+ * - totalDiscount: Total savings from automatic promotions
+ * - promoCodeDiscount: Additional discount from promo codes
+ * - promoCode: Applied promo code string
+ * - shippingCost: Delivery fee (free if subtotal ≥ $150)
+ * - taxAmount: Provincial tax calculated
+ * - taxRate: Applied tax rate for calculation
+ * - grandTotal: Final amount charged to customer
+ * - shippingAddress: Delivery address using address schema
+ * - billingAddress: Billing details with same-as-shipping option
+ * - paymentMethod: Payment information and Stripe integration
+ * - shippingMethod: Standard or express delivery
+ * - trackingNumber: Carrier tracking reference
+ * - carrier: Shipping provider (Canada Post, UPS, etc.)
+ * - estimatedDelivery: Expected delivery date
+ * - orderNotes: Customer requests or admin notes
+ * - statusHistory: Complete audit trail of status changes
+ */
 export const orderType = defineType({
   name: 'order',
   title: 'Order',
   type: 'document',
+  fieldsets: [
+    {
+      name: 'identification',
+      title: 'Order Identification',
+      description: 'Order number and current status',
+      options: { collapsible: false }
+    },
+    {
+      name: 'customer',
+      title: 'Customer Information',
+      description: 'Who placed this order?',
+      options: { collapsible: false }
+    },
+    {
+      name: 'items',
+      title: 'Order Items',
+      description: 'Products and quantities ordered',
+      options: { collapsible: false }
+    },
+    {
+      name: 'pricing',
+      title: 'Pricing & Totals',
+      description: 'Financial breakdown of the order',
+      options: { collapsible: false }
+    },
+    {
+      name: 'addresses',
+      title: 'Shipping & Billing',
+      description: 'Delivery and billing addresses',
+      options: { collapsible: false }
+    },
+    {
+      name: 'payment',
+      title: 'Payment Details',
+      description: 'Payment method and transaction info',
+      options: { collapsible: false }
+    },
+    {
+      name: 'fulfillment',
+      title: 'Fulfillment & Shipping',
+      description: 'Shipping method and tracking information',
+      options: { collapsible: true, collapsed: false }
+    },
+    {
+      name: 'management',
+      title: 'Order Management',
+      description: 'Notes and status tracking',
+      options: { collapsible: true, collapsed: true }
+    }
+  ],
   fields: [
-    // Order Identification
+    // === ORDER IDENTIFICATION ===
     defineField({
       name: 'orderNumber',
       title: 'Order Number',
@@ -13,10 +90,11 @@ export const orderType = defineType({
       description: 'CLO-2025-XXXXXX format',
       validation: (rule) => rule.required(),
       readOnly: true,
+      fieldset: 'identification',
     }),
     defineField({
       name: 'status',
-      title: 'Order Status',
+      title: 'Current Status',
       type: 'string',
       options: {
         list: [
@@ -33,21 +111,23 @@ export const orderType = defineType({
       },
       initialValue: 'confirmation',
       validation: (rule) => rule.required(),
+      fieldset: 'identification',
     }),
 
-    // Customer Information
+    // === CUSTOMER INFORMATION ===
     defineField({
       name: 'userId',
-      title: 'User Account',
+      title: 'Registered User',
       type: 'reference',
       to: [{ type: 'user' }],
-      description: 'For logged-in users (optional for guest checkout)',
+      description: 'For logged-in users (leave empty for guest checkout)',
+      fieldset: 'customer',
     }),
     defineField({
       name: 'guestEmail',
       title: 'Guest Email',
       type: 'string',
-      description: 'For guest checkout orders',
+      description: 'Required for guest checkout orders',
       validation: (rule) => 
         rule.custom((guestEmail, context) => {
           const userId = (context.document as { userId?: string })?.userId
@@ -59,13 +139,15 @@ export const orderType = defineType({
           }
           return true
         }),
+      fieldset: 'customer',
     }),
 
-    // Order Items
+    // === ORDER ITEMS ===
     defineField({
       name: 'items',
-      title: 'Order Items',
+      title: 'Products Ordered',
       type: 'array',
+      fieldset: 'items',
       of: [
         {
           type: 'object',
@@ -152,42 +234,47 @@ export const orderType = defineType({
       validation: (rule) => rule.required().min(1),
     }),
 
-    // Financial Details
+    // === PRICING & TOTALS ===
     defineField({
       name: 'subtotal',
       title: 'Subtotal',
       type: 'number',
       description: 'Sum of all item prices before discounts',
       validation: (rule) => rule.required().min(0),
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'totalDiscount',
-      title: 'Total Discount',
+      title: 'Promotion Discount',
       type: 'number',
       description: 'Total amount saved from promotions',
       validation: (rule) => rule.min(0),
       initialValue: 0,
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'promoCodeDiscount',
       title: 'Promo Code Discount',
       type: 'number',
-      description: 'Discount from promo code',
+      description: 'Additional discount from promo code',
       validation: (rule) => rule.min(0),
       initialValue: 0,
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'promoCode',
-      title: 'Promo Code Used',
+      title: 'Applied Promo Code',
       type: 'string',
-      description: 'Promo code applied to order',
+      description: 'Promo code used for additional discount',
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'shippingCost',
-      title: 'Shipping Cost',
+      title: 'Shipping Fee',
       type: 'number',
-      description: 'Shipping fee (free if subtotal ≥ $150)',
+      description: 'Delivery cost (free if subtotal ≥ $150)',
       validation: (rule) => rule.required().min(0),
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'taxAmount',
@@ -195,47 +282,51 @@ export const orderType = defineType({
       type: 'number',
       description: 'Provincial tax calculated',
       validation: (rule) => rule.required().min(0),
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'taxRate',
-      title: 'Tax Rate',
+      title: 'Applied Tax Rate',
       type: 'number',
-      description: 'Applied tax rate (for record keeping)',
+      description: 'Tax rate used for calculation (decimal)',
       validation: (rule) => rule.min(0).max(1),
+      fieldset: 'pricing',
     }),
     defineField({
       name: 'grandTotal',
-      title: 'Grand Total',
+      title: 'Final Total',
       type: 'number',
-      description: 'Final amount charged',
+      description: 'Total amount charged to customer',
       validation: (rule) => rule.required().min(0),
+      fieldset: 'pricing',
     }),
 
-    // Shipping Information
+    // === SHIPPING & BILLING ===
     defineField({
       name: 'shippingAddress',
-      title: 'Shipping Address',
+      title: 'Delivery Address',
       type: 'address',
-      description: 'Delivery address for this order',
+      description: 'Where to ship this order',
       validation: (rule) => rule.required(),
+      fieldset: 'addresses',
     }),
     defineField({
       name: 'billingAddress',
-      title: 'Billing Address',
+      title: 'Billing Details',
       type: 'object',
       fields: [
         defineField({
           name: 'sameAsShipping',
-          title: 'Same as Shipping',
+          title: 'Same as Delivery Address',
           type: 'boolean',
           initialValue: true,
-          description: 'Use shipping address for billing',
+          description: 'Use delivery address for billing',
         }),
         defineField({
           name: 'address',
-          title: 'Billing Address Details',
+          title: 'Different Billing Address',
           type: 'address',
-          description: 'Billing address (only used if different from shipping)',
+          description: 'Enter billing address if different from delivery',
           hidden: ({ parent }) => parent?.sameAsShipping !== false,
           validation: (rule) => 
             rule.custom((address, context) => {
@@ -247,12 +338,13 @@ export const orderType = defineType({
             }),
         }),
       ],
+      fieldset: 'addresses',
     }),
 
-    // Payment Information
+    // === PAYMENT DETAILS ===
     defineField({
       name: 'paymentMethod',
-      title: 'Payment Method',
+      title: 'Payment Information',
       type: 'object',
       fields: [
         defineField({
@@ -271,28 +363,29 @@ export const orderType = defineType({
           name: 'stripePaymentIntentId',
           title: 'Stripe Payment Intent ID',
           type: 'string',
-          description: 'Stripe payment reference',
+          description: 'Stripe transaction reference',
         }),
         defineField({
           name: 'lastFourDigits',
-          title: 'Last Four Digits',
+          title: 'Card Last Four Digits',
           type: 'string',
-          description: 'Last 4 digits of payment method (for display)',
+          description: 'Last 4 digits for customer reference',
         }),
         defineField({
           name: 'brand',
           title: 'Card Brand',
           type: 'string',
-          description: 'Visa, Mastercard, etc.',
+          description: 'Visa, Mastercard, Amex, etc.',
         }),
       ],
       validation: (rule) => rule.required(),
+      fieldset: 'payment',
     }),
 
-    // Shipping Tracking
+    // === FULFILLMENT & SHIPPING ===
     defineField({
       name: 'shippingMethod',
-      title: 'Shipping Method',
+      title: 'Delivery Speed',
       type: 'string',
       options: {
         list: [
@@ -301,36 +394,41 @@ export const orderType = defineType({
         ],
       },
       validation: (rule) => rule.required(),
+      fieldset: 'fulfillment',
     }),
     defineField({
       name: 'trackingNumber',
       title: 'Tracking Number',
       type: 'string',
-      description: 'Carrier tracking number',
+      description: 'Carrier-provided tracking reference',
+      fieldset: 'fulfillment',
     }),
     defineField({
       name: 'carrier',
       title: 'Shipping Carrier',
       type: 'string',
       description: 'Canada Post, UPS, FedEx, etc.',
+      fieldset: 'fulfillment',
     }),
     defineField({
       name: 'estimatedDelivery',
-      title: 'Estimated Delivery Date',
+      title: 'Expected Delivery',
       type: 'date',
-      description: 'Expected delivery date',
+      description: 'Estimated delivery date',
+      fieldset: 'fulfillment',
     }),
 
-    // Order Notes and Communication
+    // === ORDER MANAGEMENT ===
     defineField({
       name: 'orderNotes',
-      title: 'Order Notes',
+      title: 'Internal Notes',
       type: 'text',
-      description: 'Customer or admin notes',
+      description: 'Customer requests or admin notes',
+      fieldset: 'management',
     }),
     defineField({
       name: 'statusHistory',
-      title: 'Status History',
+      title: 'Status Change Log',
       type: 'array',
       of: [
         {
@@ -344,20 +442,21 @@ export const orderType = defineType({
             }),
             defineField({
               name: 'timestamp',
-              title: 'Timestamp',
+              title: 'Changed At',
               type: 'datetime',
               validation: (rule) => rule.required(),
             }),
             defineField({
               name: 'note',
-              title: 'Note',
+              title: 'Change Note',
               type: 'string',
-              description: 'Optional status change note',
+              description: 'Reason for status change',
             }),
           ],
         },
       ],
-      description: 'Track all status changes',
+      description: 'Complete audit trail of order status changes',
+      fieldset: 'management',
     }),
 
   ],

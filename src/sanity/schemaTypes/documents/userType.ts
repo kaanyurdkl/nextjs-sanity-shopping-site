@@ -1,5 +1,18 @@
 import { defineField, defineType } from 'sanity'
 
+/**
+ * User schema for customer account management
+ *
+ * Fields:
+ * - email: Primary email from Google OAuth (read-only)
+ * - firstName: User's first name (editable in account settings)
+ * - lastName: User's last name (editable in account settings)
+ * - phoneNumber: Optional Canadian phone number for order notifications
+ * - addresses: Array of saved shipping/billing addresses with custom nicknames
+ * - isActive: Account status toggle (enable/disable access)
+ * - orderEmails: User preference for receiving order notifications
+ * - googleId: Unique Google OAuth identifier for authentication
+ */
 export const userType = defineType({
   name: 'user',
   title: 'User',
