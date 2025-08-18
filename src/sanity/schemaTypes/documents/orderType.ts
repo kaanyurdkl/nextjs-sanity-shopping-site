@@ -215,56 +215,8 @@ export const orderType = defineType({
     defineField({
       name: 'shippingAddress',
       title: 'Shipping Address',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'firstName',
-          title: 'First Name',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'lastName',
-          title: 'Last Name',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'streetAddress',
-          title: 'Street Address',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'aptUnit',
-          title: 'Apartment/Unit',
-          type: 'string',
-        }),
-        defineField({
-          name: 'city',
-          title: 'City',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'province',
-          title: 'Province',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'postalCode',
-          title: 'Postal Code',
-          type: 'string',
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: 'country',
-          title: 'Country',
-          type: 'string',
-          initialValue: 'Canada',
-        }),
-      ],
+      type: 'address',
+      description: 'Delivery address for this order',
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -277,47 +229,22 @@ export const orderType = defineType({
           title: 'Same as Shipping',
           type: 'boolean',
           initialValue: true,
+          description: 'Use shipping address for billing',
         }),
         defineField({
-          name: 'firstName',
-          title: 'First Name',
-          type: 'string',
-        }),
-        defineField({
-          name: 'lastName',
-          title: 'Last Name',
-          type: 'string',
-        }),
-        defineField({
-          name: 'streetAddress',
-          title: 'Street Address',
-          type: 'string',
-        }),
-        defineField({
-          name: 'aptUnit',
-          title: 'Apartment/Unit',
-          type: 'string',
-        }),
-        defineField({
-          name: 'city',
-          title: 'City',
-          type: 'string',
-        }),
-        defineField({
-          name: 'province',
-          title: 'Province',
-          type: 'string',
-        }),
-        defineField({
-          name: 'postalCode',
-          title: 'Postal Code',
-          type: 'string',
-        }),
-        defineField({
-          name: 'country',
-          title: 'Country',
-          type: 'string',
-          initialValue: 'Canada',
+          name: 'address',
+          title: 'Billing Address Details',
+          type: 'address',
+          description: 'Billing address (only used if different from shipping)',
+          hidden: ({ parent }) => parent?.sameAsShipping !== false,
+          validation: (rule) => 
+            rule.custom((address, context) => {
+              const sameAsShipping = (context.parent as { sameAsShipping?: boolean })?.sameAsShipping
+              if (sameAsShipping === false && !address) {
+                return 'Billing address is required when different from shipping'
+              }
+              return true
+            }),
         }),
       ],
     }),
