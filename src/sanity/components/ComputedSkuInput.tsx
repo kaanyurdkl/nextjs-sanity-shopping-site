@@ -60,7 +60,7 @@ export function ComputedSkuInput(props: StringInputProps) {
         `{
           "colorCode": *[_type == "color" && _id == $colorRef][0].code,
           "sizeCode": *[_type == "size" && _id == $sizeGroupRef][0].sizes[name == $sizeName][0].code,
-          "existingSkus": *[_type == "product"].variants[defined(sku) && string::startsWith(sku, $productPrefix)].sku
+          "existingSkus": array::compact(*[_type == "product"].variants[].sku[string::startsWith(@, $productPrefix)])
         }`,
         {
           colorRef: variantColor._ref,
@@ -76,6 +76,7 @@ export function ComputedSkuInput(props: StringInputProps) {
 
       // Create the exact SKU prefix and filter existing SKUs
       const skuPrefix = `${productCode}-${colorCode}-${sizeCode}-`;
+
       const matchingSkus = data.existingSkus.filter((sku: string) =>
         sku.startsWith(skuPrefix)
       );
