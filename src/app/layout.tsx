@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${arimo.className}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased text-black bg-white">{children}</body>
     </html>
   );
 }
