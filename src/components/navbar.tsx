@@ -3,42 +3,64 @@ import { Search, User, ShoppingCart } from 'lucide-react';
 
 export default function Navbar() {
   return (
-    <nav className="bg-white border-b border-gray-100 px-6 py-4">
-      <div className="flex items-center justify-between max-w-7xl mx-auto">
+    <header>
+      <nav className="bg-white border-b border-gray-100 px-6 py-4" aria-label="Main navigation">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="text-xl font-medium text-black">
+        <Link href="/" className="text-xl font-medium text-black" aria-label="Home - Logo">
           Logo
         </Link>
 
         {/* Navigation Links */}
-        <div className="flex items-center space-x-8">
-          <Link href="/womens" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
-            WOMEN
-          </Link>
-          <Link href="/mens" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
-            MEN
-          </Link>
-          <Link href="/new-arrivals" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
-            NEW ARRIVALS
-          </Link>
-          <Link href="/deals" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
-            DEALS
-          </Link>
-        </div>
+        <ul className="flex items-center space-x-8">
+          <li>
+            <Link href="/womens" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
+              WOMEN
+            </Link>
+          </li>
+          <li>
+            <Link href="/mens" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
+              MEN
+            </Link>
+          </li>
+          <li>
+            <Link href="/new-arrivals" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
+              NEW ARRIVALS
+            </Link>
+          </li>
+          <li>
+            <Link href="/deals" className="text-sm font-medium text-black hover:text-gray-600 transition-colors">
+              DEALS
+            </Link>
+          </li>
+        </ul>
 
         {/* Right Icons */}
-        <div className="flex items-center space-x-4">
-          <button className="p-2 hover:bg-gray-50 rounded-md transition-colors">
-            <Search size={20} className="text-black" />
+        <div className="flex items-center space-x-4" aria-label="User actions">
+          <button 
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            aria-label="Search products"
+            type="button"
+          >
+            <Search size={20} className="text-black" aria-hidden="true" />
           </button>
-          <button className="p-2 hover:bg-gray-50 rounded-md transition-colors">
-            <User size={20} className="text-black" />
+          <button 
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            aria-label="User account"
+            type="button"
+          >
+            <User size={20} className="text-black" aria-hidden="true" />
           </button>
-          <button className="p-2 hover:bg-gray-50 rounded-md transition-colors">
-            <ShoppingCart size={20} className="text-black" />
+          <button 
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            aria-label="Shopping cart"
+            type="button"
+          >
+            <ShoppingCart size={20} className="text-black" aria-hidden="true" />
           </button>
         </div>
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </header>
   );
 }
