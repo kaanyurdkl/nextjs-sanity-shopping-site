@@ -66,24 +66,24 @@ export default function Navbar() {
             >
               <Search size={20} className="text-black" aria-hidden="true" />
             </button>
-            <button
+            <Link
+              href="/account"
               className="p-2 hover:bg-gray-50 rounded-md transition-colors"
               aria-label="User account"
-              type="button"
             >
               <User size={20} className="text-black" aria-hidden="true" />
-            </button>
-            <button
+            </Link>
+            <Link
+              href="/cart"
               className="p-2 hover:bg-gray-50 rounded-md transition-colors"
               aria-label="Shopping cart"
-              type="button"
             >
               <ShoppingCart
                 size={20}
                 className="text-black"
                 aria-hidden="true"
               />
-            </button>
+            </Link>
           </div>
         </div>
       </nav>
