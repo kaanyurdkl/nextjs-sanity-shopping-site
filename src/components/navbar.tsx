@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { Search, User, ShoppingCart } from "lucide-react";
+import { Search, User, ShoppingCart, LogOut } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
+  const { data: session, status } = useSession();
   return (
     <header>
       <nav
@@ -66,13 +70,37 @@ export default function Navbar() {
             >
               <Search size={20} className="text-black" aria-hidden="true" />
             </button>
-            <Link
-              href="/account"
-              className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-              aria-label="User account"
-            >
-              <User size={20} className="text-black" aria-hidden="true" />
-            </Link>
+            {status === "loading" ? (
+              <div className="p-2">
+                <User size={20} className="text-gray-400" aria-hidden="true" />
+              </div>
+            ) : session ? (
+              <>
+                <Link
+                  href="/account"
+                  className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+                  aria-label="User account"
+                >
+                  <User size={20} className="text-black" aria-hidden="true" />
+                </Link>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+                  aria-label="Sign out"
+                  type="button"
+                >
+                  <LogOut size={20} className="text-black" aria-hidden="true" />
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/api/auth/signin"
+                className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+                aria-label="Sign in"
+              >
+                <User size={20} className="text-black" aria-hidden="true" />
+              </Link>
+            )}
             <Link
               href="/cart"
               className="p-2 hover:bg-gray-50 rounded-md transition-colors"
