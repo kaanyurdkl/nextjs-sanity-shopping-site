@@ -1,11 +1,9 @@
-"use client";
-
 import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
+import { auth, signOut } from "@/lib/auth";
 
-export default function Navbar() {
-  const { data: session, status } = useSession();
+export default async function Navbar() {
+  const session = await auth();
   return (
     <header>
       <nav
@@ -70,11 +68,7 @@ export default function Navbar() {
             >
               <Search size={20} className="text-black" aria-hidden="true" />
             </button>
-            {status === "loading" ? (
-              <div className="p-2">
-                <User size={20} className="text-gray-400" aria-hidden="true" />
-              </div>
-            ) : session ? (
+            {session ? (
               <>
                 <Link
                   href="/account"
@@ -83,18 +77,28 @@ export default function Navbar() {
                 >
                   <User size={20} className="text-black" aria-hidden="true" />
                 </Link>
-                <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-                  aria-label="Sign out"
-                  type="button"
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut({ redirectTo: "/" });
+                  }}
                 >
-                  <LogOut size={20} className="text-black" aria-hidden="true" />
-                </button>
+                  <button
+                    className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+                    aria-label="Sign out"
+                    type="submit"
+                  >
+                    <LogOut
+                      size={20}
+                      className="text-black"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </form>
               </>
             ) : (
               <Link
-                href="/api/auth/signin"
+                href="/account"
                 className="p-2 hover:bg-gray-50 rounded-md transition-colors"
                 aria-label="Sign in"
               >
