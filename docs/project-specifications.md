@@ -73,7 +73,7 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 
 #### Services & Integrations
 - **CMS**: Sanity v3.99.0 for content management
-- **Authentication**: NextAuth.js v4.24.11 (Google OAuth only)
+- **Authentication**: Auth.js v5.0.0-beta (Google OAuth only)
 - **Payments**: Stripe API (latest 2025 version)
 - **Email**: Resend for transactional communications
 - **Hosting**: Vercel (free tier deployment)
@@ -372,7 +372,7 @@ User Request → Next.js App Router → Server Components → API Routes
                     ↓
 Sanity CMS ← Content Management ← Admin Dashboard (Sanity Studio)
                     ↓
-Authentication ← NextAuth.js ← Google OAuth Provider
+Authentication ← Auth.js v5 ← Google OAuth Provider ← Custom Sign-In Page
                     ↓
 Payment Processing ← Stripe API ← Secure Payment Forms
                     ↓
@@ -530,11 +530,40 @@ Email Notifications ← Resend API ← Order/Shipping Updates
 
 ## 6. Integration Requirements
 
-### Authentication (NextAuth.js)
-- **Google OAuth Only**: Simplified authentication strategy
-- **Automatic Account Creation**: New users during OAuth flow
-- **Guest Checkout Support**: No authentication required
-- **Session Management**: Secure token handling
+### Authentication (Auth.js v5)
+- **Google OAuth Only**: Simplified authentication strategy with offline access tokens
+- **Custom Sign-In Page**: Professional UI matching brand design at `/signin`
+- **Route Protection**: Middleware-based authentication protecting `/account` pages
+- **Automatic Account Creation**: New users created during OAuth flow
+- **Guest Checkout Support**: No authentication required for shopping/checkout
+- **Session Management**: JWT-based secure token handling with automatic refresh
+- **Clean Architecture**: Separate auth configuration and provider setup
+
+#### Authentication Implementation Details
+
+**File Organization:**
+```
+src/lib/auth/
+├── config.ts      # Auth.js configuration (pages, callbacks)
+└── index.ts       # Main auth setup with Google provider
+
+src/app/signin/
+└── page.tsx       # Custom sign-in page (no navbar)
+
+src/components/
+├── navbar.tsx     # Authentication-aware navigation
+└── icons/
+    └── google-icon.tsx # Reusable Google OAuth icon
+```
+
+**Key Features Implemented:**
+- **Custom Sign-In Page**: Clean, branded UI at `/signin` with Google OAuth button
+- **Route Groups**: `(main)` layout includes navbar, auth pages excluded
+- **Middleware Protection**: `/account` routes require authentication
+- **Server Components**: Navbar and layout use server-side session checking
+- **Google OAuth Configuration**: Includes `prompt: "consent"` and `access_type: "offline"`
+- **Automatic Redirects**: Users redirected back to intended page after sign-in
+- **Icon Components**: Reusable Google icon with proper branding colors
 
 ### Payment Processing (Stripe)
 - **Secure Integration**: Latest Stripe API version

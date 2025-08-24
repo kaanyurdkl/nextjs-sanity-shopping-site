@@ -98,9 +98,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 src/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx         # Root layout with fonts
-│   ├── page.tsx           # Homepage (placeholder)
 │   ├── globals.css        # Global styles
-│   └── studio/            # Sanity Studio integration
+│   ├── (main)/            # Route group with navbar
+│   │   ├── layout.tsx     # Main layout with navbar and auth provider
+│   │   ├── page.tsx       # Homepage
+│   │   └── account/       # Protected account pages
+│   │       └── page.tsx   # Account dashboard
+│   ├── signin/            # Authentication pages (no navbar)
+│   │   └── page.tsx       # Custom sign-in page with Google OAuth
+│   ├── studio/            # Sanity Studio integration
+│   │   └── [[...tool]]/   # Sanity Studio catch-all route
+│   │       └── page.tsx   # Studio page
+│   └── api/               # API routes
+│       └── auth/          # Auth.js API routes
+│           └── [...nextauth]/
+│               └── route.ts # Auth.js handlers
+├── components/            # Reusable UI components
+│   ├── navbar.tsx         # Navigation with auth states
+│   ├── auth-provider.tsx  # SessionProvider wrapper
+│   └── icons/             # Icon components
+│       ├── google-icon.tsx # Google OAuth icon
+│       └── index.ts       # Icon exports
+├── lib/                   # Utilities and configurations
+│   └── auth/              # Authentication setup
+│       ├── config.ts      # Auth.js configuration
+│       └── index.ts       # Main auth setup with Google provider
+├── middleware.ts          # Route protection middleware
 ├── sanity/                # Sanity CMS configuration
 │   ├── schemaTypes/       # Content schemas (11 total)
 │   │   ├── documents/     # Document types (top-level content)
