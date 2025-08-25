@@ -11,7 +11,7 @@
  * More info: https://github.com/sanity-io/next-sanity#live-content-api
  */
 import { defineLive } from "next-sanity";
-import { client } from './client'
+import { readClient } from './client'
 
 /**
  * Live content exports:
@@ -19,7 +19,7 @@ import { client } from './client'
  * - SanityLive: React component to render in your layout for live functionality
  */
 export const { sanityFetch, SanityLive } = defineLive({ 
-  client: client.withConfig({ 
+  client: readClient.withConfig({ 
     // Live content is currently only available on the experimental API
     // https://www.sanity.io/docs/api-versioning
     apiVersion: 'vX' 

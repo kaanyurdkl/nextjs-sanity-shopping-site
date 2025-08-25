@@ -45,7 +45,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Code Style & Conventions
 
 - Use ES modules (import/export) syntax, not CommonJS
-- Destructure imports when possible: `import { client } from '../lib'`
+- Destructure imports when possible: `import { readClient, writeClient } from '../lib'`
 - Follow single responsibility principle
 - TypeScript strict mode - all types required
 - Path aliases: `@/*` maps to `./src/*`
