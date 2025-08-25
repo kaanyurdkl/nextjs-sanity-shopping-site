@@ -3,7 +3,7 @@ import { readClient } from "@/sanity/lib/client";
 
 export default async function AccountPage() {
   const session = await auth();
-  
+
   if (!session?.user?.email) {
     return <div>Please sign in to access your account</div>;
   }
@@ -18,7 +18,7 @@ export default async function AccountPage() {
     { email: session.user.email }
   );
 
-  const displayName = user 
+  const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim() || user.email
     : session.user.name || session.user.email;
 

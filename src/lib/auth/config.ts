@@ -1,8 +1,25 @@
 import type { NextAuthConfig } from "next-auth";
+import Google from "next-auth/providers/google";
+import { syncUserToSanity } from "./user-sync";
 
 export const authConfig = {
   pages: {
     signIn: "/signin",
+  },
+  providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+        },
+      },
+    }),
+  ],
+  session: {
+    strategy: "jwt",
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -18,6 +35,15 @@ export const authConfig = {
       }
       return true;
     },
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
+        try {
+          await syncUserToSanity(profile);
+        } catch (error) {
+          console.error("Error syncing user to Sanity:", error);
+        }
+      }
+      return token;
+    },
   },
-  providers: [],
 } satisfies NextAuthConfig;
