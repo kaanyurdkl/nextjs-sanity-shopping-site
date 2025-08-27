@@ -1,122 +1,120 @@
 import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
+import { readClient } from "@/sanity/lib/client";
+import { MegaMenu } from "./MegaMenu";
 
 export default async function Navbar() {
   const session = await auth();
+
+  const categories = await readClient.fetch(`
+    *[_type == "category" && !defined(parent) && isActive == true] | order(_createdAt) {
+      _id,
+      title,
+      "slug": slug.current,
+      pageType,
+      "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {
+        _id,
+        title,
+        "slug": slug.current,
+        pageType,
+        "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {
+          _id,
+          title,
+          "slug": slug.current,
+          pageType
+        }
+      }
+    }
+  `);
+
+  console.log("categories: ", categories);
   return (
-    <header>
+    <header className="relative h-16 bg-white border-b border-gray-100 flex items-center">
       <nav
-        className="bg-white border-b border-gray-100 px-6 py-4"
+        className="px-6 grow flex items-center justify-between self-stretch"
         aria-label="Main navigation"
       >
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-xl font-medium text-black"
-            aria-label="Home - Logo"
-          >
-            Logo
-          </Link>
+        {/* Logo */}
+        <Link
+          href="/"
+          className="text-xl font-medium text-black"
+          aria-label="Home - Logo"
+        >
+          Logo
+        </Link>
 
-          {/* Navigation Links */}
-          <ul className="flex items-center text-sm font-medium space-x-8">
-            <li>
+        <div className="flex self-stretch space-x-8">
+          <ul className="flex items-center h-full text-sm font-medium">
+            {/* Navigation Links - Dynamic Categories with Mega Menu */}
+            <MegaMenu categories={categories} />
+
+            {/* Static Navigation Items */}
+            <li className="hover:[&>a]:underline h-full flex items-center">
               <Link
-                href="/womens"
-                className="hover:text-red-600 transition-colors"
-              >
-                WOMEN
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mens"
-                className="hover:text-gray-600 transition-colors"
-              >
-                MEN
-              </Link>
-            </li>
-            <li>
-              <Link
+                className="px-4 transition-colors uppercase"
                 href="/new-arrivals"
-                className="hover:text-gray-600 transition-colors"
               >
                 NEW ARRIVALS
               </Link>
             </li>
-            <li>
-              <Link
-                href="/deals"
-                className="hover:text-gray-600 transition-colors"
-              >
+            <li className="hover:[&>a]:underline h-full flex items-center">
+              <Link className="px-4 transition-colors uppercase" href="/deals">
                 DEALS
               </Link>
             </li>
           </ul>
+        </div>
 
-          {/* Right Icons */}
-          <div
-            className="flex items-center space-x-4"
-            aria-label="User actions"
+        {/* Right Icons */}
+        <div className="flex items-center space-x-4" aria-label="User actions">
+          <button
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            aria-label="Search products"
+            type="button"
           >
-            <button
-              className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-              aria-label="Search products"
-              type="button"
-            >
-              <Search size={20} className="text-black" aria-hidden="true" />
-            </button>
-            {session ? (
-              <>
-                <Link
-                  href="/account"
-                  className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-                  aria-label="User account"
-                >
-                  <User size={20} className="text-black" aria-hidden="true" />
-                </Link>
-                <form
-                  action={async () => {
-                    "use server";
-                    await signOut({ redirectTo: "/" });
-                  }}
-                >
-                  <button
-                    className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-                    aria-label="Sign out"
-                    type="submit"
-                  >
-                    <LogOut
-                      size={20}
-                      className="text-black"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </form>
-              </>
-            ) : (
+            <Search size={20} className="text-black" aria-hidden="true" />
+          </button>
+          {session ? (
+            <>
               <Link
                 href="/account"
                 className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-                aria-label="Sign in"
+                aria-label="User account"
               >
                 <User size={20} className="text-black" aria-hidden="true" />
               </Link>
-            )}
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
+                <button
+                  className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+                  aria-label="Sign out"
+                  type="submit"
+                >
+                  <LogOut size={20} className="text-black" aria-hidden="true" />
+                </button>
+              </form>
+            </>
+          ) : (
             <Link
-              href="/cart"
+              href="/account"
               className="p-2 hover:bg-gray-50 rounded-md transition-colors"
-              aria-label="Shopping cart"
+              aria-label="Sign in"
             >
-              <ShoppingCart
-                size={20}
-                className="text-black"
-                aria-hidden="true"
-              />
+              <User size={20} className="text-black" aria-hidden="true" />
             </Link>
-          </div>
+          )}
+          <Link
+            href="/cart"
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            aria-label="Shopping cart"
+          >
+            <ShoppingCart size={20} className="text-black" aria-hidden="true" />
+          </Link>
         </div>
       </nav>
     </header>
