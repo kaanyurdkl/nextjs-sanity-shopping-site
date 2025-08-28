@@ -29,8 +29,8 @@ export default async function CategoryPage({ params }: PageProps) {
 
   // Render appropriate page component based on pageType
   if (category.pageType === "landing") {
-    return <CategoryLandingPage category={category} />;
+    return <CategoryLandingPage category={category} slugArray={slug} />;
   }
 
-  return <CategoryListingPage category={category} />;
+  return <CategoryListingPage category={category} slugArray={slug} />;
 }

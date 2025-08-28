@@ -1,12 +1,17 @@
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface CategoryLandingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
+  slugArray: string[];
 }
 
-export default function CategoryLandingPage({ category }: CategoryLandingPageProps) {
+export default function CategoryLandingPage({ category, slugArray }: CategoryLandingPageProps) {
   return (
     <div className="container mx-auto px-6 py-8">
+      {/* Breadcrumbs */}
+      <Breadcrumbs slugArray={slugArray} />
+      
       {/* Hero Section */}
       <div className="mb-12">
         <h1 className="text-4xl font-bold text-black mb-4">{category.title}</h1>
