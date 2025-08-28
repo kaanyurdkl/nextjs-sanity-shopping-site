@@ -6,18 +6,19 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
-interface Category {
+// Simplified type for GROQ query result
+type CategoryQueryResult = {
   _id: string;
   title: string;
   slug: string;
   pageType: "landing" | "listing";
-}
+};
 
 // Fetch category by full slug path
-async function getCategoryBySlugPath(slugPath: string[]) {
+async function getCategoryBySlugPath(slugPath: string[]): Promise<CategoryQueryResult | null> {
   const fullSlug = slugPath.join("/");
   
-  const category = await readClient.fetch(`
+  const category = await readClient.fetch<CategoryQueryResult | null>(`
     *[_type == "category" && slug.current == $slug && isActive == true][0] {
       _id,
       title,

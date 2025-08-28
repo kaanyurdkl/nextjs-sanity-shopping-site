@@ -13,6 +13,29 @@
  */
 
 // Source: schema.json
+export type PromoCode = {
+  _id: string;
+  _type: "promoCode";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  description?: string;
+  code?: string;
+  discountType?: "fixed_amount" | "percentage";
+  discountValue?: number;
+  hasMaximumDiscount?: boolean;
+  maximumDiscount?: number;
+  hasMinimumPurchase?: boolean;
+  minimumPurchase?: number;
+  hasUsageLimit?: boolean;
+  usageLimit?: number;
+  isActive?: boolean;
+  startDate?: string;
+  endDate?: string;
+  usageCount?: number;
+};
+
 export type Promotion = {
   _id: string;
   _type: "promotion";
@@ -21,12 +44,45 @@ export type Promotion = {
   _rev: string;
   name?: string;
   description?: string;
-  type?: "percentage" | "bundle" | "bogo" | "tiered" | "threshold" | "fixed_amount";
-  tagLabel?: string;
-  tagBackgroundColor?: string;
-  tagTextColor?: string;
-  showTag?: boolean;
-  gender?: "mens" | "womens" | "both";
+  type?: "percentage" | "fixed_amount" | "bundle" | "bogo" | "tiered" | "threshold";
+  percentageConfig?: {
+    discountPercentage?: number;
+    minimumQuantity?: number;
+    maximumDiscount?: number;
+  };
+  fixedAmountConfig?: {
+    discountAmount?: number;
+    minimumPurchase?: number;
+  };
+  bundleConfig?: {
+    quantity?: number;
+    bundlePrice?: number;
+  };
+  bogoConfig?: {
+    buyQuantity?: number;
+    getQuantity?: number;
+    discountType?: "free" | "percentage";
+    discountPercentage?: number;
+  };
+  tieredConfig?: {
+    tiers?: Array<{
+      minimumQuantity?: number;
+      discountPercentage?: number;
+      _key: string;
+    }>;
+  };
+  thresholdConfig?: {
+    minimumSpend?: number;
+    discountType?: "percentage" | "fixed_amount";
+    discountValue?: number;
+  };
+  applicableCategories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "category";
+  }>;
   applicableProducts?: Array<{
     _ref: string;
     _type: "reference";
@@ -34,40 +90,14 @@ export type Promotion = {
     _key: string;
     [internalGroqTypeReferenceTo]?: "product";
   }>;
-  applicableCategories?: Array<"shirts" | "pants" | "outerwear">;
-  discountValue?: number;
-  minimumQuantity?: number;
-  maximumDiscount?: number;
-  freeShipping?: boolean;
-  bundleConfiguration?: {
-    buyQuantity?: number;
-    getQuantity?: number;
-    bundlePrice?: number;
-  };
-  tieredDiscounts?: Array<{
-    minimumQuantity?: number;
-    discountPercentage?: number;
-    _key: string;
-  }>;
-  spendThreshold?: number;
+  showTag?: boolean;
+  tagLabel?: string;
+  tagBackgroundColor?: string;
+  tagTextColor?: string;
   priority?: number;
-  stackable?: boolean;
-  exclusiveWith?: Array<{
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    _key: string;
-    [internalGroqTypeReferenceTo]?: "promotion";
-  }>;
-  requiresPromoCode?: boolean;
-  promoCode?: string;
-  codeUsageLimit?: number;
-  codeUsageCount?: number;
   isActive?: boolean;
   startDate?: string;
   endDate?: string;
-  usageCount?: number;
-  totalSavings?: number;
 };
 
 export type Order = {
@@ -118,26 +148,10 @@ export type Order = {
   taxAmount?: number;
   taxRate?: number;
   grandTotal?: number;
-  shippingAddress?: {
-    firstName?: string;
-    lastName?: string;
-    streetAddress?: string;
-    aptUnit?: string;
-    city?: string;
-    province?: string;
-    postalCode?: string;
-    country?: string;
-  };
+  shippingAddress?: Address;
   billingAddress?: {
     sameAsShipping?: boolean;
-    firstName?: string;
-    lastName?: string;
-    streetAddress?: string;
-    aptUnit?: string;
-    city?: string;
-    province?: string;
-    postalCode?: string;
-    country?: string;
+    address?: Address;
   };
   paymentMethod?: {
     type?: "credit_card" | "paypal";
@@ -156,8 +170,6 @@ export type Order = {
     note?: string;
     _key: string;
   }>;
-  createdAt?: string;
-  updatedAt?: string;
 };
 
 export type User = {
@@ -166,7 +178,6 @@ export type User = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  googleId?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -176,6 +187,7 @@ export type User = {
   } & Address>;
   isActive?: boolean;
   orderEmails?: boolean;
+  googleId?: string;
 };
 
 export type Review = {
@@ -278,12 +290,26 @@ export type Product = {
     _key: string;
   }>;
   basePrice?: number;
-  category?: "mens" | "womens";
-  productType?: "shirts" | "pants" | "outerwear";
-  subcategory?: string;
+  category?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "category";
+  };
+  sizeGroup?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "size";
+  };
   variants?: Array<{
     size?: string;
-    color?: string;
+    color?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "color";
+    };
     sku?: string;
     stockQuantity?: number;
     isActive?: boolean;
@@ -294,13 +320,6 @@ export type Product = {
   isFeatured?: boolean;
   seoTitle?: string;
   seoDescription?: string;
-  reviews?: Array<{
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    _key: string;
-    [internalGroqTypeReferenceTo]?: "review";
-  }>;
   keyFeatures?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -434,6 +453,53 @@ export type Product = {
   }>;
 };
 
+export type Size = {
+  _id: string;
+  _type: "size";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  sizes?: Array<{
+    name?: string;
+    code?: string;
+    _type: "sizeItem";
+    _key: string;
+  }>;
+};
+
+export type Color = {
+  _id: string;
+  _type: "color";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  code?: string;
+  hexCode?: string;
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  pageType?: "listing" | "landing";
+  parent?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "category";
+  };
+  seoTitle?: string;
+  seoDescription?: string;
+  isActive?: boolean;
+};
+
 export type BlockContent = Array<{
   children?: Array<{
     marks?: Array<string>;
@@ -471,6 +537,7 @@ export type Address = {
   nickname?: string;
   firstName?: string;
   lastName?: string;
+  phoneNumber?: string;
   streetAddress?: string;
   aptUnit?: string;
   city?: string;
@@ -598,5 +665,5 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Promotion | Order | User | Review | Product | BlockContent | Address | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = PromoCode | Promotion | Order | User | Review | Product | Size | Color | Category | BlockContent | Address | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
