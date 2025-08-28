@@ -1,5 +1,5 @@
-import Navbar from "@/components/navbar";
-import AuthProvider from "@/components/auth-provider";
+import { Navbar } from "@/components/layout";
+import { AuthProvider } from "@/components/features/auth";
 import { auth } from "@/lib/auth";
 
 export default async function MainLayout({
