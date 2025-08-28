@@ -19,11 +19,11 @@ export type PromoCode = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
+  name: string;
   description?: string;
-  code?: string;
-  discountType?: "fixed_amount" | "percentage";
-  discountValue?: number;
+  code: string;
+  discountType: "fixed_amount" | "percentage";
+  discountValue: number;
   hasMaximumDiscount?: boolean;
   maximumDiscount?: number;
   hasMinimumPurchase?: boolean;
@@ -31,7 +31,7 @@ export type PromoCode = {
   hasUsageLimit?: boolean;
   usageLimit?: number;
   isActive?: boolean;
-  startDate?: string;
+  startDate: string;
   endDate?: string;
   usageCount?: number;
 };
@@ -42,9 +42,9 @@ export type Promotion = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
-  description?: string;
-  type?: "percentage" | "fixed_amount" | "bundle" | "bogo" | "tiered" | "threshold";
+  name: string;
+  description: string;
+  type: "percentage" | "fixed_amount" | "bundle" | "bogo" | "tiered" | "threshold";
   percentageConfig?: {
     discountPercentage?: number;
     minimumQuantity?: number;
@@ -91,12 +91,12 @@ export type Promotion = {
     [internalGroqTypeReferenceTo]?: "product";
   }>;
   showTag?: boolean;
-  tagLabel?: string;
-  tagBackgroundColor?: string;
-  tagTextColor?: string;
-  priority?: number;
+  tagLabel: string;
+  tagBackgroundColor: string;
+  tagTextColor: string;
+  priority: number;
   isActive?: boolean;
-  startDate?: string;
+  startDate: string;
   endDate?: string;
 };
 
@@ -106,8 +106,8 @@ export type Order = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  orderNumber?: string;
-  status?: "confirmation" | "processing" | "shipped" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "cancelled" | "refunded";
+  orderNumber: string;
+  status: "confirmation" | "processing" | "shipped" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "cancelled" | "refunded";
   userId?: {
     _ref: string;
     _type: "reference";
@@ -115,21 +115,21 @@ export type Order = {
     [internalGroqTypeReferenceTo]?: "user";
   };
   guestEmail?: string;
-  items?: Array<{
-    product?: {
+  items: Array<{
+    product: {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "product";
     };
     variant?: {
-      size?: string;
-      color?: string;
-      sku?: string;
+      size: string;
+      color: string;
+      sku: string;
     };
-    quantity?: number;
-    basePrice?: number;
-    finalPrice?: number;
+    quantity: number;
+    basePrice: number;
+    finalPrice: number;
     appliedPromotions?: Array<{
       _ref: string;
       _type: "reference";
@@ -140,33 +140,33 @@ export type Order = {
     _type: "orderItem";
     _key: string;
   }>;
-  subtotal?: number;
+  subtotal: number;
   totalDiscount?: number;
   promoCodeDiscount?: number;
   promoCode?: string;
-  shippingCost?: number;
-  taxAmount?: number;
+  shippingCost: number;
+  taxAmount: number;
   taxRate?: number;
-  grandTotal?: number;
-  shippingAddress?: Address;
+  grandTotal: number;
+  shippingAddress: Address;
   billingAddress?: {
     sameAsShipping?: boolean;
     address?: Address;
   };
-  paymentMethod?: {
-    type?: "credit_card" | "paypal";
+  paymentMethod: {
+    type: "credit_card" | "paypal";
     stripePaymentIntentId?: string;
     lastFourDigits?: string;
     brand?: string;
   };
-  shippingMethod?: "standard" | "express";
+  shippingMethod: "standard" | "express";
   trackingNumber?: string;
   carrier?: string;
   estimatedDelivery?: string;
   orderNotes?: string;
   statusHistory?: Array<{
-    status?: string;
-    timestamp?: string;
+    status: string;
+    timestamp: string;
     note?: string;
     _key: string;
   }>;
@@ -178,16 +178,16 @@ export type User = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
+  email: string;
+  firstName: string;
+  lastName: string;
   phoneNumber?: string;
   addresses?: Array<{
     _key: string;
   } & Address>;
   isActive?: boolean;
   orderEmails?: boolean;
-  googleId?: string;
+  googleId: string;
 };
 
 export type Review = {
@@ -196,15 +196,15 @@ export type Review = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  product?: {
+  product: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "product";
   };
-  reviewerName?: string;
-  rating?: number;
-  comment?: string;
+  reviewerName: string;
+  rating: number;
+  comment: string;
   isVerifiedPurchase?: boolean;
   isApproved?: boolean;
   helpfulCount?: number;
@@ -216,8 +216,8 @@ export type Product = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
-  slug?: Slug;
+  name: string;
+  slug: Slug;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -249,7 +249,7 @@ export type Product = {
     _type: "image";
     _key: string;
   }>;
-  thumbnail?: {
+  thumbnail: {
     asset?: {
       _ref: string;
       _type: "reference";
@@ -289,29 +289,29 @@ export type Product = {
     _type: "image";
     _key: string;
   }>;
-  basePrice?: number;
-  category?: {
+  basePrice: number;
+  category: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "category";
   };
-  sizeGroup?: {
+  sizeGroup: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "size";
   };
   variants?: Array<{
-    size?: string;
-    color?: {
+    size: string;
+    color: {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "color";
     };
-    sku?: string;
-    stockQuantity?: number;
+    sku: string;
+    stockQuantity: number;
     isActive?: boolean;
     _type: "variant";
     _key: string;
@@ -459,10 +459,10 @@ export type Size = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
-  sizes?: Array<{
-    name?: string;
-    code?: string;
+  name: string;
+  sizes: Array<{
+    name: string;
+    code: string;
     _type: "sizeItem";
     _key: string;
   }>;
@@ -474,9 +474,9 @@ export type Color = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name?: string;
-  code?: string;
-  hexCode?: string;
+  name: string;
+  code: string;
+  hexCode: string;
 };
 
 export type Category = {
@@ -485,10 +485,10 @@ export type Category = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: string;
-  slug?: Slug;
+  title: string;
+  slug: Slug;
   description?: string;
-  pageType?: "listing" | "landing";
+  pageType: "listing" | "landing";
   parent?: {
     _ref: string;
     _type: "reference";
@@ -534,15 +534,15 @@ export type BlockContent = Array<{
 
 export type Address = {
   _type: "address";
-  nickname?: string;
-  firstName?: string;
-  lastName?: string;
+  nickname: string;
+  firstName: string;
+  lastName: string;
   phoneNumber?: string;
-  streetAddress?: string;
+  streetAddress: string;
   aptUnit?: string;
-  city?: string;
-  province?: "AB" | "BC" | "MB" | "NB" | "NL" | "NT" | "NS" | "NU" | "ON" | "PE" | "QC" | "SK" | "YT";
-  postalCode?: string;
+  city: string;
+  province: "AB" | "BC" | "MB" | "NB" | "NL" | "NT" | "NS" | "NU" | "ON" | "PE" | "QC" | "SK" | "YT";
+  postalCode: string;
   country?: string;
   isDefault?: boolean;
 };
@@ -654,7 +654,7 @@ export type Geopoint = {
 
 export type Slug = {
   _type: "slug";
-  current?: string;
+  current: string;
   source?: string;
 };
 
@@ -667,3 +667,20 @@ export type SanityAssetSourceData = {
 
 export type AllSanitySchemaTypes = PromoCode | Promotion | Order | User | Review | Product | Size | Color | Category | BlockContent | Address | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: ./src/sanity/queries/categories.ts
+// Variable: CATEGORY_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {  _id,  title,  "slug": slug.current,  pageType}
+export type CATEGORY_BY_SLUG_QUERYResult = {
+  _id: string;
+  title: string;
+  slug: string;
+  pageType: "landing" | "listing";
+} | null;
+
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    "*[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_BY_SLUG_QUERYResult;
+  }
+}

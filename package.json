@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typegen": "sanity schema extract --path=src/sanity/schema.json && sanity typegen generate"
+    "typegen": "sanity schema extract --enforce-required-fields --path=src/sanity/schema.json && sanity typegen generate"
   },
   "dependencies": {
     "@next/env": "^15.4.5",

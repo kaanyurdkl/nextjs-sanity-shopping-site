@@ -39,7 +39,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -53,7 +53,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "discountType": {
         "type": "objectAttribute",
@@ -70,14 +70,14 @@
             }
           ]
         },
-        "optional": true
+        "optional": false
       },
       "discountValue": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "hasMaximumDiscount": {
         "type": "objectAttribute",
@@ -133,7 +133,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "endDate": {
         "type": "objectAttribute",
@@ -191,14 +191,14 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "type": {
         "type": "objectAttribute",
@@ -231,7 +231,7 @@
             }
           ]
         },
-        "optional": true
+        "optional": false
       },
       "percentageConfig": {
         "type": "objectAttribute",
@@ -542,28 +542,28 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "tagBackgroundColor": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "tagTextColor": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "priority": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "isActive": {
         "type": "objectAttribute",
@@ -577,7 +577,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "endDate": {
         "type": "objectAttribute",
@@ -628,7 +628,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "status": {
         "type": "objectAttribute",
@@ -673,7 +673,7 @@
             }
           ]
         },
-        "optional": true
+        "optional": false
       },
       "userId": {
         "type": "objectAttribute",
@@ -747,7 +747,7 @@
                   },
                   "dereferencesTo": "product"
                 },
-                "optional": true
+                "optional": false
               },
               "variant": {
                 "type": "objectAttribute",
@@ -759,21 +759,21 @@
                       "value": {
                         "type": "string"
                       },
-                      "optional": true
+                      "optional": false
                     },
                     "color": {
                       "type": "objectAttribute",
                       "value": {
                         "type": "string"
                       },
-                      "optional": true
+                      "optional": false
                     },
                     "sku": {
                       "type": "objectAttribute",
                       "value": {
                         "type": "string"
                       },
-                      "optional": true
+                      "optional": false
                     }
                   }
                 },
@@ -784,21 +784,21 @@
                 "value": {
                   "type": "number"
                 },
-                "optional": true
+                "optional": false
               },
               "basePrice": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
                 },
-                "optional": true
+                "optional": false
               },
               "finalPrice": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
                 },
-                "optional": true
+                "optional": false
               },
               "appliedPromotions": {
                 "type": "objectAttribute",
@@ -865,14 +865,14 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       },
       "subtotal": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "totalDiscount": {
         "type": "objectAttribute",
@@ -900,14 +900,14 @@
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "taxAmount": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "taxRate": {
         "type": "objectAttribute",
@@ -921,7 +921,7 @@
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "shippingAddress": {
         "type": "objectAttribute",
@@ -929,7 +929,7 @@
           "type": "inline",
           "name": "address"
         },
-        "optional": true
+        "optional": false
       },
       "billingAddress": {
         "type": "objectAttribute",
@@ -975,7 +975,7 @@
                   }
                 ]
               },
-              "optional": true
+              "optional": false
             },
             "stripePaymentIntentId": {
               "type": "objectAttribute",
@@ -1000,7 +1000,7 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       },
       "shippingMethod": {
         "type": "objectAttribute",
@@ -1017,7 +1017,7 @@
             }
           ]
         },
-        "optional": true
+        "optional": false
       },
       "trackingNumber": {
         "type": "objectAttribute",
@@ -1059,14 +1059,14 @@
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "timestamp": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "note": {
                 "type": "objectAttribute",
@@ -1133,21 +1133,21 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "firstName": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "lastName": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "phoneNumber": {
         "type": "objectAttribute",
@@ -1197,7 +1197,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       }
     }
   },
@@ -1264,28 +1264,28 @@
           },
           "dereferencesTo": "product"
         },
-        "optional": true
+        "optional": false
       },
       "reviewerName": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "rating": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "comment": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "isVerifiedPurchase": {
         "type": "objectAttribute",
@@ -1350,7 +1350,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "slug": {
         "type": "objectAttribute",
@@ -1358,7 +1358,7 @@
           "type": "inline",
           "name": "slug"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -1689,7 +1689,7 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       },
       "hoverImage": {
         "type": "objectAttribute",
@@ -1862,7 +1862,7 @@
         "value": {
           "type": "number"
         },
-        "optional": true
+        "optional": false
       },
       "category": {
         "type": "objectAttribute",
@@ -1892,7 +1892,7 @@
           },
           "dereferencesTo": "category"
         },
-        "optional": true
+        "optional": false
       },
       "sizeGroup": {
         "type": "objectAttribute",
@@ -1922,7 +1922,7 @@
           },
           "dereferencesTo": "size"
         },
-        "optional": true
+        "optional": false
       },
       "variants": {
         "type": "objectAttribute",
@@ -1936,7 +1936,7 @@
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "color": {
                 "type": "objectAttribute",
@@ -1966,21 +1966,21 @@
                   },
                   "dereferencesTo": "color"
                 },
-                "optional": true
+                "optional": false
               },
               "sku": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "stockQuantity": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
                 },
-                "optional": true
+                "optional": false
               },
               "isActive": {
                 "type": "objectAttribute",
@@ -3146,7 +3146,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "sizes": {
         "type": "objectAttribute",
@@ -3160,14 +3160,14 @@
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "code": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "string"
                 },
-                "optional": true
+                "optional": false
               },
               "_type": {
                 "type": "objectAttribute",
@@ -3190,7 +3190,7 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       }
     }
   },
@@ -3234,21 +3234,21 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "code": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "hexCode": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       }
     }
   },
@@ -3292,7 +3292,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "slug": {
         "type": "objectAttribute",
@@ -3300,7 +3300,7 @@
           "type": "inline",
           "name": "slug"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -3324,7 +3324,7 @@
             }
           ]
         },
-        "optional": true
+        "optional": false
       },
       "parent": {
         "type": "objectAttribute",
@@ -3652,21 +3652,21 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "firstName": {
           "type": "objectAttribute",
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "lastName": {
           "type": "objectAttribute",
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "phoneNumber": {
           "type": "objectAttribute",
@@ -3680,7 +3680,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "aptUnit": {
           "type": "objectAttribute",
@@ -3694,7 +3694,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "province": {
           "type": "objectAttribute",
@@ -3755,14 +3755,14 @@
               }
             ]
           },
-          "optional": true
+          "optional": false
         },
         "postalCode": {
           "type": "objectAttribute",
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "country": {
           "type": "objectAttribute",
@@ -4425,7 +4425,7 @@
           "value": {
             "type": "string"
           },
-          "optional": true
+          "optional": false
         },
         "source": {
           "type": "objectAttribute",

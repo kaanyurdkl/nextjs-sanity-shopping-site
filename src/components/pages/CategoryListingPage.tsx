@@ -1,12 +1,7 @@
-interface Category {
-  _id: string;
-  title: string;
-  slug: string;
-  pageType: "landing" | "listing";
-}
+import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface CategoryListingPageProps {
-  category: Category;
+  category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
 }
 
 export default function CategoryListingPage({ category }: CategoryListingPageProps) {
