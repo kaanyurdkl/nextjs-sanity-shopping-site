@@ -669,12 +669,17 @@ export type AllSanitySchemaTypes = PromoCode | Promotion | Order | User | Review
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/queries/categories.ts
 // Variable: CATEGORY_BY_SLUG_QUERY
-// Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {  _id,  title,  "slug": slug.current,  pageType}
+// Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {  _id,  title,  "slug": slug.current,  pageType,  parent->{    _id,    title,    "slug": slug.current  }}
 export type CATEGORY_BY_SLUG_QUERYResult = {
   _id: string;
   title: string;
   slug: string;
   pageType: "landing" | "listing";
+  parent: {
+    _id: string;
+    title: string;
+    slug: string;
+  } | null;
 } | null;
 // Variable: CATEGORY_CHILDREN_QUERY
 // Query: *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {  _id,  title,  "slug": slug.current,  pageType}
@@ -689,7 +694,7 @@ export type CATEGORY_CHILDREN_QUERYResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_BY_SLUG_QUERYResult;
+    "*[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType,\n  parent->{\n    _id,\n    title,\n    \"slug\": slug.current\n  }\n}": CATEGORY_BY_SLUG_QUERYResult;
     "*[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_CHILDREN_QUERYResult;
   }
 }

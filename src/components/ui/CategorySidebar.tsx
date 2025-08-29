@@ -1,7 +1,4 @@
-import {
-  getCategoryChildren,
-  getParentCategoryWithChildren,
-} from "@/sanity/queries/categories";
+import { getCategoryChildren } from "@/sanity/queries/categories";
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import CategorySidebarItem from "./CategorySidebarItem";
 
@@ -14,22 +11,20 @@ export default async function CategorySidebar({
   category,
   slugArray,
 }: CategorySidebarProps) {
+  // Fetch children of current category
   const children = await getCategoryChildren(category._id);
-
-  console.log("children", children);
 
   // Determine what categories to show and the "View All" URL
   let sidebarCategories = children;
   let viewAllUrl = "/" + slugArray.join("/");
 
   // If current category has no children, show parent's children (siblings)
-  if (children.length === 0 && slugArray.length > 1) {
-    const { siblings } = await getParentCategoryWithChildren(slugArray);
-    sidebarCategories = siblings;
+  if (children.length === 0 && category.parent) {
+    // Fetch siblings using parent data that's already available
+    sidebarCategories = await getCategoryChildren(category.parent._id);
 
-    // "View All" should point to parent category
-    const parentSlugArray = slugArray.slice(0, -1);
-    viewAllUrl = "/" + parentSlugArray.join("/");
+    // "View All" should point to parent category  
+    viewAllUrl = "/" + category.parent.slug;
   }
 
   // Build current category slug path for active state detection
