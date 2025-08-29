@@ -676,11 +676,20 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
   slug: string;
   pageType: "landing" | "listing";
 } | null;
+// Variable: CATEGORY_CHILDREN_QUERY
+// Query: *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {  _id,  title,  "slug": slug.current,  pageType}
+export type CATEGORY_CHILDREN_QUERYResult = Array<{
+  _id: string;
+  title: string;
+  slug: string;
+  pageType: "landing" | "listing";
+}>;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_BY_SLUG_QUERYResult;
+    "*[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_CHILDREN_QUERYResult;
   }
 }

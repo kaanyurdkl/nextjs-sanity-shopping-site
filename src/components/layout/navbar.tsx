@@ -28,7 +28,6 @@ export default async function Navbar() {
     }
   `);
 
-  console.log("categories: ", categories);
   return (
     <header className="relative h-16 bg-white border-b border-gray-100 flex items-center">
       <nav

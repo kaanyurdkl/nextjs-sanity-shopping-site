@@ -1,5 +1,6 @@
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import CategorySidebar from "@/components/ui/CategorySidebar";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
@@ -13,16 +14,11 @@ export default function CategoryListingPage({ category, slugArray }: CategoryLis
       <Breadcrumbs slugArray={slugArray} />
       
       <div className="flex gap-8">
-        {/* Sidebar */}
+        {/* Category Sidebar */}
+        <CategorySidebar category={category} slugArray={slugArray} />
+        
+        {/* Additional Filters Sidebar */}
         <aside className="w-64 flex-shrink-0">
-          <div className="mb-8">
-            <h3 className="font-semibold text-black mb-4">Categories</h3>
-            <div className="text-gray-500 text-sm">
-              <p>VIEW ALL</p>
-              <p>Category navigation...</p>
-            </div>
-          </div>
-          
           <div className="mb-8">
             <h3 className="font-semibold text-black mb-4">Filters</h3>
             <div className="text-gray-500 text-sm space-y-2">

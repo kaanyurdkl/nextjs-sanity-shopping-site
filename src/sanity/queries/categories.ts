@@ -1,5 +1,8 @@
 import { defineQuery } from "next-sanity";
-import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import type {
+  CATEGORY_BY_SLUG_QUERYResult,
+  CATEGORY_CHILDREN_QUERYResult,
+} from "@/sanity/types/sanity.types";
 import { sanityFetch } from "@/sanity/lib/fetch";
 
 /**
@@ -20,7 +23,6 @@ export const CATEGORY_BY_SLUG_QUERY =
   pageType
 }`);
 
-
 /**
  * Fetch category by full slug path using enhanced sanityFetch
  * Joins slug array into a single path string for GROQ query
@@ -38,4 +40,59 @@ export async function getCategoryBySlugPath(
   });
 
   return category;
+}
+
+/**
+ * GROQ query to fetch child categories for sidebar navigation
+ * Returns direct children of a given parent category
+ */
+export const CATEGORY_CHILDREN_QUERY =
+  defineQuery(`*[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  pageType
+}`);
+
+/**
+ * Fetch child categories for sidebar navigation
+ * Returns direct children of the current category for sidebar display
+ */
+export async function getCategoryChildren(
+  parentCategoryId: string
+): Promise<CATEGORY_CHILDREN_QUERYResult> {
+  const children = await sanityFetch<CATEGORY_CHILDREN_QUERYResult>({
+    query: CATEGORY_CHILDREN_QUERY,
+    params: { parentId: parentCategoryId },
+    revalidate: 3600, // Revalidate every hour
+    tags: ["category"], // Tag for cache invalidation
+  });
+
+  return children;
+}
+
+/**
+ * Get parent category and its children (siblings) for categories without subcategories
+ * Used when current category has no children to show siblings instead
+ */
+export async function getParentCategoryWithChildren(
+  childSlugPath: string[]
+): Promise<{
+  parentCategory: CATEGORY_BY_SLUG_QUERYResult;
+  siblings: CATEGORY_CHILDREN_QUERYResult;
+}> {
+  if (childSlugPath.length <= 1) {
+    return { parentCategory: null, siblings: [] };
+  }
+
+  const parentSlugPath = childSlugPath.slice(0, -1);
+  const parentCategory = await getCategoryBySlugPath(parentSlugPath);
+
+  if (!parentCategory) {
+    return { parentCategory: null, siblings: [] };
+  }
+
+  const siblings = await getCategoryChildren(parentCategory._id);
+
+  return { parentCategory, siblings };
 }

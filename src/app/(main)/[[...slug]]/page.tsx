@@ -10,7 +10,6 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
-
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -26,6 +25,9 @@ export default async function CategoryPage({ params }: PageProps) {
   if (!category) {
     notFound();
   }
+
+  console.log("category", category);
+  console.log("slug", slug);
 
   // Render appropriate page component based on pageType
   if (category.pageType === "landing") {
