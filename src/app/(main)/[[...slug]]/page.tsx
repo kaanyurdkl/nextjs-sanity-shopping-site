@@ -4,7 +4,7 @@ import {
   CategoryLandingPage,
   CategoryListingPage,
 } from "@/components/pages";
-import { getCategoryBySlugPath } from "@/sanity/queries/categories";
+import { getCategoryBySlugPath } from "@/sanity/lib/utils";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;

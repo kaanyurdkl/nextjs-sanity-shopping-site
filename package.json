@@ -9,7 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typegen": "sanity schema extract --enforce-required-fields --path=src/sanity/schema.json && sanity typegen generate"
+    "typegen": "sanity schema extract --enforce-required-fields --path=src/sanity/schema.json && sanity typegen generate",
+    "deploy:functions": "sanity blueprints deploy",
+    "logs:functions": "sanity functions logs compute-category-hierarchy"
   },
   "dependencies": {
     "@next/env": "^15.4.5",
@@ -36,6 +38,7 @@
     "eslint-config-next": "15.4.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@sanity/blueprints": "0.2.0"
   }
 }

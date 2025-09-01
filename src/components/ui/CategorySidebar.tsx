@@ -1,4 +1,4 @@
-import { getCategoryChildren } from "@/sanity/queries/categories";
+import { getCategoryChildren } from "@/sanity/lib/utils";
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import CategorySidebarItem from "./CategorySidebarItem";
 
@@ -23,7 +23,7 @@ export default async function CategorySidebar({
     // Fetch siblings using parent data that's already available
     sidebarCategories = await getCategoryChildren(category.parent._id);
 
-    // "View All" should point to parent category  
+    // "View All" should point to parent category
     viewAllUrl = "/" + category.parent.slug;
   }
 
@@ -39,7 +39,7 @@ export default async function CategorySidebar({
   const isViewAllActive = children.length > 0 && !hasMatchingChild;
 
   return (
-    <aside className="w-64 flex-shrink-0">
+    <aside className="w-60 flex-shrink-0">
       <div className="mb-8">
         <h3 className="font-semibold text-black mb-4">Categories</h3>
         <nav>
@@ -64,6 +64,15 @@ export default async function CategorySidebar({
             ))}
           </ul>
         </nav>
+      </div>
+      {/* Additional Filters Sidebar */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-black mb-4">Filters</h3>
+        <div className="text-gray-500 text-sm space-y-2">
+          <p>Size filters...</p>
+          <p>Color filters...</p>
+          <p>Price range...</p>
+        </div>
       </div>
     </aside>
   );

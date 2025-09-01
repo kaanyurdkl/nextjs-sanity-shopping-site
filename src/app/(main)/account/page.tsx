@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
-import { readClient } from "@/sanity/lib/client";
+import { getUserByEmail } from "@/sanity/lib/utils";
+import type { USER_BY_EMAIL_QUERYResult } from "@/sanity/types/sanity.types";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -9,14 +10,9 @@ export default async function AccountPage() {
   }
 
   // Fetch user data from Sanity
-  const user = await readClient.fetch(
-    `*[_type == "user" && email == $email][0]{
-      firstName,
-      lastName,
-      email
-    }`,
-    { email: session.user.email }
-  );
+  const user = (await getUserByEmail(
+    session.user.email
+  )) as USER_BY_EMAIL_QUERYResult;
 
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim() || user.email

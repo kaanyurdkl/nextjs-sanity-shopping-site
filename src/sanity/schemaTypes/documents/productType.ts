@@ -129,6 +129,16 @@ export const productType = defineType({
         "Main category for URL structure and navigation - should be the most specific category",
     }),
     defineField({
+      name: "categoryHierarchy",
+      title: "Category Hierarchy",
+      type: "array",
+      of: [{ type: "string" }],
+      readOnly: true,
+      hidden: true,
+      description:
+        "Auto-computed array of parent category IDs - updated automatically when category changes",
+    }),
+    defineField({
       name: "sizeGroup",
       title: "Size Group",
       type: "reference",

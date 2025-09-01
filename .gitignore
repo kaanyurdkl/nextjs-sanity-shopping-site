@@ -42,3 +42,9 @@ next-env.d.ts
 
 # local assets (not for repository)
 design/assets/
+
+
+# Sanity Functions
+functions/**/.env*
+functions/**/.build/
+functions/**/node_modules/

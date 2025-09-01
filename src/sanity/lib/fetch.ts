@@ -3,14 +3,14 @@ import { readClient } from "./client";
 
 /**
  * Enhanced Sanity fetch function following Next.js 15 and Sanity best practices
- * 
+ *
  * Features:
  * - Next.js 15 compatible explicit caching
  * - Tag-based revalidation support for fine-grained cache control
  * - Time-based revalidation support
  * - TypeScript generics for type safety
  * - Follows both Sanity and Next.js documentation recommendations
- * 
+ *
  * @param query - GROQ query string
  * @param params - Query parameters
  * @param revalidate - Time-based revalidation in seconds (default: 3600 = 1 hour)

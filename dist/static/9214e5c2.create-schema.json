@@ -1,0 +1,3155 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Give this address a memorable name (e.g., \"Home\", \"Office\", \"Mom's House\")",
+        "name": "nickname",
+        "type": "string",
+        "title": "Address Name",
+        "fieldset": "identification"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Recipient's first name for deliveries",
+        "name": "firstName",
+        "type": "string",
+        "fieldset": "recipient"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Recipient's last name for deliveries",
+        "name": "lastName",
+        "type": "string",
+        "fieldset": "recipient"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Contact phone number for delivery (optional)",
+        "name": "phoneNumber",
+        "type": "string",
+        "fieldset": "recipient"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Street number and name",
+        "name": "streetAddress",
+        "type": "string",
+        "fieldset": "location"
+      },
+      {
+        "description": "Apartment, suite, or unit number (optional)",
+        "name": "aptUnit",
+        "type": "string",
+        "title": "Apartment/Unit",
+        "fieldset": "location"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "city",
+        "type": "string",
+        "fieldset": "location"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Alberta",
+              "value": "AB"
+            },
+            {
+              "title": "British Columbia",
+              "value": "BC"
+            },
+            {
+              "title": "Manitoba",
+              "value": "MB"
+            },
+            {
+              "title": "New Brunswick",
+              "value": "NB"
+            },
+            {
+              "title": "Newfoundland and Labrador",
+              "value": "NL"
+            },
+            {
+              "title": "Northwest Territories",
+              "value": "NT"
+            },
+            {
+              "title": "Nova Scotia",
+              "value": "NS"
+            },
+            {
+              "title": "Nunavut",
+              "value": "NU"
+            },
+            {
+              "title": "Ontario",
+              "value": "ON"
+            },
+            {
+              "title": "Prince Edward Island",
+              "value": "PE"
+            },
+            {
+              "title": "Quebec",
+              "value": "QC"
+            },
+            {
+              "title": "Saskatchewan",
+              "value": "SK"
+            },
+            {
+              "title": "Yukon",
+              "value": "YT"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "AB",
+                  "BC",
+                  "MB",
+                  "NB",
+                  "NL",
+                  "NT",
+                  "NS",
+                  "NU",
+                  "ON",
+                  "PE",
+                  "QC",
+                  "SK",
+                  "YT"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "province",
+        "type": "string",
+        "fieldset": "location"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Canadian postal code (A1A 1A1 format)",
+        "name": "postalCode",
+        "type": "string",
+        "fieldset": "location"
+      },
+      {
+        "initialValue": "Canada",
+        "description": "Currently only shipping within Canada",
+        "readOnly": true,
+        "name": "country",
+        "type": "string",
+        "fieldset": "location"
+      },
+      {
+        "initialValue": false,
+        "description": "Make this the default address for shipping and billing",
+        "name": "isDefault",
+        "type": "boolean",
+        "title": "Set as Default Address",
+        "fieldset": "settings"
+      }
+    ],
+    "fieldsets": [
+      {
+        "name": "identification",
+        "title": "Address Name",
+        "description": "What do you want to call this address?",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "recipient",
+        "title": "Recipient Details",
+        "description": "Who will receive deliveries at this address?",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "location",
+        "title": "Location Information",
+        "description": "The physical address details",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "settings",
+        "title": "Address Settings",
+        "description": "Additional options for this address",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      }
+    ],
+    "name": "address",
+    "type": "object"
+  },
+  {
+    "of": [
+      {
+        "marks": {
+          "annotations": [
+            {
+              "fields": [
+                {
+                  "validation": [
+                    {
+                      "rules": [
+                        {
+                          "flag": "uri",
+                          "constraint": {
+                            "options": {
+                              "scheme": [
+                                "/^http$/",
+                                "/^https$/"
+                              ],
+                              "allowRelative": false,
+                              "relativeOnly": false,
+                              "allowCredentials": false
+                            }
+                          }
+                        }
+                      ],
+                      "level": "error"
+                    }
+                  ],
+                  "name": "href",
+                  "type": "url",
+                  "title": "URL"
+                }
+              ],
+              "name": "link",
+              "type": "object",
+              "title": "URL"
+            }
+          ],
+          "decorators": [
+            {
+              "value": "strong",
+              "title": "Strong"
+            },
+            {
+              "value": "em",
+              "title": "Emphasis"
+            }
+          ]
+        },
+        "lists": [
+          {
+            "value": "bullet",
+            "title": "Bullet"
+          }
+        ],
+        "styles": [
+          {
+            "value": "normal",
+            "title": "Normal"
+          },
+          {
+            "value": "h1",
+            "title": "H1"
+          },
+          {
+            "value": "h2",
+            "title": "H2"
+          },
+          {
+            "value": "h3",
+            "title": "H3"
+          },
+          {
+            "value": "h4",
+            "title": "H4"
+          },
+          {
+            "value": "blockquote",
+            "title": "Quote"
+          }
+        ],
+        "of": [],
+        "type": "block"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alternative Text"
+          }
+        ],
+        "type": "image"
+      }
+    ],
+    "name": "blockContent",
+    "type": "array"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Display name for this category",
+        "name": "title",
+        "type": "string",
+        "title": "Category Name"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 200
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "URL-friendly identifier. For hierarchical paths, type manually (e.g., mens/tops/shirts)",
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "description": "Category description for SEO and category pages",
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Product Listing Page",
+              "value": "listing"
+            },
+            {
+              "title": "Landing Page",
+              "value": "landing"
+            }
+          ]
+        },
+        "initialValue": "listing",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "listing",
+                  "landing"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Choose whether this category shows as a product listing or landing page",
+        "name": "pageType",
+        "type": "string"
+      },
+      {
+        "description": "Parent category in the hierarchy",
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "parent",
+        "type": "reference",
+        "title": "Parent Category"
+      },
+      {
+        "description": "Title for search engines (leave empty to use category name)",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title"
+      },
+      {
+        "rows": 3,
+        "description": "Description for search engines and social media",
+        "name": "seoDescription",
+        "type": "text",
+        "title": "SEO Description"
+      },
+      {
+        "initialValue": true,
+        "description": "Uncheck to hide category from storefront",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Category Active"
+      }
+    ],
+    "name": "category",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Display name shown to customers (e.g., 'Navy Blue', 'Forest Green')",
+        "name": "name",
+        "type": "string",
+        "title": "Color Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "length",
+                "constraint": 3
+              },
+              {
+                "flag": "stringCasing",
+                "constraint": "uppercase"
+              },
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^[A-Z]{3}$/",
+                  "name": "uppercase letters only",
+                  "invert": false
+                }
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "3-letter uppercase code for SKU generation (e.g., 'NAV', 'RED', 'BLK')",
+        "name": "code",
+        "type": "string",
+        "title": "Color Code"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Hex code for color swatches (e.g., #FF0000 for red) - optional",
+        "name": "hexCode",
+        "type": "string",
+        "title": "Hex Color Code"
+      }
+    ],
+    "name": "color",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Product Name"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "name": "description",
+        "type": "blockContent"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Main product image for listing pages and product cards",
+        "fields": [
+          {
+            "description": "Important for SEO and accessibility",
+            "name": "alt",
+            "type": "string",
+            "title": "Alternative Text"
+          }
+        ],
+        "name": "thumbnail",
+        "type": "image",
+        "title": "Thumbnail Image"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Secondary image shown on hover in product listings (optional)",
+        "fields": [
+          {
+            "description": "Important for SEO and accessibility",
+            "name": "alt",
+            "type": "string",
+            "title": "Alternative Text"
+          }
+        ],
+        "name": "hoverImage",
+        "type": "image"
+      },
+      {
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "description": "Important for SEO and accessibility",
+                "name": "alt",
+                "type": "string",
+                "title": "Alternative Text"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "images",
+        "type": "array",
+        "title": "Additional Product Images"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Base product price - promotions applied dynamically",
+        "name": "basePrice",
+        "type": "number"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Main category for URL structure and navigation - should be the most specific category",
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "category",
+        "type": "reference"
+      },
+      {
+        "description": "Auto-computed category hierarchy - updated automatically when category changes",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "readOnly": true,
+        "hidden": true,
+        "name": "categoryHierarchy",
+        "type": "array"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Select which size group this product uses",
+        "to": [
+          {
+            "type": "size"
+          }
+        ],
+        "name": "sizeGroup",
+        "type": "reference"
+      },
+      {
+        "description": "Define specific combinations of size/color with individual inventory tracking",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Select size from the chosen size group",
+                "name": "size",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Select color from available options",
+                "to": [
+                  {
+                    "type": "color"
+                  }
+                ],
+                "name": "color",
+                "type": "reference"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Auto-generated SKU (format: PRODUCT-COLOR-SIZE-SEQUENCE)",
+                "name": "sku",
+                "type": "string",
+                "title": "Variant SKU"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 0
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Available inventory for this specific variant",
+                "name": "stockQuantity",
+                "type": "number"
+              },
+              {
+                "initialValue": true,
+                "description": "Uncheck to disable this specific variant",
+                "name": "isActive",
+                "type": "boolean",
+                "title": "Variant Active"
+              }
+            ],
+            "type": "object",
+            "name": "variant"
+          }
+        ],
+        "name": "variants",
+        "type": "array",
+        "title": "Product Variants"
+      },
+      {
+        "initialValue": true,
+        "description": "Uncheck to hide product from storefront",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Product Active"
+      },
+      {
+        "initialValue": false,
+        "description": "Check to feature this product on homepage",
+        "name": "isFeatured",
+        "type": "boolean",
+        "title": "Featured Product"
+      },
+      {
+        "description": "Title for search engines (leave empty to use product name)",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title"
+      },
+      {
+        "rows": 3,
+        "description": "Description for search engines and social media",
+        "name": "seoDescription",
+        "type": "text",
+        "title": "SEO Description"
+      },
+      {
+        "description": "Key product features and highlights for the KEY FEATURES tab",
+        "name": "keyFeatures",
+        "type": "blockContent"
+      },
+      {
+        "description": "Material composition and fabric details for the MATERIALS tab",
+        "name": "materials",
+        "type": "blockContent"
+      },
+      {
+        "description": "Sizing information and fit details for the SIZE & FIT tab",
+        "name": "sizeAndFit",
+        "type": "blockContent",
+        "title": "Size & Fit"
+      },
+      {
+        "description": "Washing and care instructions for the CARE INSTRUCTIONS tab",
+        "name": "careInstructions",
+        "type": "blockContent"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 8
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Related/recommended products to display in the \"RELATED PRODUCTS\" section",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "product"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to product"
+          }
+        ],
+        "name": "relatedProducts",
+        "type": "array"
+      }
+    ],
+    "name": "product",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Name for this size group (e.g., 'Letter Sizes', 'Waist Sizes')",
+        "name": "name",
+        "type": "string",
+        "title": "Size Group Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "List of sizes with display names and SKU codes",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Display name shown to customers (e.g., 'Medium', '32 Waist')",
+                "name": "name",
+                "type": "string",
+                "title": "Size Name"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "max",
+                        "constraint": 3
+                      },
+                      {
+                        "flag": "stringCasing",
+                        "constraint": "uppercase"
+                      },
+                      {
+                        "flag": "regex",
+                        "constraint": {
+                          "pattern": "/^[A-Z0-9]{1,3}$/",
+                          "name": "uppercase letters and numbers only",
+                          "invert": false
+                        }
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "1-3 char code for SKU generation (e.g., 'M', 'L', '32')",
+                "name": "code",
+                "type": "string",
+                "title": "Size Code"
+              }
+            ],
+            "type": "object",
+            "name": "sizeItem",
+            "title": "Size"
+          }
+        ],
+        "name": "sizes",
+        "type": "array",
+        "title": "Available Sizes"
+      }
+    ],
+    "name": "size",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "The product this review is for",
+        "to": [
+          {
+            "type": "product"
+          }
+        ],
+        "name": "product",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Customer name (e.g., \"JESSICA M.\")",
+        "name": "reviewerName",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Rating from 1 to 5 stars",
+        "name": "rating",
+        "type": "number",
+        "title": "Star Rating"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 10
+              },
+              {
+                "flag": "max",
+                "constraint": 1000
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Written review content",
+        "name": "comment",
+        "type": "text",
+        "title": "Review Comment"
+      },
+      {
+        "initialValue": false,
+        "description": "Show \"Verified Purchase\" badge on review",
+        "name": "isVerifiedPurchase",
+        "type": "boolean",
+        "title": "Verified Purchase"
+      },
+      {
+        "initialValue": true,
+        "description": "Admin approval for displaying review publicly (auto-approved for portfolio demo)",
+        "name": "isApproved",
+        "type": "boolean",
+        "title": "Approved"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Number of \"helpful\" votes from other customers",
+        "name": "helpfulCount",
+        "type": "number",
+        "title": "Helpful Votes"
+      }
+    ],
+    "name": "review",
+    "type": "document",
+    "title": "Customer Review"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Primary email from Google OAuth account",
+        "name": "email",
+        "type": "string",
+        "title": "Email Address",
+        "fieldset": "profile"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "User's first name (editable in account settings)",
+        "name": "firstName",
+        "type": "string",
+        "fieldset": "profile"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "User's last name (editable in account settings)",
+        "name": "lastName",
+        "type": "string",
+        "fieldset": "profile"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Optional Canadian phone number for order notifications",
+        "name": "phoneNumber",
+        "type": "string",
+        "fieldset": "profile"
+      },
+      {
+        "description": "User's saved shipping and billing addresses with custom nicknames",
+        "of": [
+          {
+            "fieldsets": [
+              {
+                "name": "identification",
+                "title": "Address Name",
+                "description": "What do you want to call this address?",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "recipient",
+                "title": "Recipient Details",
+                "description": "Who will receive deliveries at this address?",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "location",
+                "title": "Location Information",
+                "description": "The physical address details",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "settings",
+                "title": "Address Settings",
+                "description": "Additional options for this address",
+                "options": {
+                  "collapsible": true,
+                  "collapsed": false
+                }
+              }
+            ],
+            "type": "address"
+          }
+        ],
+        "name": "addresses",
+        "type": "array",
+        "title": "Saved Addresses",
+        "fieldset": "addresses"
+      },
+      {
+        "initialValue": true,
+        "description": "Enable or disable user account access",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Account Status",
+        "fieldset": "settings"
+      },
+      {
+        "initialValue": true,
+        "description": "User consent for receiving order confirmations and shipping updates",
+        "name": "orderEmails",
+        "type": "boolean",
+        "title": "Order Email Notifications",
+        "fieldset": "settings"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Unique identifier from Google OAuth integration (system field)",
+        "name": "googleId",
+        "type": "string",
+        "title": "Google OAuth ID",
+        "fieldset": "auth"
+      }
+    ],
+    "fieldsets": [
+      {
+        "name": "profile",
+        "title": "Profile Information",
+        "description": "User's personal information and contact details",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "addresses",
+        "title": "Address Management",
+        "description": "Saved shipping and billing addresses",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      },
+      {
+        "name": "settings",
+        "title": "Account Settings",
+        "description": "Account status and user preferences",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      },
+      {
+        "name": "auth",
+        "title": "Authentication Data",
+        "description": "OAuth integration and technical identifiers",
+        "options": {
+          "collapsible": true,
+          "collapsed": true
+        }
+      }
+    ],
+    "name": "user",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "CLO-2025-XXXXXX format",
+        "readOnly": true,
+        "name": "orderNumber",
+        "type": "string",
+        "fieldset": "identification"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Order Confirmation",
+              "value": "confirmation"
+            },
+            {
+              "title": "Processing",
+              "value": "processing"
+            },
+            {
+              "title": "Shipped",
+              "value": "shipped"
+            },
+            {
+              "title": "In Transit",
+              "value": "in_transit"
+            },
+            {
+              "title": "Out for Delivery",
+              "value": "out_for_delivery"
+            },
+            {
+              "title": "Delivered",
+              "value": "delivered"
+            },
+            {
+              "title": "Delayed/Exception",
+              "value": "delayed"
+            },
+            {
+              "title": "Cancelled",
+              "value": "cancelled"
+            },
+            {
+              "title": "Refunded",
+              "value": "refunded"
+            }
+          ]
+        },
+        "initialValue": "confirmation",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "confirmation",
+                  "processing",
+                  "shipped",
+                  "in_transit",
+                  "out_for_delivery",
+                  "delivered",
+                  "delayed",
+                  "cancelled",
+                  "refunded"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "status",
+        "type": "string",
+        "title": "Current Status",
+        "fieldset": "identification"
+      },
+      {
+        "description": "For logged-in users (leave empty for guest checkout)",
+        "to": [
+          {
+            "type": "user"
+          }
+        ],
+        "name": "userId",
+        "type": "reference",
+        "title": "Registered User",
+        "fieldset": "customer"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Required for guest checkout orders",
+        "name": "guestEmail",
+        "type": "string",
+        "fieldset": "customer"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "to": [
+                  {
+                    "type": "product"
+                  }
+                ],
+                "name": "product",
+                "type": "reference"
+              },
+              {
+                "fields": [
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "size",
+                    "type": "string"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "color",
+                    "type": "string"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "sku",
+                    "type": "string",
+                    "title": "SKU"
+                  }
+                ],
+                "name": "variant",
+                "type": "object",
+                "title": "Product Variant"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 1
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "quantity",
+                "type": "number"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 0
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Original price per item",
+                "name": "basePrice",
+                "type": "number"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 0
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "description": "Price per item after promotions",
+                "name": "finalPrice",
+                "type": "number"
+              },
+              {
+                "description": "Promotions applied to this line item",
+                "of": [
+                  {
+                    "to": [
+                      {
+                        "type": "promotion"
+                      }
+                    ],
+                    "type": "reference",
+                    "title": "Reference to promotion"
+                  }
+                ],
+                "name": "appliedPromotions",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "orderItem"
+          }
+        ],
+        "name": "items",
+        "type": "array",
+        "title": "Products Ordered",
+        "fieldset": "items"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Sum of all item prices before discounts",
+        "name": "subtotal",
+        "type": "number",
+        "fieldset": "pricing"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Total amount saved from promotions",
+        "name": "totalDiscount",
+        "type": "number",
+        "title": "Promotion Discount",
+        "fieldset": "pricing"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Additional discount from promo code",
+        "name": "promoCodeDiscount",
+        "type": "number",
+        "fieldset": "pricing"
+      },
+      {
+        "description": "Promo code used for additional discount",
+        "name": "promoCode",
+        "type": "string",
+        "title": "Applied Promo Code",
+        "fieldset": "pricing"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Delivery cost (free if subtotal ≥ $150)",
+        "name": "shippingCost",
+        "type": "number",
+        "title": "Shipping Fee",
+        "fieldset": "pricing"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Provincial tax calculated",
+        "name": "taxAmount",
+        "type": "number",
+        "fieldset": "pricing"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              },
+              {
+                "flag": "max",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Tax rate used for calculation (decimal)",
+        "name": "taxRate",
+        "type": "number",
+        "title": "Applied Tax Rate",
+        "fieldset": "pricing"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Total amount charged to customer",
+        "name": "grandTotal",
+        "type": "number",
+        "title": "Final Total",
+        "fieldset": "pricing"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Where to ship this order",
+        "fieldsets": [
+          {
+            "name": "identification",
+            "title": "Address Name",
+            "description": "What do you want to call this address?",
+            "options": {
+              "collapsible": false
+            }
+          },
+          {
+            "name": "recipient",
+            "title": "Recipient Details",
+            "description": "Who will receive deliveries at this address?",
+            "options": {
+              "collapsible": false
+            }
+          },
+          {
+            "name": "location",
+            "title": "Location Information",
+            "description": "The physical address details",
+            "options": {
+              "collapsible": false
+            }
+          },
+          {
+            "name": "settings",
+            "title": "Address Settings",
+            "description": "Additional options for this address",
+            "options": {
+              "collapsible": true,
+              "collapsed": false
+            }
+          }
+        ],
+        "name": "shippingAddress",
+        "type": "address",
+        "title": "Delivery Address",
+        "fieldset": "addresses"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": true,
+            "description": "Use delivery address for billing",
+            "name": "sameAsShipping",
+            "type": "boolean",
+            "title": "Same as Delivery Address"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Enter billing address if different from delivery",
+            "hidden": "conditional",
+            "fieldsets": [
+              {
+                "name": "identification",
+                "title": "Address Name",
+                "description": "What do you want to call this address?",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "recipient",
+                "title": "Recipient Details",
+                "description": "Who will receive deliveries at this address?",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "location",
+                "title": "Location Information",
+                "description": "The physical address details",
+                "options": {
+                  "collapsible": false
+                }
+              },
+              {
+                "name": "settings",
+                "title": "Address Settings",
+                "description": "Additional options for this address",
+                "options": {
+                  "collapsible": true,
+                  "collapsed": false
+                }
+              }
+            ],
+            "name": "address",
+            "type": "address",
+            "title": "Different Billing Address"
+          }
+        ],
+        "name": "billingAddress",
+        "type": "object",
+        "title": "Billing Details",
+        "fieldset": "addresses"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "fields": [
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Credit Card",
+                  "value": "credit_card"
+                },
+                {
+                  "title": "PayPal",
+                  "value": "paypal"
+                }
+              ]
+            },
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "valid",
+                    "constraint": [
+                      "credit_card",
+                      "paypal"
+                    ]
+                  },
+                  {
+                    "flag": "presence",
+                    "constraint": "required"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "type",
+            "type": "string",
+            "title": "Payment Type"
+          },
+          {
+            "description": "Stripe transaction reference",
+            "name": "stripePaymentIntentId",
+            "type": "string",
+            "title": "Stripe Payment Intent ID"
+          },
+          {
+            "description": "Last 4 digits for customer reference",
+            "name": "lastFourDigits",
+            "type": "string",
+            "title": "Card Last Four Digits"
+          },
+          {
+            "description": "Visa, Mastercard, Amex, etc.",
+            "name": "brand",
+            "type": "string",
+            "title": "Card Brand"
+          }
+        ],
+        "name": "paymentMethod",
+        "type": "object",
+        "title": "Payment Information",
+        "fieldset": "payment"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Standard Shipping (5-7 business days)",
+              "value": "standard"
+            },
+            {
+              "title": "Express Shipping (2-3 business days)",
+              "value": "express"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "standard",
+                  "express"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "shippingMethod",
+        "type": "string",
+        "title": "Delivery Speed",
+        "fieldset": "fulfillment"
+      },
+      {
+        "description": "Carrier-provided tracking reference",
+        "name": "trackingNumber",
+        "type": "string",
+        "fieldset": "fulfillment"
+      },
+      {
+        "description": "Canada Post, UPS, FedEx, etc.",
+        "name": "carrier",
+        "type": "string",
+        "title": "Shipping Carrier",
+        "fieldset": "fulfillment"
+      },
+      {
+        "description": "Estimated delivery date",
+        "name": "estimatedDelivery",
+        "type": "date",
+        "title": "Expected Delivery",
+        "fieldset": "fulfillment"
+      },
+      {
+        "description": "Customer requests or admin notes",
+        "name": "orderNotes",
+        "type": "text",
+        "title": "Internal Notes",
+        "fieldset": "management"
+      },
+      {
+        "description": "Complete audit trail of order status changes",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "status",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "timestamp",
+                "type": "datetime",
+                "title": "Changed At"
+              },
+              {
+                "description": "Reason for status change",
+                "name": "note",
+                "type": "string",
+                "title": "Change Note"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "statusHistory",
+        "type": "array",
+        "title": "Status Change Log",
+        "fieldset": "management"
+      }
+    ],
+    "fieldsets": [
+      {
+        "name": "identification",
+        "title": "Order Identification",
+        "description": "Order number and current status",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "customer",
+        "title": "Customer Information",
+        "description": "Who placed this order?",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "items",
+        "title": "Order Items",
+        "description": "Products and quantities ordered",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "pricing",
+        "title": "Pricing & Totals",
+        "description": "Financial breakdown of the order",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "addresses",
+        "title": "Shipping & Billing",
+        "description": "Delivery and billing addresses",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "payment",
+        "title": "Payment Details",
+        "description": "Payment method and transaction info",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "fulfillment",
+        "title": "Fulfillment & Shipping",
+        "description": "Shipping method and tracking information",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      },
+      {
+        "name": "management",
+        "title": "Order Management",
+        "description": "Notes and status tracking",
+        "options": {
+          "collapsible": true,
+          "collapsed": true
+        }
+      }
+    ],
+    "name": "order",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Internal name for this promotion",
+        "name": "name",
+        "type": "string",
+        "title": "Promotion Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Internal description of this promotion",
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Percentage Discount (25% off)",
+              "value": "percentage"
+            },
+            {
+              "title": "Fixed Amount Off ($10 off)",
+              "value": "fixed_amount"
+            },
+            {
+              "title": "Bundle Pricing (2 for $50)",
+              "value": "bundle"
+            },
+            {
+              "title": "Buy One Get One (BOGO - Free or Discounted)",
+              "value": "bogo"
+            },
+            {
+              "title": "Tiered Discount (Volume pricing)",
+              "value": "tiered"
+            },
+            {
+              "title": "Spend Threshold ($150+ for 15% off)",
+              "value": "threshold"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "percentage",
+                  "fixed_amount",
+                  "bundle",
+                  "bogo",
+                  "tiered",
+                  "threshold"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "type",
+        "type": "string",
+        "title": "Promotion Type"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Percentage off (0-100)",
+            "name": "discountPercentage",
+            "type": "number"
+          },
+          {
+            "initialValue": 1,
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "min",
+                    "constraint": 1
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Minimum items required (optional)",
+            "name": "minimumQuantity",
+            "type": "number"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "min",
+                    "constraint": 0
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Cap on total discount in dollars (optional)",
+            "name": "maximumDiscount",
+            "type": "number",
+            "title": "Maximum Discount Amount"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "percentageConfig",
+        "type": "object",
+        "title": "Percentage Discount Configuration"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Fixed dollar amount off",
+            "name": "discountAmount",
+            "type": "number"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Minimum cart value required (optional)",
+            "name": "minimumPurchase",
+            "type": "number",
+            "title": "Minimum Purchase Amount"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "fixedAmountConfig",
+        "type": "object",
+        "title": "Fixed Amount Discount Configuration"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Number of items in bundle (e.g., 2 for '2 shirts for $50')",
+            "name": "quantity",
+            "type": "number",
+            "title": "Bundle Quantity"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Fixed price for the entire bundle",
+            "name": "bundlePrice",
+            "type": "number"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "bundleConfig",
+        "type": "object",
+        "title": "Bundle Pricing Configuration"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": 1,
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Number of items customer must buy",
+            "name": "buyQuantity",
+            "type": "number"
+          },
+          {
+            "initialValue": 1,
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Number of additional items customer receives",
+            "name": "getQuantity",
+            "type": "number"
+          },
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Free (100% off)",
+                  "value": "free"
+                },
+                {
+                  "title": "Percentage Discount",
+                  "value": "percentage"
+                }
+              ]
+            },
+            "initialValue": "free",
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "valid",
+                    "constraint": [
+                      "free",
+                      "percentage"
+                    ]
+                  },
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Type of discount for additional items",
+            "name": "discountType",
+            "type": "string"
+          },
+          {
+            "initialValue": 50,
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Percentage off for additional items (e.g., 50 for 50% off)",
+            "hidden": "conditional",
+            "name": "discountPercentage",
+            "type": "number"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "bogoConfig",
+        "type": "object",
+        "title": "Buy One Get One Configuration"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "of": [
+              {
+                "fields": [
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "custom"
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "minimumQuantity",
+                    "type": "number"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "custom"
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "discountPercentage",
+                    "type": "number"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "tiers",
+            "type": "array",
+            "title": "Discount Tiers"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "tieredConfig",
+        "type": "object",
+        "title": "Tiered Discount Configuration"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Minimum cart value to trigger discount",
+            "name": "minimumSpend",
+            "type": "number",
+            "title": "Minimum Spend Amount"
+          },
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Percentage Off",
+                  "value": "percentage"
+                },
+                {
+                  "title": "Fixed Amount Off",
+                  "value": "fixed_amount"
+                }
+              ]
+            },
+            "initialValue": "percentage",
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "valid",
+                    "constraint": [
+                      "percentage",
+                      "fixed_amount"
+                    ]
+                  },
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "discountType",
+            "type": "string"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "custom"
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "description": "Percentage (0-100) or fixed dollar amount",
+            "name": "discountValue",
+            "type": "number"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "thresholdConfig",
+        "type": "object",
+        "title": "Spend Threshold Configuration"
+      },
+      {
+        "description": "Select categories this promotion applies to. You can select at any hierarchy level - broader categories (e.g., 'Men's') include all subcategories, while specific categories (e.g., 'Dress Shirts') target only those items.",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "category"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to category"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "applicableCategories",
+        "type": "array",
+        "title": "Target Categories"
+      },
+      {
+        "description": "Target specific products (optional - leave empty to apply to all products matching the category selection above)",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "product"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to product"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "applicableProducts",
+        "type": "array",
+        "title": "Specific Products (Optional)"
+      },
+      {
+        "initialValue": true,
+        "description": "Whether to display the promotion tag on products",
+        "hidden": "conditional",
+        "name": "showTag",
+        "type": "boolean",
+        "title": "Show Tag on Products"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 50
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Custom text displayed on product tags (e.g., \"2 FOR $95\", \"25% OFF\")",
+        "hidden": "conditional",
+        "name": "tagLabel",
+        "type": "string"
+      },
+      {
+        "options": {
+          "cssClassPrefix": "bg"
+        },
+        "initialValue": "bg-zinc-950",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Select a Tailwind CSS background color for the promotion tag",
+        "hidden": "conditional",
+        "name": "tagBackgroundColor",
+        "type": "string"
+      },
+      {
+        "options": {
+          "cssClassPrefix": "text"
+        },
+        "initialValue": "text-zinc-50",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Select a Tailwind CSS text color for the promotion tag",
+        "hidden": "conditional",
+        "name": "tagTextColor",
+        "type": "string"
+      },
+      {
+        "initialValue": 50,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Higher numbers take precedence when multiple automatic promotions apply to the same product (1-100)",
+        "hidden": "conditional",
+        "name": "priority",
+        "type": "number"
+      },
+      {
+        "initialValue": true,
+        "description": "Whether this promotion is currently active",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Active"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "When this promotion becomes active",
+        "name": "startDate",
+        "type": "datetime"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "When this promotion expires",
+        "name": "endDate",
+        "type": "datetime"
+      }
+    ],
+    "name": "promotion",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Internal name for this promo code",
+        "name": "name",
+        "type": "string",
+        "title": "Promo Code Name",
+        "fieldset": "basic"
+      },
+      {
+        "description": "Internal description of this promo code",
+        "name": "description",
+        "type": "text",
+        "fieldset": "basic"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 3
+              },
+              {
+                "flag": "max",
+                "constraint": 20
+              },
+              {
+                "flag": "stringCasing",
+                "constraint": "uppercase"
+              },
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^[A-Z0-9]+$/",
+                  "name": "Code must contain only uppercase letters and numbers",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "error"
+          },
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "The code customers must enter (e.g., SAVE15, WELCOME10)",
+        "name": "code",
+        "type": "string",
+        "title": "Promo Code",
+        "fieldset": "basic"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Fixed Amount Off ($10 off)",
+              "value": "fixed_amount"
+            },
+            {
+              "title": "Percentage Off (15% off)",
+              "value": "percentage"
+            }
+          ]
+        },
+        "initialValue": "fixed_amount",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "fixed_amount",
+                  "percentage"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "discountType",
+        "type": "string",
+        "fieldset": "discount"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Dollar amount (for fixed) or percentage (0-100 for percentage)",
+        "name": "discountValue",
+        "type": "number",
+        "fieldset": "discount"
+      },
+      {
+        "description": "Limit the maximum discount amount to protect profit margins",
+        "name": "hasMaximumDiscount",
+        "type": "boolean",
+        "title": "Set Maximum Discount Cap",
+        "fieldset": "discount"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Maximum dollar amount this discount can provide (e.g., $50 cap on 25% off)",
+        "hidden": "conditional",
+        "name": "maximumDiscount",
+        "type": "number",
+        "title": "Maximum Discount Amount",
+        "fieldset": "discount"
+      },
+      {
+        "initialValue": false,
+        "description": "Toggle to require a minimum purchase amount",
+        "name": "hasMinimumPurchase",
+        "type": "boolean",
+        "title": "Require Minimum Purchase",
+        "fieldset": "constraints"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Minimum cart value required",
+        "hidden": "conditional",
+        "name": "minimumPurchase",
+        "type": "number",
+        "title": "Minimum Purchase Amount",
+        "fieldset": "constraints"
+      },
+      {
+        "initialValue": false,
+        "description": "Limit how many times this code can be used",
+        "name": "hasUsageLimit",
+        "type": "boolean",
+        "title": "Set Usage Limit",
+        "fieldset": "constraints"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Maximum number of times this code can be used",
+        "hidden": "conditional",
+        "name": "usageLimit",
+        "type": "number",
+        "title": "Maximum Uses",
+        "fieldset": "constraints"
+      },
+      {
+        "initialValue": true,
+        "description": "Whether this promo code is currently active",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Active",
+        "fieldset": "schedule"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "When this promo code becomes active",
+        "name": "startDate",
+        "type": "datetime",
+        "fieldset": "schedule"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "When this promo code expires (optional)",
+        "name": "endDate",
+        "type": "datetime",
+        "fieldset": "schedule"
+      },
+      {
+        "initialValue": 0,
+        "description": "How many times this code has been used",
+        "readOnly": true,
+        "name": "usageCount",
+        "type": "number",
+        "title": "Times Used",
+        "fieldset": "analytics"
+      }
+    ],
+    "fieldsets": [
+      {
+        "name": "basic",
+        "title": "Basic Information",
+        "description": "Essential promo code details",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "discount",
+        "title": "Discount Configuration",
+        "description": "Set discount type, amount, and optional caps",
+        "options": {
+          "collapsible": false
+        }
+      },
+      {
+        "name": "constraints",
+        "title": "Constraints & Limits",
+        "description": "Optional restrictions (minimum purchase, usage limits)",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      },
+      {
+        "name": "schedule",
+        "title": "Scheduling & Status",
+        "description": "When the promo code is active",
+        "options": {
+          "collapsible": true,
+          "collapsed": false
+        }
+      },
+      {
+        "name": "analytics",
+        "title": "Usage Analytics",
+        "description": "Track promo code performance",
+        "options": {
+          "collapsible": true,
+          "collapsed": true
+        }
+      }
+    ],
+    "name": "promoCode",
+    "type": "document"
+  }
+]

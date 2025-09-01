@@ -1,32 +1,14 @@
 import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
-import { readClient } from "@/sanity/lib/client";
+import { getNavbarCategories } from "@/sanity/lib/utils";
 import { MegaMenu } from "./MegaMenu";
+import type { NAVBAR_CATEGORIES_QUERYResult } from "@/sanity/types/sanity.types";
 
 export default async function Navbar() {
   const session = await auth();
 
-  const categories = await readClient.fetch(`
-    *[_type == "category" && !defined(parent) && isActive == true] | order(_createdAt) {
-      _id,
-      title,
-      "slug": slug.current,
-      pageType,
-      "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {
-        _id,
-        title,
-        "slug": slug.current,
-        pageType,
-        "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {
-          _id,
-          title,
-          "slug": slug.current,
-          pageType
-        }
-      }
-    }
-  `);
+  const categories = await getNavbarCategories() as NAVBAR_CATEGORIES_QUERYResult;
 
   return (
     <header className="relative h-16 bg-white border-b border-gray-100 flex items-center">

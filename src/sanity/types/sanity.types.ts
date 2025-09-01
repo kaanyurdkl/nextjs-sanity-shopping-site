@@ -296,6 +296,7 @@ export type Product = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "category";
   };
+  categoryHierarchy?: Array<string>;
   sizeGroup: {
     _ref: string;
     _type: "reference";
@@ -667,9 +668,9 @@ export type SanityAssetSourceData = {
 
 export type AllSanitySchemaTypes = PromoCode | Promotion | Order | User | Review | Product | Size | Color | Category | BlockContent | Address | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/sanity/queries/categories.ts
+// Source: ./src/sanity/lib/queries.ts
 // Variable: CATEGORY_BY_SLUG_QUERY
-// Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {  _id,  title,  "slug": slug.current,  pageType,  parent->{    _id,    title,    "slug": slug.current  }}
+// Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {    _id,    title,    "slug": slug.current,    pageType,    parent->{      _id,      title,      "slug": slug.current    }  }
 export type CATEGORY_BY_SLUG_QUERYResult = {
   _id: string;
   title: string;
@@ -681,20 +682,105 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
     slug: string;
   } | null;
 } | null;
+// Variable: CATEGORY_ID_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug && isActive == true][0]._id
+export type CATEGORY_ID_BY_SLUG_QUERYResult = string | null;
 // Variable: CATEGORY_CHILDREN_QUERY
-// Query: *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {  _id,  title,  "slug": slug.current,  pageType}
+// Query: *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {    _id,    title,    "slug": slug.current,    pageType  }
 export type CATEGORY_CHILDREN_QUERYResult = Array<{
   _id: string;
   title: string;
   slug: string;
   pageType: "landing" | "listing";
 }>;
+// Variable: NAVBAR_CATEGORIES_QUERY
+// Query: *[_type == "category" && !defined(parent) && isActive == true] | order(_createdAt) {    _id,    title,    "slug": slug.current,    pageType,    "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {      _id,      title,      "slug": slug.current,      pageType,      "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {        _id,        title,        "slug": slug.current,        pageType      }    }  }
+export type NAVBAR_CATEGORIES_QUERYResult = Array<{
+  _id: string;
+  title: string;
+  slug: string;
+  pageType: "landing" | "listing";
+  children: Array<{
+    _id: string;
+    title: string;
+    slug: string;
+    pageType: "landing" | "listing";
+    children: Array<{
+      _id: string;
+      title: string;
+      slug: string;
+      pageType: "landing" | "listing";
+    }>;
+  }>;
+}>;
+// Variable: HAS_CHILDREN_QUERY
+// Query: count(*[_type == "category" && parent._ref == $categoryId && isActive == true]) > 0
+export type HAS_CHILDREN_QUERYResult = boolean;
+// Variable: GET_CHILDREN_QUERY
+// Query: *[_type == "category" && parent._ref == $categoryId && isActive == true] {    _id  }
+export type GET_CHILDREN_QUERYResult = Array<{
+  _id: string;
+}>;
+// Variable: PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY
+// Query: *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]   | order(_createdAt desc) {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "availableColors": variants[isActive == true && stockQuantity > 0].color->{      _id,      name,      hexCode,      code    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
+export type PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  basePrice: number;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  };
+  hoverImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  availableColors: Array<{
+    _id: string;
+    name: string;
+    hexCode: string;
+    code: string;
+  }> | null;
+  hasStock: boolean | null;
+}>;
+// Variable: USER_BY_EMAIL_QUERY
+// Query: *[_type == "user" && email == $email][0]{    firstName,    lastName,    email  }
+export type USER_BY_EMAIL_QUERYResult = {
+  firstName: string;
+  lastName: string;
+  email: string;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType,\n  parent->{\n    _id,\n    title,\n    \"slug\": slug.current\n  }\n}": CATEGORY_BY_SLUG_QUERYResult;
-    "*[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n  _id,\n  title,\n  \"slug\": slug.current,\n  pageType\n}": CATEGORY_CHILDREN_QUERYResult;
+    "\n  *[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    parent->{\n      _id,\n      title,\n      \"slug\": slug.current\n    }\n  }\n": CATEGORY_BY_SLUG_QUERYResult;
+    "\n  *[_type == \"category\" && slug.current == $slug && isActive == true][0]._id\n": CATEGORY_ID_BY_SLUG_QUERYResult;
+    "\n  *[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType\n  }\n": CATEGORY_CHILDREN_QUERYResult;
+    "\n  *[_type == \"category\" && !defined(parent) && isActive == true] | order(_createdAt) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n      _id,\n      title,\n      \"slug\": slug.current,\n      pageType,\n      \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n        _id,\n        title,\n        \"slug\": slug.current,\n        pageType\n      }\n    }\n  }\n": NAVBAR_CATEGORIES_QUERYResult;
+    "\n  count(*[_type == \"category\" && parent._ref == $categoryId && isActive == true]) > 0\n": HAS_CHILDREN_QUERYResult;
+    "\n  *[_type == \"category\" && parent._ref == $categoryId && isActive == true] {\n    _id\n  }\n": GET_CHILDREN_QUERYResult;
+    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"availableColors\": variants[isActive == true && stockQuantity > 0].color->{\n      _id,\n      name,\n      hexCode,\n      code\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult;
+    "\n  *[_type == \"user\" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n": USER_BY_EMAIL_QUERYResult;
   }
 }
