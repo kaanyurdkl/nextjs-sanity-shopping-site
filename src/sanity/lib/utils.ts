@@ -6,7 +6,6 @@ import type {
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
-  CATEGORY_ID_BY_SLUG_QUERY,
   CATEGORY_CHILDREN_QUERY,
   PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY,
   NAVBAR_CATEGORIES_QUERY,
@@ -68,30 +67,19 @@ export async function getNavbarCategories() {
 // =============================================================================
 
 /**
- * Fetch products by category using computed categoryHierarchy field (optimized!)
- * Two-query approach: Get category ID first, then products by ID
+ * Fetch products by category ID using computed categoryHierarchy field (optimized!)
+ * Single-query approach: Direct product fetch with category ID
  */
-export async function getProductsByCategory(
-  categorySlug: string
+export async function getProductsByCategoryId(
+  categoryId: string
 ): Promise<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult> {
-  // First, get the category ID for this slug
-  const categoryId = await sanityFetch<string>({
-    query: CATEGORY_ID_BY_SLUG_QUERY,
-    params: { slug: categorySlug },
-    tags: ["category"],
-  });
-
-  if (!categoryId) {
-    return [];
-  }
-
-  // Then fetch products that have this category ID in their hierarchy
   return await sanityFetch<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult>({
     query: PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY,
     params: { categoryId },
     tags: ["product", "category"],
   });
 }
+
 
 
 // =============================================================================

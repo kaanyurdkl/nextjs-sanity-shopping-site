@@ -1,13 +1,8 @@
-import type {
-  CATEGORY_BY_SLUG_QUERYResult,
-  PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult,
-} from "@/sanity/types/sanity.types";
+import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import CategorySidebar from "@/components/ui/CategorySidebar";
 import ProductGrid from "@/components/ui/ProductGrid";
-import { getProductsByCategory } from "@/sanity/lib/utils";
-
-type Products = PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult;
+import { getProductsByCategoryId } from "@/sanity/lib/utils";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
@@ -18,9 +13,8 @@ export default async function CategoryListingPage({
   category,
   slugArray,
 }: CategoryListingPageProps) {
-  // Fetch products for this category using optimized slug-based approach
-  const categorySlug = slugArray.join("/");
-  const products: Products = await getProductsByCategory(categorySlug);
+  // Fetch products for this category using optimized ID-based approach
+  const products = await getProductsByCategoryId(category._id);
 
   return (
     <div className="max-w-8xl mx-auto px-6 py-8">

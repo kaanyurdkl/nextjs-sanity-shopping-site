@@ -682,9 +682,6 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
     slug: string;
   } | null;
 } | null;
-// Variable: CATEGORY_ID_BY_SLUG_QUERY
-// Query: *[_type == "category" && slug.current == $slug && isActive == true][0]._id
-export type CATEGORY_ID_BY_SLUG_QUERYResult = string | null;
 // Variable: CATEGORY_CHILDREN_QUERY
 // Query: *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {    _id,    title,    "slug": slug.current,    pageType  }
 export type CATEGORY_CHILDREN_QUERYResult = Array<{
@@ -775,7 +772,6 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n  *[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    parent->{\n      _id,\n      title,\n      \"slug\": slug.current\n    }\n  }\n": CATEGORY_BY_SLUG_QUERYResult;
-    "\n  *[_type == \"category\" && slug.current == $slug && isActive == true][0]._id\n": CATEGORY_ID_BY_SLUG_QUERYResult;
     "\n  *[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType\n  }\n": CATEGORY_CHILDREN_QUERYResult;
     "\n  *[_type == \"category\" && !defined(parent) && isActive == true] | order(_createdAt) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n      _id,\n      title,\n      \"slug\": slug.current,\n      pageType,\n      \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n        _id,\n        title,\n        \"slug\": slug.current,\n        pageType\n      }\n    }\n  }\n": NAVBAR_CATEGORIES_QUERYResult;
     "\n  count(*[_type == \"category\" && parent._ref == $categoryId && isActive == true]) > 0\n": HAS_CHILDREN_QUERYResult;

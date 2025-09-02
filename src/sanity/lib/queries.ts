@@ -28,12 +28,6 @@ export const CATEGORY_BY_SLUG_QUERY = defineQuery(`
   }
 `);
 
-/**
- * Get category ID by slug - for optimized product lookups
- */
-export const CATEGORY_ID_BY_SLUG_QUERY = defineQuery(`
-  *[_type == "category" && slug.current == $slug && isActive == true][0]._id
-`);
 
 /**
  * Fetch child categories for sidebar navigation
