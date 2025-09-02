@@ -1,9 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
-import type { 
-  PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult 
-} from "@/sanity/types/sanity.types";
+import type { PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult } from "@/sanity/types/sanity.types";
 
 type Product = PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult[0];
 
@@ -22,8 +20,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     hasStock,
   } = product;
 
-  console.log("thumbnail", thumbnail);
-
   // Get optimized image URLs
   const thumbnailUrl = thumbnail?.asset?.url
     ? urlFor(thumbnail.asset.url)
@@ -33,7 +29,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         .quality(85)
         .url()
     : null;
-  console.log("thumbnailUrl", thumbnailUrl);
 
   const hoverImageUrl = hoverImage?.asset?.url
     ? urlFor(hoverImage.asset.url)
