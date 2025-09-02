@@ -29,8 +29,7 @@ export async function getCategoryBySlugPath(
   const category = await sanityFetch<CATEGORY_BY_SLUG_QUERYResult>({
     query: CATEGORY_BY_SLUG_QUERY,
     params: { slug: fullSlug },
-    revalidate: 3600, // Revalidate every hour
-    tags: ["category"], // Tag for cache invalidation
+    tags: ["category"],
   });
 
   return category;
@@ -46,8 +45,7 @@ export async function getCategoryChildren(
   const children = await sanityFetch<CATEGORY_CHILDREN_QUERYResult>({
     query: CATEGORY_CHILDREN_QUERY,
     params: { parentId: parentCategoryId },
-    revalidate: 3600, // Revalidate every hour
-    tags: ["category"], // Tag for cache invalidation
+    tags: ["category"],
   });
 
   return children;
@@ -60,8 +58,7 @@ export async function getCategoryChildren(
 export async function getNavbarCategories() {
   return await sanityFetch({
     query: NAVBAR_CATEGORIES_QUERY,
-    revalidate: 3600, // Cache for 1 hour
-    tags: ["category"], // Tag for cache invalidation
+    tags: ["category"],
   });
 }
 
@@ -81,7 +78,6 @@ export async function getProductsByCategory(
   const categoryId = await sanityFetch<string>({
     query: CATEGORY_ID_BY_SLUG_QUERY,
     params: { slug: categorySlug },
-    revalidate: 3600,
     tags: ["category"],
   });
 
@@ -93,7 +89,6 @@ export async function getProductsByCategory(
   return await sanityFetch<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult>({
     query: PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY,
     params: { categoryId },
-    revalidate: 1800,
     tags: ["product", "category"],
   });
 }
@@ -111,7 +106,6 @@ export async function getUserByEmail(email: string) {
   return await sanityFetch({
     query: USER_BY_EMAIL_QUERY,
     params: { email },
-    revalidate: 3600, // Cache for 1 hour
     tags: ["user"],
   });
 }
