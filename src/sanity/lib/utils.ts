@@ -8,6 +8,8 @@ import {
   CATEGORY_BY_SLUG_QUERY,
   CATEGORY_CHILDREN_QUERY,
   PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY,
+  PRODUCTS_COUNT_BY_CATEGORY_QUERY,
+  PRODUCTS_PAGINATED_BY_CATEGORY_QUERY,
   NAVBAR_CATEGORIES_QUERY,
   USER_BY_EMAIL_QUERY,
 } from "./queries";
@@ -80,7 +82,42 @@ export async function getProductsByCategoryId(
   });
 }
 
+/**
+ * Get total count of products by category ID
+ * Used for pagination calculations - Step 1 of sequential pagination
+ */
+export async function getProductsCountByCategoryId(
+  categoryId: string
+): Promise<number> {
+  return await sanityFetch<number>({
+    query: PRODUCTS_COUNT_BY_CATEGORY_QUERY,
+    params: { categoryId },
+    tags: ["product", "category"],
+  });
+}
 
+/**
+ * Fetch paginated products by category ID
+ * Used for specific page display - Step 2 of sequential pagination
+ */
+export async function getProductsPaginatedByCategoryId(
+  categoryId: string,
+  page: number,
+  pageSize: number = 3
+): Promise<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult> {
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize; // Adjust for GROQ inclusive range behavior
+  
+  return await sanityFetch<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult>({
+    query: PRODUCTS_PAGINATED_BY_CATEGORY_QUERY,
+    params: { 
+      categoryId, 
+      startIndex, 
+      endIndex 
+    },
+    tags: ["product", "category"],
+  });
+}
 
 // =============================================================================
 // USER UTILITIES

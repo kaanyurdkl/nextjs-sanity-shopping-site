@@ -759,6 +759,50 @@ export type PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult = Array<{
   }> | null;
   hasStock: boolean | null;
 }>;
+// Variable: PRODUCTS_COUNT_BY_CATEGORY_QUERY
+// Query: count(*[_type == "product" && $categoryId in categoryHierarchy && isActive == true])
+export type PRODUCTS_COUNT_BY_CATEGORY_QUERYResult = number;
+// Variable: PRODUCTS_PAGINATED_BY_CATEGORY_QUERY
+// Query: *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]   | order(_createdAt desc) [$startIndex..$endIndex] {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "availableColors": variants[isActive == true && stockQuantity > 0].color->{      _id,      name,      hexCode,      code    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
+export type PRODUCTS_PAGINATED_BY_CATEGORY_QUERYResult = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  basePrice: number;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  };
+  hoverImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  availableColors: Array<{
+    _id: string;
+    name: string;
+    hexCode: string;
+    code: string;
+  }> | null;
+  hasStock: boolean | null;
+}>;
 // Variable: USER_BY_EMAIL_QUERY
 // Query: *[_type == "user" && email == $email][0]{    firstName,    lastName,    email  }
 export type USER_BY_EMAIL_QUERYResult = {
@@ -777,6 +821,8 @@ declare module "@sanity/client" {
     "\n  count(*[_type == \"category\" && parent._ref == $categoryId && isActive == true]) > 0\n": HAS_CHILDREN_QUERYResult;
     "\n  *[_type == \"category\" && parent._ref == $categoryId && isActive == true] {\n    _id\n  }\n": GET_CHILDREN_QUERYResult;
     "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"availableColors\": variants[isActive == true && stockQuantity > 0].color->{\n      _id,\n      name,\n      hexCode,\n      code\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult;
+    "\n  count(*[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true])\n": PRODUCTS_COUNT_BY_CATEGORY_QUERYResult;
+    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex..$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"availableColors\": variants[isActive == true && stockQuantity > 0].color->{\n      _id,\n      name,\n      hexCode,\n      code\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_PAGINATED_BY_CATEGORY_QUERYResult;
     "\n  *[_type == \"user\" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n": USER_BY_EMAIL_QUERYResult;
   }
 }

@@ -8,10 +8,12 @@ import { getCategoryBySlugPath } from "@/sanity/lib/utils";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
 
   // Handle homepage
   if (!slug || slug.length === 0) {
@@ -31,5 +33,5 @@ export default async function CategoryPage({ params }: PageProps) {
     return <CategoryLandingPage category={category} slugArray={slug} />;
   }
 
-  return <CategoryListingPage category={category} slugArray={slug} />;
+  return <CategoryListingPage category={category} slugArray={slug} searchParams={resolvedSearchParams} />;
 }

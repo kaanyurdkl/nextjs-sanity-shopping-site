@@ -136,6 +136,61 @@ export const PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY = defineQuery(`
   }
 `);
 
+/**
+ * Get total count of products by category hierarchy
+ * Used for pagination calculations
+ */
+export const PRODUCTS_COUNT_BY_CATEGORY_QUERY = defineQuery(`
+  count(*[_type == "product" && $categoryId in categoryHierarchy && isActive == true])
+`);
+
+/**
+ * Fetch paginated products by category hierarchy
+ * Used for specific page display with array slicing
+ */
+export const PRODUCTS_PAGINATED_BY_CATEGORY_QUERY = defineQuery(`
+  *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] 
+  | order(_createdAt desc) [$startIndex...$endIndex] {
+    _id,
+    name,
+    "slug": slug.current,
+    basePrice,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    hoverImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    "availableColors": variants[isActive == true && stockQuantity > 0].color->{
+      _id,
+      name,
+      hexCode,
+      code
+    },
+    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
+  }
+`);
+
 // =============================================================================
 // USER QUERIES
 // =============================================================================
