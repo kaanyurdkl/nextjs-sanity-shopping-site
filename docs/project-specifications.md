@@ -1,7 +1,7 @@
 # E-Commerce Project Specifications
 
 **Fashion E-commerce Platform - Technical Requirements & Design Specifications**  
-*Version 3.0 - Updated January 2025*
+*Version 3.1 - Updated September 2025 - Includes Sanity Functions & Performance Optimizations*
 
 ## Table of Contents
 
@@ -72,23 +72,25 @@ A sophisticated fashion e-commerce platform targeting quality-conscious Millenni
 - **Fonts**: Geist Sans and Geist Mono via next/font
 
 #### Services & Integrations
-- **CMS**: Sanity v3.99.0 for content management
+- **CMS**: Sanity v3.99.0 for content management with Sanity Functions
 - **Authentication**: Auth.js v5.0.0-beta (Google OAuth only)
 - **Payments**: Stripe API (latest 2025 version)
 - **Email**: Resend for transactional communications
 - **Hosting**: Vercel (free tier deployment)
+- **Serverless Functions**: Sanity Functions for server-side computed fields
 
 ### Data Architecture (Sanity CMS)
 
 #### Category Hierarchy Structure
 
-The platform uses a flexible hierarchical category system that supports unlimited nesting levels for organized product classification and SEO-friendly URLs.
+The platform uses a flexible hierarchical category system with server-side computed fields for optimal performance, supporting unlimited nesting levels for organized product classification and SEO-friendly URLs.
 
 ##### **Key Features:**
 - **Flexible Depth**: Categories can be nested to any level (no fixed limit)
 - **Parent-Child Relationships**: Each category can optionally reference a parent category
 - **Future-Proof**: New categories can be added at any level without structural changes
-- **Manual Slug Management**: Admins manually construct hierarchical slugs by extending parent category paths
+- **Server-Side Optimization**: Products automatically compute categoryHierarchy field with parent category IDs
+- **Performance Optimized**: ID-based queries instead of complex slug-based lookups
 
 ##### **Current Category Examples:**
 - **Root Level**: Men's (`mens`), Women's (`womens`)
@@ -98,13 +100,14 @@ The platform uses a flexible hierarchical category system that supports unlimite
   - `womens/dresses` (could expand to `womens/dresses/formal`, etc.)
 
 ##### **Category Schema Features:**
-- **Manual Slug Construction**: Admins manually create hierarchical slugs by extending parent paths
+- **Hierarchical Slug Structure**: Categories maintain hierarchical slug paths for SEO-friendly URLs
   - Example: Parent category `mens/tops/shirts` → Child category `mens/tops/shirts/dress-shirts`
-  - Process: Admin looks at parent slug and appends current category name
+  - Used for URL routing and breadcrumb navigation
+- **Server-Side Computed Fields**: Sanity Functions automatically populate categoryHierarchy on product publish
 - **Page Type Configuration**: Categories can be product listings or landing pages
 - **Flexible Management**: Add, remove, or reorganize categories without code changes
 - **Self-Preventing Loops**: Categories cannot reference themselves as parents
-- **Slug Field**: Has generate button but is used for manual entry of hierarchical paths
+- **Performance Optimization**: Two-query approach (category ID lookup + products by ID)
 
 ##### **URL Structure Examples**
 - **Product URLs**: Use `/product/` prefix with product slug: `/product/luxury-t-shirt`, `/product/executive-dress-shirt`
@@ -150,13 +153,14 @@ The platform uses a flexible hierarchical category system that supports unlimite
 
 #### Product Schema
 ```typescript
-// Enhanced product schema with dynamic sizing
+// Enhanced product schema with dynamic sizing and server-side computed fields
 {
   name: string
   slug: slug
   description: blockContent
   basePrice: number
   category: reference // Reference to category schema for hierarchical categorization
+  categoryHierarchy: string[] // Auto-computed array of parent category IDs (server-side)
   sizeGroup: reference // Reference to size schema for dynamic sizing
   
   // Variant system with auto-generated SKUs
@@ -595,10 +599,12 @@ const TAX_RATES = {
 
 ### Development Workflow
 1. **Schema-First Development**: Complete Sanity schemas before frontend
-2. **Component-Based Architecture**: Reusable UI components
-3. **Type-Safe Development**: TypeScript strict mode
-4. **Testing Strategy**: Schema validation and data integrity
-5. **Performance Optimization**: Image optimization, lazy loading
+2. **Type-Safe Development**: Run `npm run typegen` after schema changes
+3. **Function Deployment**: Deploy Sanity Functions with `npm run deploy:functions`
+4. **Component-Based Architecture**: Reusable UI components
+5. **Testing Strategy**: Schema validation and data integrity
+6. **Performance Optimization**: Server-side computed fields, aggressive caching
+7. **Monitoring**: Use `npm run logs:functions` for function debugging
 
 ### Quality Standards
 - **Code Style**: ES modules, TypeScript strict mode

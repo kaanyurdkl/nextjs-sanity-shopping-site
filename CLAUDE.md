@@ -41,6 +41,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` - Build for production
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint checks
+- `npm run typegen` - Generate Sanity types from schema
+- `npm run deploy:functions` - Deploy Sanity Functions
+- `npm run logs:functions` - View Sanity Function logs
 
 ### Code Style & Conventions
 
@@ -62,6 +65,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Development Workflow
 
 - **IMPORTANT**: Always run `npm run lint` before committing code
+- **IMPORTANT**: Always run `npm run typegen` after schema changes
+- **IMPORTANT**: Deploy functions after changes with `npm run deploy:functions`
 - **IMPORTANT**: Test schema changes with example data script
 - **IMPORTANT**: Use minimal commit messages (e.g., "Remove marketingEmails field from user schema")
 - Prefer editing existing files over creating new ones
@@ -71,26 +76,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Tech Stack
 
 - **Core**: Next.js 15.4.1, React 19.1.0, TypeScript, Tailwind CSS v4, Sanity CMS
+- **Sanity Functions**: Server-side computed fields for optimized queries
 - **Full details**: See `docs/project-specifications.md` → Technical Architecture
+
+### Performance Optimization
+
+- **Server-side computed fields**: categoryHierarchy field auto-populated by Sanity Functions
+- **Aggressive caching**: 1-hour cache with tag-based invalidation for Sanity queries
+- **Optimized queries**: ID-based lookups instead of complex string matching
+- **Two-query approach**: Category ID lookup + products by hierarchy (vs complex multi-query)
 
 ## Current Implementation Status
 
 ### Completed
 
 - Next.js 15 setup with App Router and Turbopack
-- Sanity integration with Studio v3
-- Sanity schema structure (11 schemas total)
-- Product catalog with sample data
+- Sanity integration with Studio v3 and Sanity Functions
+- Complete schema structure (11 schemas total) with server-side computed fields
+- Product catalog with optimized category hierarchy queries
 - Custom Sanity components for admin workflow
+- Category listing pages with performance optimization
+- Authentication system with NextAuth.js + Google OAuth
 
 ### Next Phase
 
-- **Frontend development** (homepage, product pages, cart, checkout)
-- Implement authentication (NextAuth.js + Google OAuth)
+- **Frontend development** (homepage, product detail pages, cart, checkout)
 - Build shopping cart and checkout functionality
 - Integrate Stripe payment processing
-- Connect Sanity schemas to frontend components
 - Implement promotion engine and pricing calculations
+- User account management and order history
 
 ## File Organization
 
@@ -114,6 +128,14 @@ src/
 │           └── [...nextauth]/
 │               └── route.ts # Auth.js handlers
 ├── components/            # Reusable UI components
+│   ├── pages/             # Page-specific components
+│   │   ├── CategoryListingPage.tsx # Category product listing
+│   │   └── HomePage.tsx   # Homepage component
+│   ├── ui/                # Reusable UI components
+│   │   ├── Breadcrumbs.tsx # Navigation breadcrumbs
+│   │   ├── CategorySidebar.tsx # Category navigation sidebar
+│   │   ├── ProductCard.tsx # Product display card
+│   │   └── ProductGrid.tsx # Product grid layout
 │   ├── navbar.tsx         # Navigation with auth states
 │   ├── auth-provider.tsx  # SessionProvider wrapper
 │   └── icons/             # Icon components
@@ -143,7 +165,10 @@ src/
 │   │   └── index.ts       # Schema registry
 │   ├── lib/               # Sanity client utilities
 │   │   ├── client.ts      # Sanity client configuration
+│   │   ├── fetch.ts       # Enhanced fetch with caching
 │   │   ├── image.ts       # Image URL builder utilities
+│   │   ├── queries.ts     # GROQ queries for data fetching
+│   │   ├── utils.ts       # Query utility functions
 │   │   └── live.ts        # Live content functionality
 │   ├── components/        # Custom Sanity components
 │   │   ├── TailwindColorPicker.tsx # Color picker for promotion tags
@@ -156,16 +181,19 @@ src/
 │   │   └── schema.json         # Generated schema
 │   ├── constants/         # Shared constants
 │   │   └── tailwind.ts    # Tailwind-related constants
-│   ├── config/            # Configuration files
-│   │   ├── env.ts         # Environment variables
-│   │   └── structure.ts   # Studio structure configuration
-│   └── queries/           # GROQ queries (ready for use)
+│   └── config/            # Configuration files
+│       ├── env.ts         # Environment variables
+│       └── structure.ts   # Studio structure configuration
 scripts/
 ├── add-products.ts         # Creates products and adds to Sanity
 ├── delete-products.ts      # Deletes all products from Sanity
 ├── example-products.json   # 13 complete products with variants
 └── shared/                 # Shared utilities
     └── sanity-utils.ts     # Sanity client config and image processing
+functions/                  # Sanity Functions (serverless)
+└── compute-category-hierarchy/ # Auto-compute category hierarchy
+    └── index.ts            # Function to populate categoryHierarchy field
+sanity.blueprint.ts         # Sanity Functions configuration
 design/                    # UI wireframes organized by page type
 ├── pages/                 # Individual page wireframes
 │   ├── home/             # Homepage designs
