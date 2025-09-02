@@ -424,6 +424,9 @@ Email Notifications ← Resend API ← Order/Shipping Updates
   - `/deals` (promotion-tagged products)
   - `/new-arrivals` (recently added products)
   - `/essentials` (core wardrobe pieces)
+- **Pagination**: Sequential pagination with numbered navigation (3 products per page)
+  - Clean URLs: `/mens/tops` (page 1), `/mens/tops?page=2` (page 2+)
+  - Traditional pagination UI with ellipsis: `< 1 2 3 ... 10 >`
 
 #### Product Detail Page (`/product/[slug]`)
 - **Image Gallery**: Primary + hover image + additional gallery

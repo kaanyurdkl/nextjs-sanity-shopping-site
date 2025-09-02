@@ -96,6 +96,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Product catalog with optimized category hierarchy queries
 - Custom Sanity components for admin workflow
 - Category listing pages with performance optimization
+- Sequential pagination for product listings (3 products per page)
 - Authentication system with NextAuth.js + Google OAuth
 
 ### Next Phase
