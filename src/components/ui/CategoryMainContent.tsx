@@ -53,11 +53,13 @@ export default async function CategoryMainContent({
       {products.length > 0 ? (
         <>
           <ProductGrid products={products} />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            basePath={basePath}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath={basePath}
+            />
+          )}
         </>
       ) : (
         <div className="text-center py-12">
