@@ -126,11 +126,15 @@ export const PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY = defineQuery(`
       },
       alt
     },
-    "availableColors": variants[isActive == true && stockQuantity > 0].color->{
-      _id,
-      name,
-      hexCode,
-      code
+    "variants": variants[isActive == true && stockQuantity > 0] {
+      size,
+      stockQuantity,
+      color->{
+        _id,
+        name,
+        hexCode,
+        code
+      }
     },
     "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
   }
@@ -181,11 +185,15 @@ export const PRODUCTS_PAGINATED_BY_CATEGORY_QUERY = defineQuery(`
       },
       alt
     },
-    "availableColors": variants[isActive == true && stockQuantity > 0].color->{
-      _id,
-      name,
-      hexCode,
-      code
+    "variants": variants[isActive == true && stockQuantity > 0] {
+      size,
+      stockQuantity,
+      color->{
+        _id,
+        name,
+        hexCode,
+        code
+      }
     },
     "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
   }

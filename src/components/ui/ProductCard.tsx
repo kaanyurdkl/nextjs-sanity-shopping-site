@@ -16,9 +16,17 @@ export default function ProductCard({ product }: ProductCardProps) {
     basePrice,
     thumbnail,
     hoverImage,
-    availableColors,
+    variants,
     hasStock,
   } = product;
+
+  // Compute unique colors from variants
+  const uniqueColors = variants?.reduce((acc, variant) => {
+    if (variant.color && !acc.find(color => color._id === variant.color._id)) {
+      acc.push(variant.color);
+    }
+    return acc;
+  }, [] as NonNullable<NonNullable<typeof variants>[0]['color']>[]) || [];
 
   // Get optimized image URLs
   const thumbnailUrl = thumbnail?.asset?.url
@@ -108,10 +116,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             {name}
           </h3>
 
+          {/* Price */}
+          <p className="text-sm font-medium text-gray-900">
+            ${basePrice.toFixed(2)}
+          </p>
+
           {/* Available Colors */}
-          {availableColors && availableColors.length > 0 && (
+          {uniqueColors && uniqueColors.length > 0 && (
             <div className="flex items-center space-x-1">
-              {availableColors.slice(0, 5).map((color, index) => (
+              {uniqueColors.slice(0, 5).map((color: any, index: number) => (
                 <div
                   key={`${color._id}-${index}`}
                   className="h-3 w-3 rounded-full border border-gray-300"
@@ -119,18 +132,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                   title={color.name}
                 />
               ))}
-              {availableColors.length > 5 && (
+              {uniqueColors.length > 5 && (
                 <span className="text-xs text-gray-500">
-                  +{availableColors.length - 5}
+                  +{uniqueColors.length - 5}
                 </span>
               )}
             </div>
           )}
-
-          {/* Price */}
-          <p className="text-sm font-medium text-gray-900">
-            ${basePrice.toFixed(2)}
-          </p>
         </div>
       </Link>
     </div>
