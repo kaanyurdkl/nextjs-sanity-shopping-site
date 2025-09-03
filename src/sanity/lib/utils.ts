@@ -13,6 +13,7 @@ import {
   NAVBAR_CATEGORIES_QUERY,
   USER_BY_EMAIL_QUERY,
 } from "./queries";
+import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
 // =============================================================================
 // CATEGORY UTILITIES
@@ -102,11 +103,10 @@ export async function getProductsCountByCategoryId(
  */
 export async function getProductsPaginatedByCategoryId(
   categoryId: string,
-  page: number,
-  pageSize: number = 3
+  page: number
 ): Promise<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult> {
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize; // Adjust for GROQ inclusive range behavior
+  const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE; // Adjust for GROQ inclusive range behavior
   
   return await sanityFetch<PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult>({
     query: PRODUCTS_PAGINATED_BY_CATEGORY_QUERY,
