@@ -3,9 +3,9 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import CategorySidebar from "@/components/ui/CategorySidebar";
 import ProductGrid from "@/components/ui/ProductGrid";
 import Pagination from "@/components/ui/Pagination";
-import { 
-  getProductsCountByCategoryId, 
-  getProductsPaginatedByCategoryId 
+import {
+  getProductsCountByCategoryId,
+  getProductsPaginatedByCategoryId,
 } from "@/sanity/lib/utils";
 import { redirect } from "next/navigation";
 
@@ -21,27 +21,33 @@ export default async function CategoryListingPage({
   searchParams,
 }: CategoryListingPageProps) {
   const currentPage = Number(searchParams?.page) || 1;
+
+  // Handle invalid page numbers
+  if (currentPage < 1) {
+    const basePath = `/${slugArray.join("/")}`;
+    redirect(basePath);
+  }
+
   const pageSize = 3; // Products per page
-  
+
   // Step 1: Get total count first (Sequential Logic)
   const totalCount = await getProductsCountByCategoryId(category._id);
   const totalPages = Math.ceil(totalCount / pageSize);
-  
+
   // Handle invalid page numbers (redirect to page 1)
-  if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
-    const basePath = `/${slugArray.join('/')}`;
+  if (totalPages > 0 && currentPage > totalPages) {
+    const basePath = `/${slugArray.join("/")}`;
     redirect(basePath);
   }
-  
+
   // Step 2: Get products for current page
   const products = await getProductsPaginatedByCategoryId(
-    category._id, 
-    currentPage, 
+    category._id,
+    currentPage,
     pageSize
   );
 
-
-  const basePath = `/${slugArray.join('/')}`;
+  const basePath = `/${slugArray.join("/")}`;
 
   return (
     <div className="max-w-8xl mx-auto px-6 py-8">
@@ -59,9 +65,7 @@ export default async function CategoryListingPage({
               {category.title}
             </h1>
             {totalCount > 0 && (
-              <p className="text-gray-600">
-                Showing {Math.min(pageSize, totalCount - (currentPage - 1) * pageSize)} of {totalCount} products
-              </p>
+              <p className="text-gray-600">{totalCount} products</p>
             )}
           </div>
 
@@ -77,7 +81,9 @@ export default async function CategoryListingPage({
             </>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No products found in this category.</p>
+              <p className="text-gray-500 text-lg">
+                No products found in this category.
+              </p>
             </div>
           )}
         </main>
