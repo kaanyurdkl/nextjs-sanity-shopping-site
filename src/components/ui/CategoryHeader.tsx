@@ -3,12 +3,17 @@ interface CategoryHeaderProps {
   totalCount: number;
 }
 
-export default function CategoryHeader({ title, totalCount }: CategoryHeaderProps) {
+export default function CategoryHeader({
+  title,
+  totalCount,
+}: CategoryHeaderProps) {
   return (
-    <div className="mb-6">
-      <h1 className="text-3xl font-bold text-black mb-2">{title}</h1>
+    <div className="mb-4">
+      <h1 className="text-3xl uppercase font-bold mb-4">{title}</h1>
       {totalCount > 0 && (
-        <p className="text-gray-600">{totalCount} products</p>
+        <p>
+          <span className="font-bold">{totalCount}</span> products
+        </p>
       )}
     </div>
   );
