@@ -39,9 +39,9 @@ export default async function CategorySidebar({
   const isViewAllActive = children.length > 0 && !hasMatchingChild;
 
   return (
-    <aside className="w-60 flex-shrink-0">
+    <aside className="w-48 flex-shrink-0">
       <div className="mb-8">
-        <h3 className="font-semibold text-black mb-4">Categories</h3>
+        <h3 className="font-bold mb-4 uppercase">Categories</h3>
         <nav>
           <ul className="space-y-2">
             {/* View All link */}
@@ -66,8 +66,8 @@ export default async function CategorySidebar({
         </nav>
       </div>
       {/* Additional Filters Sidebar */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-black mb-4">Filters</h3>
+      <div>
+        <h3 className="font-bold mb-2 uppercase">Filters</h3>
         <div className="text-gray-500 text-sm space-y-2">
           <p>Size filters...</p>
           <p>Color filters...</p>

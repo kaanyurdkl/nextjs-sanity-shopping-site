@@ -7,24 +7,17 @@ interface CategorySidebarItemProps {
   isViewAll: boolean;
 }
 
-export default function CategorySidebarItem({ 
-  label, 
-  href, 
-  isActive, 
-  isViewAll 
+export default function CategorySidebarItem({
+  label,
+  href,
+  isActive,
+  isViewAll,
 }: CategorySidebarItemProps) {
-  const baseStyles = "block py-2 text-sm transition-colors duration-200";
-  
-  // Style for all items (both "View All" and category items) - can be active
-  const itemStyles = isActive 
-    ? `${baseStyles} text-gray-900 font-medium underline`
-    : `${baseStyles} text-gray-600 hover:text-gray-900 hover:underline`;
-  
   return (
     <li>
-      <Link 
+      <Link
         href={href}
-        className={itemStyles}
+        className={`block uppercase text-sm transition-colors ${isActive ? "font-bold underline" : "hover:underline"}`}
         aria-current={isActive ? "page" : undefined}
       >
         {label}
