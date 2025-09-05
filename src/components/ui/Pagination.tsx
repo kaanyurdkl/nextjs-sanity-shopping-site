@@ -61,7 +61,7 @@ export default function Pagination({
   const pageNumbers = generatePageNumbers();
 
   return (
-    <div className="flex items-center justify-center space-x-2 mt-8">
+    <div className="flex items-center justify-center space-x-4 mt-8">
       {/* Previous Arrow */}
       <PaginationArrowLink
         href={currentPage > 1 ? getPageUrl(currentPage - 1) : undefined}
@@ -69,28 +69,30 @@ export default function Pagination({
         disabled={currentPage <= 1}
       />
 
-      {/* Page Numbers */}
-      {pageNumbers.map((page, index) => {
-        if (page === "...") {
+      <div className="flex items-center justify-center space-x-2">
+        {/* Page Numbers */}
+        {pageNumbers.map((page, index) => {
+          if (page === "...") {
+            return (
+              <span key={`ellipsis-${index}`} className="px-2 text-gray-500">
+                ...
+              </span>
+            );
+          }
+
+          const pageNumber = page as number;
+          const isCurrentPage = pageNumber === currentPage;
+
           return (
-            <span key={`ellipsis-${index}`} className="px-2 text-gray-500">
-              ...
-            </span>
+            <PaginationPageLink
+              key={pageNumber}
+              pageNumber={pageNumber}
+              isCurrentPage={isCurrentPage}
+              href={getPageUrl(pageNumber)}
+            />
           );
-        }
-
-        const pageNumber = page as number;
-        const isCurrentPage = pageNumber === currentPage;
-
-        return (
-          <PaginationPageLink
-            key={pageNumber}
-            pageNumber={pageNumber}
-            isCurrentPage={isCurrentPage}
-            href={getPageUrl(pageNumber)}
-          />
-        );
-      })}
+        })}
+      </div>
 
       {/* Next Arrow */}
       <PaginationArrowLink
