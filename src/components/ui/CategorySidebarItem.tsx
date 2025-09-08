@@ -4,14 +4,12 @@ interface CategorySidebarItemProps {
   label: string;
   href: string;
   isActive: boolean;
-  isViewAll: boolean;
 }
 
 export default function CategorySidebarItem({
   label,
   href,
   isActive,
-  isViewAll,
 }: CategorySidebarItemProps) {
   return (
     <li>

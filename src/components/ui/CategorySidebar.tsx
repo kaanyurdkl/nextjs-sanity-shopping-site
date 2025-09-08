@@ -1,42 +1,42 @@
+import CategorySidebarItem from "./CategorySidebarItem";
 import { getCategoryChildren } from "@/sanity/lib/utils";
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
-import CategorySidebarItem from "./CategorySidebarItem";
 
 interface CategorySidebarProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  slugArray: string[];
 }
 
 export default async function CategorySidebar({
   category,
-  slugArray,
 }: CategorySidebarProps) {
   // Fetch children of current category
   const children = await getCategoryChildren(category._id);
 
-  // Determine what categories to show and the "View All" URL
-  let sidebarCategories = children;
-  let viewAllUrl = "/" + slugArray.join("/");
+  // The categories to show and the "View All" URL
+  let sidebarCategories;
+  let viewAllUrl;
+  let isViewAllActive;
 
-  // If current category has no children, show parent's children (siblings)
+  // If current category has no children, show parent's children (siblings), else show current category children
   if (children.length === 0 && category.parent) {
     // Fetch siblings using parent data that's already available
     sidebarCategories = await getCategoryChildren(category.parent._id);
 
     // "View All" should point to parent category
     viewAllUrl = "/" + category.parent.slug;
+
+    // Since the current category has no children, a leaf category must be selected, not the view all
+    isViewAllActive = false;
+  } else {
+    // The categories should be the direct children of current category
+    sidebarCategories = children;
+
+    // "View All" should point to current category
+    viewAllUrl = "/" + category.slug;
+
+    // Since the current category has children, a parent category must be selected, which is represented by the view all link
+    isViewAllActive = true;
   }
-
-  // Build current category slug path for active state detection
-  const currentCategorySlug = slugArray.join("/");
-
-  // Determine if "View All" should be active
-  // "View All" is active when we're showing children (current category has subcategories)
-  // and none of the individual child categories match the current URL
-  const hasMatchingChild = sidebarCategories.some(
-    (child) => child.slug === currentCategorySlug
-  );
-  const isViewAllActive = children.length > 0 && !hasMatchingChild;
 
   return (
     <aside className="w-48 flex-shrink-0">
@@ -49,7 +49,6 @@ export default async function CategorySidebar({
               label="View All"
               href={viewAllUrl}
               isActive={isViewAllActive}
-              isViewAll={true}
             />
 
             {/* Categories (either children or siblings) */}
@@ -58,8 +57,7 @@ export default async function CategorySidebar({
                 key={child._id}
                 label={child.title}
                 href={`/${child.slug}`}
-                isActive={child.slug === currentCategorySlug}
-                isViewAll={false}
+                isActive={child.slug === category.slug}
               />
             ))}
           </ul>

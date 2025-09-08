@@ -21,7 +21,7 @@ export default async function CategoryListingPage({
 
       <div className="flex gap-8">
         {/* Category Sidebar */}
-        <CategorySidebar category={category} slugArray={slugArray} />
+        <CategorySidebar category={category} />
 
         {/* Main Content */}
         <CategoryMainContent
