@@ -24,10 +24,12 @@ export const CATEGORY_BY_SLUG_QUERY = defineQuery(`
       _id,
       title,
       "slug": slug.current
-    }
+    },
+    enableSizeFilter,
+    enableColorFilter,
+    enablePriceFilter
   }
 `);
-
 
 /**
  * Fetch child categories for sidebar navigation
@@ -88,7 +90,6 @@ export const GET_CHILDREN_QUERY = defineQuery(`
 // =============================================================================
 // PRODUCT QUERIES
 // =============================================================================
-
 
 /**
  * Fetch products by category hierarchy (optimized with computed field)
@@ -212,5 +213,92 @@ export const USER_BY_EMAIL_QUERY = defineQuery(`
     firstName,
     lastName,
     email
+  }
+`);
+
+// =============================================================================
+// FILTER QUERIES
+// =============================================================================
+
+/**
+ * Fetch available filter values for a category
+ * Returns colors from products in the category hierarchy
+ */
+export const CATEGORY_FILTER_VALUES_QUERY = defineQuery(`
+  {
+    "availableColors": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]
+      .variants[isActive == true && stockQuantity > 0]
+      .color._ref]{_id, name, hexCode} | order(name asc)
+  }
+`);
+
+/**
+ * Get total count of filtered products by category hierarchy
+ * Used for pagination calculations when filters are applied
+ */
+export const PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERY = defineQuery(`
+  count(*[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0
+  ])
+`);
+
+/**
+ * Fetch filtered and paginated products by category hierarchy
+ * Used when color filters are applied
+ */
+export const PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERY = defineQuery(`
+  *[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0
+  ]
+  | order(_createdAt desc) [$startIndex...$endIndex] {
+    _id,
+    name,
+    "slug": slug.current,
+    basePrice,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    hoverImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    "variants": variants[isActive == true && stockQuantity > 0] {
+      size->{
+        _id,
+        name,
+        code
+      },
+      stockQuantity,
+      color->{
+        _id,
+        name,
+        hexCode,
+        code
+      }
+    },
+    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
   }
 `);

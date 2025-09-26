@@ -1,16 +1,29 @@
 import CategorySidebarItem from "./CategorySidebarItem";
+import ColorFilter from "./ColorFilter";
 import { getCategoryChildren } from "@/sanity/lib/utils";
-import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import type {
+  CATEGORY_BY_SLUG_QUERYResult,
+  CATEGORY_FILTER_VALUES_QUERYResult
+} from "@/sanity/types/sanity.types";
 
 interface CategorySidebarProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
+  filterData: CATEGORY_FILTER_VALUES_QUERYResult;
+  searchParams?: { page?: string; colors?: string };
 }
 
 export default async function CategorySidebar({
   category,
+  filterData,
+  searchParams,
 }: CategorySidebarProps) {
   // Fetch children of current category
   const children = await getCategoryChildren(category._id);
+
+  // Parse currently selected color names from URL
+  const selectedColorNames = searchParams?.colors
+    ? searchParams.colors.split(',').map(name => name.trim().toLowerCase())
+    : [];
 
   // The categories to show and the "View All" URL
   let sidebarCategories;
@@ -64,14 +77,28 @@ export default async function CategorySidebar({
         </nav>
       </div>
       {/* Additional Filters Sidebar */}
-      <div>
-        <h3 className="font-bold mb-2 uppercase">Filters</h3>
-        <div className="text-gray-500 text-sm space-y-2">
-          <p>Size filters...</p>
-          <p>Color filters...</p>
-          <p>Price range...</p>
+      {(category.enableColorFilter ||
+        category.enableSizeFilter ||
+        category.enablePriceFilter) && (
+        <div>
+          <h3 className="font-bold mb-2 uppercase">Filters</h3>
+          <div className="space-y-4">
+            {/* Color Filter */}
+            {category.enableColorFilter && filterData.availableColors.length > 0 && (
+              <ColorFilter
+                colors={filterData.availableColors}
+                selectedColorNames={selectedColorNames}
+              />
+            )}
+
+            {/* Size Filter Placeholder */}
+            {category.enableSizeFilter && <p className="text-gray-500 text-sm">Size filter component...</p>}
+
+            {/* Price Filter Placeholder */}
+            {category.enablePriceFilter && <p className="text-gray-500 text-sm">Price filter component...</p>}
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 }

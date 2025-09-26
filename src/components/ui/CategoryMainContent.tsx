@@ -5,13 +5,16 @@ import CategoryHeader from "@/components/ui/CategoryHeader";
 import {
   getProductsCountByCategoryId,
   getProductsPaginatedByCategoryId,
+  getProductsFilteredCountByCategoryId,
+  getProductsFilteredPaginatedByCategoryId,
+  parseColorFilters,
 } from "@/sanity/lib/utils";
 import { redirect } from "next/navigation";
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
 interface CategoryMainContentProps {
   slugArray: string[];
-  searchParams?: { page?: string };
+  searchParams?: { page?: string; colors?: string };
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
 }
 
@@ -21,7 +24,6 @@ export default async function CategoryMainContent({
   category,
 }: CategoryMainContentProps) {
   const basePath = `/${slugArray.join("/")}`;
-
   const currentPage = Number(searchParams?.page) || 1;
 
   // Handle invalid page number (redirect to page 1)
@@ -29,8 +31,29 @@ export default async function CategoryMainContent({
     redirect(basePath);
   }
 
-  // Get total count of products
-  const totalCount = await getProductsCountByCategoryId(category._id);
+  // Parse color filters from URL
+  const colorIds = await parseColorFilters(searchParams?.colors, category._id);
+  const hasColorFilters = colorIds.length > 0;
+
+  // Get total count and products (filtered or unfiltered)
+  let totalCount: number;
+  let products: any[];
+
+  if (hasColorFilters) {
+    totalCount = await getProductsFilteredCountByCategoryId(category._id, colorIds);
+    products = await getProductsFilteredPaginatedByCategoryId(
+      category._id,
+      currentPage,
+      colorIds
+    );
+  } else {
+    totalCount = await getProductsCountByCategoryId(category._id);
+    products = await getProductsPaginatedByCategoryId(
+      category._id,
+      currentPage
+    );
+  }
+
   // Get total count of pages
   const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
 
@@ -38,12 +61,6 @@ export default async function CategoryMainContent({
   if (totalPages > 0 && currentPage > totalPages) {
     redirect(basePath);
   }
-
-  // Get category products of selected page
-  const products = await getProductsPaginatedByCategoryId(
-    category._id,
-    currentPage
-  );
 
   return (
     <main className="flex-1">
@@ -58,6 +75,7 @@ export default async function CategoryMainContent({
               currentPage={currentPage}
               totalPages={totalPages}
               basePath={basePath}
+              searchParams={searchParams}
             />
           )}
         </>

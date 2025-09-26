@@ -368,6 +368,106 @@ The promotion system is a sophisticated e-commerce engine with **6 different pro
 
 This system supports everything from simple percentage discounts to complex bundle deals, making it ideal for fashion e-commerce promotional strategies.
 
+### Product Filter System Architecture
+
+**🔍 Dynamic Filtering System Overview**
+
+The platform implements a sophisticated product filtering system that balances admin control with dynamic content generation. The system leverages Sanity's powerful GROQ querying capabilities to provide real-time filter options and seamless URL-based filtering for optimal user experience.
+
+#### **1. Filter Configuration Flow**
+
+**Admin Configuration Process:**
+- Admins access Category documents in Sanity Studio
+- New "Filter Configuration" section allows enabling/disabling filter types per category
+- Available filter types: Size, Color, Price Range, Material, Fit
+- Configuration includes display order and custom price range definitions
+- Settings publish immediately and affect frontend filter display
+
+**Frontend Filter Detection:**
+- Category pages query the category document on load
+- Retrieve `filterConfiguration` field to determine enabled filters
+- Frontend renders only the filters configured by admin for each category
+- Provides category-specific filtering experience (e.g., clothing vs accessories)
+
+#### **2. Dynamic Filter Value Generation**
+
+**Real-Time Value Extraction:**
+- After determining enabled filters, system executes specialized GROQ queries
+- Scans ALL products within the specific category hierarchy
+- Extracts unique values for each enabled filter type automatically:
+  - **Size Filters**: Collects unique sizes from all product variants in category
+  - **Color Filters**: Aggregates unique colors with names, codes, and hex values
+  - **Price Filters**: Calculates min/max price range and generates smart price brackets
+  - **Material Filters**: Extracts unique materials from product content fields
+
+**Smart Value Processing:**
+- Eliminates duplicates and applies logical sorting (XS→S→M→L→XL for sizes)
+- Creates meaningful price ranges ($0-50, $50-100, $100-150, $150+)
+- Groups colors by families and sorts alphabetically within families
+- Only displays filter values that would return actual product results
+- Maintains performance through optimized GROQ queries with projections
+
+#### **3. Filtered Product Retrieval**
+
+**User Interaction & URL Management:**
+- User selects filters via sidebar checkboxes/dropdowns
+- URL updates immediately: `/mens/shirts?size=M,L&color=blue,navy&price=50-100`
+- Browser back/forward buttons work naturally
+- URLs are bookmarkable and shareable
+- Search parameters become single source of truth for filter state
+
+**Backend Query Processing:**
+1. **Parameter Parsing**: Convert URL parameters to structured filter objects
+2. **Dynamic Query Building**: Construct GROQ query with multiple AND/OR conditions
+3. **Category Scoping**: Apply category hierarchy constraints using existing categoryHierarchy field
+4. **Performance Optimization**: Leverage existing caching and server-side computed fields
+5. **Pagination Integration**: Maintain existing 3-products-per-page system with filtered results
+
+**Query Execution Strategy:**
+- Start with category-scoped product base query
+- Apply cumulative filters (Size AND Color AND Price) for precise results
+- Maintain variant-level filtering for size/color combinations
+- Support multiple selections within filter types (Size: M OR L)
+- Return structured product data with complete variant information
+
+#### **4. Performance & Caching Strategy**
+
+**Three-Tier Caching Architecture:**
+1. **Filter Configuration Cache**: Category filter settings (1 hour, tag-based invalidation)
+2. **Filter Options Cache**: Available filter values per category (30 minutes)
+3. **Filtered Results Cache**: Product results per filter combination (15 minutes)
+
+**Cache Invalidation Logic:**
+- Product changes: Invalidate filter options and results for affected categories
+- Category changes: Invalidate filter configuration cache
+- New products: Refresh available filter values across relevant categories
+- Leverages existing Sanity webhook and Next.js tag-based revalidation system
+
+#### **5. User Experience Flow**
+
+**Progressive Loading Sequence:**
+1. Category page loads with initial product grid (no filters applied)
+2. Filter sidebar loads with configuration from category settings
+3. Available filter values populate from category-specific product analysis
+4. Users can immediately begin filtering with real-time URL updates
+5. Filter combinations update to show only meaningful options
+
+**Interactive Filter Experience:**
+- Real-time product count updates: "Showing 12 of 45 products"
+- Filter options gray out when they would return zero results
+- Clear individual filters or "Clear All" functionality
+- Visual indication of active filters in both sidebar and summary area
+- Mobile-responsive collapsible filter sections with optimized touch interactions
+
+**State Persistence & Navigation:**
+- Filter state survives page refreshes and browser sessions
+- Search engines can index filtered category pages
+- Social sharing of filtered product views works seamlessly  
+- Maintains existing breadcrumb and category navigation alongside filters
+- Integrates with existing pagination system for filtered result sets
+
+This filtering architecture leverages Sanity's schema flexibility and GROQ's powerful querying while maintaining the performance optimizations already established in the product catalog system.
+
 ### System Architecture
 
 #### Application Flow
