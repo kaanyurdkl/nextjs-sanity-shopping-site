@@ -1,66 +1,66 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+interface Color {
+  _id: string;
+  name: string;
+  hexCode: string;
+}
 interface ColorFilterProps {
-  colors: Array<{
-    _id: string;
-    name: string;
-    hexCode: string;
-  }>;
-  selectedColorNames: string[];
+  colors: Color[];
 }
 
-export default function ColorFilter({
-  colors,
-  selectedColorNames,
-}: ColorFilterProps) {
+export default function ColorFilter({ colors }: ColorFilterProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleColorChange = useCallback(
-    (colorName: string, checked: boolean) => {
-      const currentParams = new URLSearchParams(searchParams.toString());
-      const currentColors = currentParams.get("colors")?.split(",") || [];
+  const [selectedColorNames, setSelectedColorNames] = useState<string[]>([]);
 
-      let newColors: string[];
-      if (checked) {
-        // Add color if not already present
-        newColors = currentColors.includes(colorName)
-          ? currentColors
-          : [...currentColors, colorName];
-      } else {
-        // Remove color
-        newColors = currentColors.filter(c => c !== colorName);
-      }
+  useEffect(() => {
+    const colorsParam: string | null = searchParams.get("colors");
+    const currentSelectedColorNames = colorsParam
+      ? colorsParam
+          .split(",")
+          .map((colorName) => colorName.trim().toLowerCase())
+      : [];
 
-      // Update URL
-      if (newColors.length > 0 && newColors[0] !== "") {
-        currentParams.set("colors", newColors.join(","));
-      } else {
-        currentParams.delete("colors");
-      }
+    setSelectedColorNames(currentSelectedColorNames);
+  }, [searchParams]);
 
-      // Reset to page 1 when filters change
-      currentParams.delete("page");
+  function handleChange(color: Color, isChecked: Boolean) {
+    const changedColorName = color.name.toLowerCase();
 
-      // Navigate to new URL
-      const newUrl = currentParams.toString()
-        ? `?${currentParams.toString()}`
-        : window.location.pathname;
+    let newSelectedColorNames: string[];
 
-      router.push(newUrl);
-    },
-    [router, searchParams]
-  );
+    if (isChecked) {
+      newSelectedColorNames = [...selectedColorNames, changedColorName];
+      setSelectedColorNames(newSelectedColorNames);
+    } else {
+      newSelectedColorNames = selectedColorNames.filter(
+        (colorName) => colorName !== changedColorName
+      );
+      setSelectedColorNames(newSelectedColorNames);
+    }
+
+    if (newSelectedColorNames.length > 0) {
+      const params = new URLSearchParams();
+
+      params.set("colors", newSelectedColorNames.join(","));
+
+      router.push(`?${params.toString()}`);
+    } else {
+      router.push(pathname);
+    }
+  }
 
   return (
     <div>
       <h4 className="font-medium mb-3">Color</h4>
       <div className="space-y-2">
         {colors.map((color) => {
-          const isChecked = selectedColorNames.includes(color.name.toLowerCase());
           return (
             <label
               key={color._id}
@@ -68,8 +68,8 @@ export default function ColorFilter({
             >
               <input
                 type="checkbox"
-                checked={isChecked}
-                onChange={(e) => handleColorChange(color.name, e.target.checked)}
+                onChange={(e) => handleChange(color, Boolean(e.target.checked))}
+                checked={selectedColorNames?.includes(color.name.toLowerCase())}
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <span className="text-sm">{color.name}</span>

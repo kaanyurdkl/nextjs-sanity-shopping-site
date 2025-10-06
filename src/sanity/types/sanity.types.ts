@@ -737,9 +737,9 @@ export type HAS_CHILDREN_QUERYResult = boolean;
 export type GET_CHILDREN_QUERYResult = Array<{
   _id: string;
 }>;
-// Variable: PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY
+// Variable: PRODUCTS_BY_CATEGORYID_QUERY
 // Query: *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]   | order(_createdAt desc) {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "variants": variants[isActive == true && stockQuantity > 0] {      size,      stockQuantity,      color->{        _id,        name,        hexCode,        code      }    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
-export type PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult = Array<{
+export type PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
   _id: string;
   name: string;
   slug: string;
@@ -790,9 +790,9 @@ export type PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult = Array<{
 // Variable: PRODUCTS_COUNT_BY_CATEGORY_QUERY
 // Query: count(*[_type == "product" && $categoryId in categoryHierarchy && isActive == true])
 export type PRODUCTS_COUNT_BY_CATEGORY_QUERYResult = number;
-// Variable: PRODUCTS_PAGINATED_BY_CATEGORY_QUERY
+// Variable: PAGINATED_PRODUCTS_BY_CATEGORYID_QUERY
 // Query: *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]   | order(_createdAt desc) [$startIndex...$endIndex] {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "variants": variants[isActive == true && stockQuantity > 0] {      size,      stockQuantity,      color->{        _id,        name,        hexCode,        code      }    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
-export type PRODUCTS_PAGINATED_BY_CATEGORY_QUERYResult = Array<{
+export type PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
   _id: string;
   name: string;
   slug: string;
@@ -848,14 +848,19 @@ export type USER_BY_EMAIL_QUERYResult = {
   email: string;
 } | null;
 // Variable: CATEGORY_FILTER_VALUES_QUERY
-// Query: {    "availableColors": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]      .variants[isActive == true && stockQuantity > 0]      .color._ref]{_id, name, hexCode} | order(name asc)  }
+// Query: {    "colorValues": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]      .variants[isActive == true && stockQuantity > 0]      .color._ref]{_id, name, hexCode} | order(name asc)  }
 export type CATEGORY_FILTER_VALUES_QUERYResult = {
-  availableColors: Array<{
+  colorValues: Array<{
     _id: string;
     name: string;
     hexCode: string;
   }>;
 };
+// Variable: COLORS_BY_NAME
+// Query: *[_type == "color" && string::lower(name) in $colorNames]{_id}
+export type COLORS_BY_NAMEResult = Array<{
+  _id: string;
+}>;
 // Variable: PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERY
 // Query: count(*[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0  ])
 export type PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERYResult = number;
@@ -908,6 +913,61 @@ export type PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult = Array<{
   }> | null;
   hasStock: boolean | null;
 }>;
+// Variable: PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY
+// Query: *[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0  ]  | order(_createdAt desc) [$startIndex...$endIndex] {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "variants": variants[isActive == true && stockQuantity > 0] {      size->{        _id,        name,        code      },      stockQuantity,      color->{        _id,        name,        hexCode,        code      }    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
+export type PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  basePrice: number;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  };
+  hoverImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  variants: Array<{
+    size: {
+      _id: string;
+      name: string;
+      code: string;
+    };
+    stockQuantity: number;
+    color: {
+      _id: string;
+      name: string;
+      hexCode: string;
+      code: string;
+    };
+  }> | null;
+  hasStock: boolean | null;
+}>;
+// Variable: FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY
+// Query: count(*[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0  ])
+export type FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult = number;
+// Variable: PRODUCTS_COUNT_BY_CATEGORYID_QUERY
+// Query: count(*[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0]) > 0  ])
+export type PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult = number;
 
 // Query TypeMap
 import "@sanity/client";
@@ -918,12 +978,14 @@ declare module "@sanity/client" {
     "\n  *[_type == \"category\" && !defined(parent) && isActive == true] | order(_createdAt) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n      _id,\n      title,\n      \"slug\": slug.current,\n      pageType,\n      \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n        _id,\n        title,\n        \"slug\": slug.current,\n        pageType\n      }\n    }\n  }\n": NAVBAR_CATEGORIES_QUERYResult;
     "\n  count(*[_type == \"category\" && parent._ref == $categoryId && isActive == true]) > 0\n": HAS_CHILDREN_QUERYResult;
     "\n  *[_type == \"category\" && parent._ref == $categoryId && isActive == true] {\n    _id\n  }\n": GET_CHILDREN_QUERYResult;
-    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult;
+    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORYID_QUERYResult;
     "\n  count(*[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true])\n": PRODUCTS_COUNT_BY_CATEGORY_QUERYResult;
-    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_PAGINATED_BY_CATEGORY_QUERYResult;
+    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult;
     "\n  *[_type == \"user\" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n": USER_BY_EMAIL_QUERYResult;
-    "\n  {\n    \"availableColors\": *[_type == \"color\" && _id in *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n": CATEGORY_FILTER_VALUES_QUERYResult;
-    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ])\n": PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERYResult;
-    "\n  *[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ]\n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult;
+    "\n  {\n    \"colorValues\": *[_type == \"color\" && _id in *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n": CATEGORY_FILTER_VALUES_QUERYResult;
+    "\n  *[_type == \"color\" && string::lower(name) in $colorNames]{_id}\n  ": COLORS_BY_NAMEResult;
+    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ])\n": PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERYResult | FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
+    "\n  *[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ]\n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult | PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult;
+    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0]) > 0\n  ])\n": PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
   }
 }

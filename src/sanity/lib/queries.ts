@@ -94,7 +94,7 @@ export const GET_CHILDREN_QUERY = defineQuery(`
 /**
  * Fetch products by category hierarchy (optimized with computed field)
  */
-export const PRODUCTS_BY_CATEGORY_HIERARCHY_QUERY = defineQuery(`
+export const PRODUCTS_BY_CATEGORYID_QUERY = defineQuery(`
   *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] 
   | order(_createdAt desc) {
     _id,
@@ -153,7 +153,7 @@ export const PRODUCTS_COUNT_BY_CATEGORY_QUERY = defineQuery(`
  * Fetch paginated products by category hierarchy
  * Used for specific page display with array slicing
  */
-export const PRODUCTS_PAGINATED_BY_CATEGORY_QUERY = defineQuery(`
+export const PAGINATED_PRODUCTS_BY_CATEGORYID_QUERY = defineQuery(`
   *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] 
   | order(_createdAt desc) [$startIndex...$endIndex] {
     _id,
@@ -226,11 +226,15 @@ export const USER_BY_EMAIL_QUERY = defineQuery(`
  */
 export const CATEGORY_FILTER_VALUES_QUERY = defineQuery(`
   {
-    "availableColors": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]
+    "colorValues": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]
       .variants[isActive == true && stockQuantity > 0]
       .color._ref]{_id, name, hexCode} | order(name asc)
   }
 `);
+
+export const COLORS_BY_NAME = defineQuery(`
+  *[_type == "color" && string::lower(name) in $colorNames]{_id}
+  `);
 
 /**
  * Get total count of filtered products by category hierarchy
@@ -301,4 +305,75 @@ export const PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERY = defineQuery(`
     },
     "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
   }
+`);
+
+export const PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY = defineQuery(`
+  *[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0
+  ]
+  | order(_createdAt desc) [$startIndex...$endIndex] {
+    _id,
+    name,
+    "slug": slug.current,
+    basePrice,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    hoverImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    "variants": variants[isActive == true && stockQuantity > 0] {
+      size->{
+        _id,
+        name,
+        code
+      },
+      stockQuantity,
+      color->{
+        _id,
+        name,
+        hexCode,
+        code
+      }
+    },
+    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
+  }
+`);
+
+export const FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY = defineQuery(`
+  count(*[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0
+  ])
+`);
+
+export const PRODUCTS_COUNT_BY_CATEGORYID_QUERY = defineQuery(`
+  count(*[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[isActive == true && stockQuantity > 0]) > 0
+  ])
 `);

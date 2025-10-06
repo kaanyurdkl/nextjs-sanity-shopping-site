@@ -1,6 +1,8 @@
-import { Navbar } from "@/components/layout";
-import { AuthProvider } from "@/components/features/auth";
+// LIBRARIES
 import { auth } from "@/lib/auth";
+// COMPONENTS
+import { AuthProvider } from "@/components/features/auth";
+import { Header } from "@/components/layout";
 
 export default async function MainLayout({
   children,
@@ -12,7 +14,7 @@ export default async function MainLayout({
   return (
     <AuthProvider session={session}>
       <div>
-        <Navbar />
+        <Header />
         {children}
       </div>
     </AuthProvider>

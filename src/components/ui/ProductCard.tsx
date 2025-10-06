@@ -1,9 +1,17 @@
+// COMPONENTS
 import Image from "next/image";
 import Link from "next/link";
+// TYPES
+import type {
+  PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult,
+  PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult,
+} from "@/sanity/types/sanity.types";
+// UTILITIES
 import { urlFor } from "@/sanity/lib/image";
-import type { PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult } from "@/sanity/types/sanity.types";
 
-type Product = PRODUCTS_BY_CATEGORY_HIERARCHY_QUERYResult[0];
+type Product =
+  | PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult[0]
+  | PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult[0];
 
 interface ProductCardProps {
   product: Product;
