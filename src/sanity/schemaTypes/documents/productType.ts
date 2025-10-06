@@ -1,6 +1,5 @@
 import { PackageIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { DynamicSizeInput } from "../../components/DynamicSizeInput";
 import { ComputedSkuInput } from "../../components/ComputedSkuInput";
 
 /**
@@ -139,12 +138,13 @@ export const productType = defineType({
         "Auto-computed array of parent category IDs - updated automatically when category changes",
     }),
     defineField({
-      name: "sizeGroup",
-      title: "Size Group",
+      name: "productType",
+      title: "Product Type",
       type: "reference",
-      to: [{ type: "size" }],
+      to: [{ type: "productType" }],
       validation: (Rule) => Rule.required(),
-      description: "Select which size group this product uses",
+      description:
+        "Select which product type this product belongs to (determines available sizes)",
     }),
     defineField({
       name: "variants",
@@ -157,22 +157,44 @@ export const productType = defineType({
           title: "Variant",
           fields: [
             {
-              name: "size",
-              title: "Size",
-              type: "string",
-              components: {
-                input: DynamicSizeInput,
-              },
-              validation: (Rule) => Rule.required(),
-              description: "Select size from the chosen size group",
-            },
-            {
               name: "color",
               title: "Color",
               type: "reference",
               to: [{ type: "color" }],
               validation: (Rule) => Rule.required(),
               description: "Select color from available options",
+            },
+            {
+              name: "size",
+              title: "Size",
+              type: "reference",
+              to: [{ type: "size" }],
+              options: {
+                filter: async ({ document, getClient }) => {
+                  const productTypeId = document?.productType?._ref;
+
+                  if (!productTypeId) {
+                    return { filter: '_type == "size"' }; // Show all sizes if no product type selected
+                  }
+
+                  const client = getClient({ apiVersion: "2025-01-14" });
+
+                  // Get the size group from selected product type
+                  const productType = await client.fetch(
+                    `*[_type == "productType" && _id == $id][0]{sizeGroup}`,
+                    { id: productTypeId }
+                  );
+
+                  // Only show sizes that match the product type's size group
+                  return {
+                    filter: '_type == "size" && sizeGroup == $sizeGroup',
+                    params: { sizeGroup: productType?.sizeGroup },
+                  };
+                },
+              },
+              validation: (Rule) => Rule.required(),
+              description:
+                "Select size from available options (filtered by product type)",
             },
             {
               name: "sku",
@@ -202,20 +224,20 @@ export const productType = defineType({
           ],
           preview: {
             select: {
-              size: "size",
+              sizeName: "size.name",
               colorName: "color.name",
               stock: "stockQuantity",
               active: "isActive",
             },
             prepare(selection) {
-              const { size, colorName, stock, active } = selection;
+              const { sizeName, colorName, stock, active } = selection;
               const status = active
                 ? stock > 0
                   ? "✅"
                   : "❌ Out of Stock"
                 : "🚫 Inactive";
               return {
-                title: `${colorName || "No Color"} - ${size}`,
+                title: `${colorName || "No Color"} - ${sizeName || "No Size"}`,
                 subtitle: `Stock: ${stock} ${status}`,
               };
             },

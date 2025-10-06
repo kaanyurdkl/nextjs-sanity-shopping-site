@@ -1,22 +1,42 @@
-import PaginationPageLink from "./PaginationPageLink";
-import PaginationArrowLink from "./PaginationArrowLink";
+"use client";
+
+// LIBRARIES
+import { usePathname, useSearchParams } from "next/navigation";
+// COMPONENTS
+import PaginationPageLink from "@/components/ui/PaginationPageLink";
+import PaginationArrowLink from "@/components/ui/PaginationArrowLink";
 
 interface PaginationProps {
-  currentPage: number;
   totalPages: number;
-  basePath: string; // e.g., "/mens/tops"
 }
 
-export default function Pagination({
-  currentPage,
-  totalPages,
-  basePath,
-}: PaginationProps) {
+export default function Pagination({ totalPages }: PaginationProps) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const getPageUrl = (page: number) => {
-    if (page === 1) {
-      return basePath; // No query param for page 1
+    const params = new URLSearchParams();
+
+    // Add existing search params (like colors)
+    if (searchParams) {
+      Object.entries(searchParams).forEach(([key, value]) => {
+        if (key !== "page") {
+          // Don't include current page param
+          params.set(key, value);
+        }
+      });
     }
-    return `${basePath}?page=${page}`;
+
+    // Add page param (except for page 1)
+    if (page > 1) {
+      params.set("page", page.toString());
+    }
+
+    // Build URL
+    const queryString = params.toString();
+    return queryString ? `${pathname}?${queryString}` : pathname;
   };
 
   const generatePageNumbers = () => {

@@ -1,35 +1,36 @@
+// COMPONENTS
+import { Suspense } from "react";
+import CategoryHeader from "@/components/ui/CategoryHeader";
+import Sidebar from "@/components/ui/Sidebar";
+import ProductList from "@/components/ui/ProductList";
+// TYPES
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
-import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import CategorySidebar from "@/components/ui/CategorySidebar";
-import CategoryMainContent from "@/components/ui/CategoryMainContent";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  slugArray: string[];
-  searchParams?: { page?: string };
+  searchParams?: { page?: string; colors?: string };
 }
 
 export default async function CategoryListingPage({
   category,
-  slugArray,
   searchParams,
 }: CategoryListingPageProps) {
   return (
-    <div className="max-w-8xl mx-auto px-6 py-8">
-      {/* Breadcrumbs */}
-      <Breadcrumbs slugArray={slugArray} />
-
+    <main className="max-w-8xl mx-auto px-6 py-8">
       <div className="flex gap-8">
-        {/* Category Sidebar */}
-        <CategorySidebar category={category} />
+        <Sidebar category={category} />
 
-        {/* Main Content */}
-        <CategoryMainContent
-          slugArray={slugArray}
-          searchParams={searchParams}
-          category={category}
-        />
+        <section className="flex-1">
+          <CategoryHeader title={category.title} />
+
+          <Suspense
+            fallback={<div className="text-center py-8">Loading...</div>}
+            key={JSON.stringify(searchParams)}
+          >
+            <ProductList searchParams={searchParams} category={category} />
+          </Suspense>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

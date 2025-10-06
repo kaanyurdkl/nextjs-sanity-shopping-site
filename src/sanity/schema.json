@@ -1904,7 +1904,7 @@
         },
         "optional": true
       },
-      "sizeGroup": {
+      "productType": {
         "type": "objectAttribute",
         "value": {
           "type": "object",
@@ -1930,7 +1930,7 @@
               "optional": true
             }
           },
-          "dereferencesTo": "size"
+          "dereferencesTo": "productType"
         },
         "optional": false
       },
@@ -1941,13 +1941,6 @@
           "of": {
             "type": "object",
             "attributes": {
-              "size": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                },
-                "optional": false
-              },
               "color": {
                 "type": "objectAttribute",
                 "value": {
@@ -1975,6 +1968,36 @@
                     }
                   },
                   "dereferencesTo": "color"
+                },
+                "optional": false
+              },
+              "size": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "object",
+                  "attributes": {
+                    "_ref": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "_type": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string",
+                        "value": "reference"
+                      }
+                    },
+                    "_weak": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "boolean"
+                      },
+                      "optional": true
+                    }
+                  },
+                  "dereferencesTo": "size"
                 },
                 "optional": false
               },
@@ -3158,47 +3181,102 @@
         },
         "optional": false
       },
-      "sizes": {
+      "code": {
         "type": "objectAttribute",
         "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "name": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                },
-                "optional": false
-              },
-              "code": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                },
-                "optional": false
-              },
-              "_type": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string",
-                  "value": "sizeItem"
-                }
-              }
+          "type": "string"
+        },
+        "optional": false
+      },
+      "sizeGroup": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "letter"
             },
-            "rest": {
-              "type": "object",
-              "attributes": {
-                "_key": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              }
+            {
+              "type": "string",
+              "value": "waist"
             }
-          }
+          ]
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": false
+      }
+    }
+  },
+  {
+    "name": "productType",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "productType"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "name": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "sizeGroup": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "letter"
+            },
+            {
+              "type": "string",
+              "value": "waist"
+            }
+          ]
         },
         "optional": false
       }
@@ -3363,6 +3441,27 @@
             }
           },
           "dereferencesTo": "category"
+        },
+        "optional": true
+      },
+      "enableSizeFilter": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "enableColorFilter": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "enablePriceFilter": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
         },
         "optional": true
       },

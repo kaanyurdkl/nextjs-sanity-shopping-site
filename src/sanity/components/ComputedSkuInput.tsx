@@ -59,13 +59,12 @@ export function ComputedSkuInput(props: StringInputProps) {
       const data = await client.fetch(
         `{
           "colorCode": *[_type == "color" && _id == $colorRef][0].code,
-          "sizeCode": *[_type == "size" && _id == $sizeGroupRef][0].sizes[name == $sizeName][0].code,
+          "sizeCode": *[_type == "size" && _id == $sizeRef][0].code,
           "existingSkus": array::compact(*[_type == "product"].variants[].sku[string::startsWith(@, $productPrefix)])
         }`,
         {
           colorRef: variantColor._ref,
-          sizeGroupRef: document.sizeGroup._ref,
-          sizeName: variantSize,
+          sizeRef: variantSize._ref,
           productPrefix: productCode + "-",
         }
       );
@@ -121,8 +120,8 @@ export function ComputedSkuInput(props: StringInputProps) {
         disabled={
           !document?.name ||
           !variantColor?._ref ||
-          !variantSize ||
-          !document?.sizeGroup?._ref
+          !variantSize?._ref ||
+          !document?.productType?._ref
         }
       />
     </Stack>

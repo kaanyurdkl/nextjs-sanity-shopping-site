@@ -3,12 +3,11 @@ import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
 import { getNavbarCategories } from "@/sanity/lib/utils";
 import { MegaMenu } from "./MegaMenu";
-import type { NAVBAR_CATEGORIES_QUERYResult } from "@/sanity/types/sanity.types";
 
-export default async function Navbar() {
+export default async function Header() {
   const session = await auth();
 
-  const categories = await getNavbarCategories() as NAVBAR_CATEGORIES_QUERYResult;
+  const categories = await getNavbarCategories();
 
   return (
     <header className="relative h-16 bg-white border-b border-gray-100 flex items-center">

@@ -18,7 +18,7 @@ export default defineBlueprint({
       timeout: 10,
       event: {
         on: ['publish'],
-        filter: "_type == 'product' && defined(category)",
+        filter: "_type == 'product' && defined(category) && delta::changedAny(category)",
         projection: '_id',
       },
       env: {

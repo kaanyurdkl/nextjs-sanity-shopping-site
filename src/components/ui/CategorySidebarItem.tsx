@@ -1,3 +1,4 @@
+// COMPONENTS
 import Link from "next/link";
 
 interface CategorySidebarItemProps {

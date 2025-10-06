@@ -1,2 +1,2 @@
-export { default as Navbar } from './navbar';
-export { MegaMenu } from './MegaMenu';
+export { default as Header } from "./Header";
+export { MegaMenu } from "./MegaMenu";

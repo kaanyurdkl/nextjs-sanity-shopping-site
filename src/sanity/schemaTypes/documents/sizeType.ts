@@ -2,11 +2,14 @@ import { ComposeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 /**
- * Size schema for product variant management
+ * Individual Size schema for product variant filtering
  *
  * Fields:
- * - name: Size group name (e.g., "Letter Sizes", "Waist Sizes")
- * - sizes: Array of size objects with name and code for SKU generation
+ * - name: Individual size name (e.g., "Medium", "Large", "32 Waist")
+ * - code: Short code for SKU generation (e.g., "M", "L", "32")
+ * - sizeGroup: Which sizing system this belongs to (letter, waist)
+ * - sortOrder: For proper ordering (XS=1, S=2, M=3, L=4, XL=5)
+ * - isActive: Enable/disable this size option
  */
 export const sizeType = defineType({
   name: "size",
@@ -16,81 +19,84 @@ export const sizeType = defineType({
   fields: [
     defineField({
       name: "name",
-      title: "Size Group Name",
+      title: "Size Name",
       type: "string",
       validation: (Rule) => Rule.required(),
-      description: "Name for this size group (e.g., 'Letter Sizes', 'Waist Sizes')",
+      description:
+        "Display name shown to customers (e.g., 'Medium', '32 Waist', 'Size 9')",
     }),
     defineField({
-      name: "sizes",
-      title: "Available Sizes",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          name: "sizeItem",
-          title: "Size",
-          fields: [
-            {
-              name: "name",
-              title: "Size Name",
-              type: "string",
-              validation: (Rule) => Rule.required(),
-              description: "Display name shown to customers (e.g., 'Medium', '32 Waist')",
-            },
-            {
-              name: "code",
-              title: "Size Code",
-              type: "string",
-              validation: (Rule) =>
-                Rule.required()
-                  .max(3)
-                  .uppercase()
-                  .regex(/^[A-Z0-9]{1,3}$/, {
-                    name: "uppercase letters and numbers only",
-                    invert: false,
-                  }),
-              description: "1-3 char code for SKU generation (e.g., 'M', 'L', '32')",
-            },
-          ],
-          preview: {
-            select: {
-              name: "name",
-              code: "code",
-            },
-            prepare(selection) {
-              const { name, code } = selection;
-              return {
-                title: name,
-                subtitle: `Code: ${code}`,
-              };
-            },
-          },
-        },
-      ],
+      name: "code",
+      title: "Size Code",
+      type: "string",
+      validation: (Rule) =>
+        Rule.required()
+          .max(3)
+          .uppercase()
+          .regex(/^[A-Z0-9]{1,3}$/, {
+            name: "uppercase letters and numbers only",
+            invert: false,
+          }),
+      description: "1-3 char code for SKU generation (e.g., 'M', 'L', '32')",
+    }),
+    defineField({
+      name: "sizeGroup",
+      title: "Size Group",
+      type: "string",
+      options: {
+        list: [
+          { title: "Letter Sizes (XS, S, M, L, XL, XXL)", value: "letter" },
+          { title: "Waist Sizes (28, 30, 32, 34, 36, 38)", value: "waist" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+      description: "Select which size group this size belongs to",
+    }),
+    defineField({
+      name: "sortOrder",
+      title: "Sort Order",
+      type: "number",
       validation: (Rule) => Rule.required().min(1),
-      description: "List of sizes with display names and SKU codes",
+      description: "For proper ordering (XS=1, S=2, M=3, L=4, XL=5, etc.)",
     }),
   ],
   preview: {
     select: {
       title: "name",
-      sizes: "sizes",
+      code: "code",
+      sizeGroup: "sizeGroup",
+      sortOrder: "sortOrder",
     },
     prepare(selection) {
-      const { title, sizes } = selection;
-      const sizeCount = sizes?.length || 0;
-      
-      // Extract size names from the object array
-      const sizeNames = sizes?.map((sizeItem: any) => sizeItem.name) || [];
-      const sizeList = sizeNames.slice(0, 3).join(", ") || "";
-      const moreText = sizeNames.length > 3 ? "..." : "";
-      
+      const { title, code, sizeGroup, sortOrder } = selection;
+
+      const sizeGroupLabels: Record<string, string> = {
+        letter: "Letter",
+        waist: "Waist",
+      };
+
+      const sizeGroupLabel = sizeGroupLabels[sizeGroup] || sizeGroup;
+
       return {
-        title,
-        subtitle: `${sizeCount} sizes: ${sizeList}${moreText}`,
+        title: `${title}`,
+        subtitle: `${sizeGroupLabel} • Code: ${code} • Order: ${sortOrder}`,
         media: ComposeIcon,
       };
     },
   },
+  orderings: [
+    {
+      title: "Size Group & Order",
+      name: "sizeGroupAndOrder",
+      by: [
+        { field: "sizeGroup", direction: "asc" },
+        { field: "sortOrder", direction: "asc" },
+      ],
+    },
+    {
+      title: "Alphabetical",
+      name: "nameAsc",
+      by: [{ field: "name", direction: "asc" }],
+    },
+  ],
 });

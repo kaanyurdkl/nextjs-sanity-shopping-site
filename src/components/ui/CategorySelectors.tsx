@@ -1,19 +1,23 @@
-import CategorySidebarItem from "./CategorySidebarItem";
+// COMPONENTS
+import CategorySidebarItem from "@/components/ui/CategorySidebarItem";
+// UTILS
 import { getCategoryChildren } from "@/sanity/lib/utils";
-import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+// TYPES
+import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 
-interface CategorySidebarProps {
+interface CategorySelectorsProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
 }
 
-export default async function CategorySidebar({
+export default async function CategorySelectors({
   category,
-}: CategorySidebarProps) {
+}: CategorySelectorsProps) {
   // Fetch children of current category
   const children = await getCategoryChildren(category._id);
 
   // The categories to show and the "View All" URL
   let sidebarCategories;
+
   let viewAllUrl;
   let isViewAllActive;
 
@@ -37,41 +41,29 @@ export default async function CategorySidebar({
     // Since the current category has children, a parent category must be selected, which is represented by the view all link
     isViewAllActive = true;
   }
-
   return (
-    <aside className="w-48 flex-shrink-0">
-      <div className="mb-8">
-        <h3 className="font-bold mb-4 uppercase">Categories</h3>
-        <nav>
-          <ul className="space-y-2">
-            {/* View All link */}
-            <CategorySidebarItem
-              label="View All"
-              href={viewAllUrl}
-              isActive={isViewAllActive}
-            />
+    <div className="mb-8">
+      <h3 className="font-bold mb-4 uppercase">Categories</h3>
+      <nav>
+        <ul className="space-y-2">
+          {/* View All link */}
+          <CategorySidebarItem
+            label="View All"
+            href={viewAllUrl}
+            isActive={isViewAllActive}
+          />
 
-            {/* Categories (either children or siblings) */}
-            {sidebarCategories.map((child) => (
-              <CategorySidebarItem
-                key={child._id}
-                label={child.title}
-                href={`/${child.slug}`}
-                isActive={child.slug === category.slug}
-              />
-            ))}
-          </ul>
-        </nav>
-      </div>
-      {/* Additional Filters Sidebar */}
-      <div>
-        <h3 className="font-bold mb-2 uppercase">Filters</h3>
-        <div className="text-gray-500 text-sm space-y-2">
-          <p>Size filters...</p>
-          <p>Color filters...</p>
-          <p>Price range...</p>
-        </div>
-      </div>
-    </aside>
+          {/* Categories (either children or siblings) */}
+          {sidebarCategories.map((child) => (
+            <CategorySidebarItem
+              key={child._id}
+              label={child.title}
+              href={`/${child.slug}`}
+              isActive={child.slug === category.slug}
+            />
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 }

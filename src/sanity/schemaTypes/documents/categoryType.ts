@@ -10,6 +10,9 @@ import { defineField, defineType } from "sanity";
  * - description: Category description for SEO and display
  * - pageType: Whether this category shows as a product listing or landing page
  * - parent: Reference to parent category (creates hierarchy)
+ * - enableSizeFilter: Toggle size filtering for this category
+ * - enableColorFilter: Toggle color filtering for this category
+ * - enablePriceFilter: Toggle price range filtering for this category
  * - seoTitle: Custom SEO page title
  * - seoDescription: Meta description for category pages
  * - isActive: Category visibility toggle
@@ -90,6 +93,27 @@ export const categoryType = defineType({
         },
       },
       description: "Parent category in the hierarchy",
+    }),
+    defineField({
+      name: "enableSizeFilter",
+      title: "Enable Size Filter",
+      type: "boolean",
+      initialValue: true,
+      description: "Show size filter for products in this category",
+    }),
+    defineField({
+      name: "enableColorFilter",
+      title: "Enable Color Filter",
+      type: "boolean",
+      initialValue: true,
+      description: "Show color filter for products in this category",
+    }),
+    defineField({
+      name: "enablePriceFilter",
+      title: "Enable Price Filter",
+      type: "boolean",
+      initialValue: true,
+      description: "Show price range filter for products in this category",
     }),
     defineField({
       name: "seoTitle",

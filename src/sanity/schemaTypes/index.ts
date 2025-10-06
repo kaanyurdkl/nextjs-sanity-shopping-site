@@ -8,6 +8,7 @@ import { blockContentType } from "./objects/blockContentType";
 import { categoryType } from "./documents/categoryType";
 import { colorType } from "./documents/colorType";
 import { productType } from "./documents/productType";
+import { productTypeType } from "./documents/productTypeType";
 import { sizeType } from "./documents/sizeType";
 import { reviewType } from "./documents/reviewType";
 import { userType } from "./documents/userType";
@@ -31,6 +32,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   categoryType,
   colorType,
   productType,
+  productTypeType,
   sizeType,
   reviewType,
   userType,
