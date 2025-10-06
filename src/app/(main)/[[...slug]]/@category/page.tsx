@@ -15,6 +15,7 @@ export default async function CategoryPage({
   searchParams,
 }: CategoryPageProps) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
 
   const category = await getCategoryBySlug(slug);
 
@@ -26,7 +27,10 @@ export default async function CategoryPage({
 
   if (isListingPage) {
     return (
-      <CategoryListingPage category={category} searchParams={searchParams} />
+      <CategoryListingPage
+        category={category}
+        searchParams={resolvedSearchParams}
+      />
     );
   } else {
     return <CategoryLandingPage category={category} />;
