@@ -1,7 +1,15 @@
 "use client";
 
+// LIBRARIES
 import { useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+// COMPONENTS
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface Color {
   _id: string;
@@ -63,27 +71,38 @@ export default function ColorFilter({ data }: ColorFilterProps) {
   }
 
   return (
-    <div>
-      <h4 className="font-medium mb-3">Color</h4>
-      <div className="space-y-2">
-        {data.map((color) => {
-          return (
-            <label
-              key={color._id}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                onChange={(e) => handleChange(color, Boolean(e.target.checked))}
-                checked={selectedColorNames?.includes(color.name.toLowerCase())}
-                className="rounded border-gray-300 text-black focus:ring-black"
-              />
-              <span className="text-sm">{color.name}</span>
-              <span className="text-xs text-gray-500 ml-auto">({color.productCount})</span>
-            </label>
-          );
-        })}
-      </div>
-    </div>
+    <Accordion type="single" className="border border-black px-2" collapsible>
+      <AccordionItem value="colorFilter">
+        <AccordionTrigger className="cursor-pointer uppercase font-bold">
+          Colour
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="space-y-2 pt-2">
+            {data.map((color) => {
+              const isChecked = selectedColorNames?.includes(
+                color.name.toLowerCase()
+              );
+              return (
+                <div
+                  key={color._id}
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => handleChange(color, !isChecked)}
+                >
+                  <div className="w-4 h-4 border border-black flex items-center justify-center bg-white flex-shrink-0">
+                    {isChecked && <div className="w-3 h-3 bg-black" />}
+                  </div>
+                  <span className="text-sm">{color.name}</span>
+                  <span className="text-sm">[{color.productCount}]</span>
+                  <div
+                    className="w-6 h-6 border border-black ml-auto flex-shrink-0"
+                    style={{ backgroundColor: color.hexCode }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

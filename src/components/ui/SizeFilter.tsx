@@ -73,9 +73,11 @@ export default function SizeFilter({ data }: SizeFilterProps) {
   return (
     <Accordion type="single" className="border border-black px-2" collapsible>
       <AccordionItem value="colorFilter">
-        <AccordionTrigger className="cursor-pointer">Size</AccordionTrigger>
+        <AccordionTrigger className="cursor-pointer uppercase font-bold">
+          Size
+        </AccordionTrigger>
         <AccordionContent>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             {data.map((size) => {
               const isSelected = selectedSizeCodes?.includes(
                 size.code.toLowerCase()
