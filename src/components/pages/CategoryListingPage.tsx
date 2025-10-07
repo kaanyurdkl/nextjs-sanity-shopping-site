@@ -8,7 +8,7 @@ import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string };
 }
 
 export default async function CategoryListingPage({
@@ -18,7 +18,7 @@ export default async function CategoryListingPage({
   return (
     <main className="max-w-8xl mx-auto px-6 py-8">
       <div className="flex gap-8">
-        <Sidebar category={category} />
+        <Sidebar category={category} searchParams={searchParams} />
 
         <section className="flex-1">
           <CategoryHeader title={category.title} />

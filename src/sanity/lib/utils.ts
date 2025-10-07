@@ -11,6 +11,11 @@ import type {
   PRODUCTS_BY_CATEGORYID_QUERYResult,
   PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult,
   PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult,
+  SIZES_BY_NAMEResult,
+  GET_COLORS_FOR_CATEGORY_QUERYResult,
+  GET_SIZES_FOR_CATEGORY_QUERYResult,
+  PRODUCTS_WITH_FILTERS_QUERYResult,
+  PRODUCTS_COUNT_WITH_FILTERS_QUERYResult,
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -26,6 +31,11 @@ import {
   PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY,
   FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
   PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
+  SIZES_BY_NAME,
+  GET_COLORS_FOR_CATEGORY_QUERY,
+  GET_SIZES_FOR_CATEGORY_QUERY,
+  PRODUCTS_WITH_FILTERS_QUERY,
+  PRODUCTS_COUNT_WITH_FILTERS_QUERY,
 } from "./queries";
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
@@ -270,5 +280,154 @@ export async function getProductsCountByCategoryId(
     params: {
       categoryId,
     },
+  });
+}
+
+/**
+ * Get sizes by name (lowercase matching)
+ * Used to convert size names from URL to size IDs
+ */
+export async function getSizesByName(
+  sizeNames: string[]
+): Promise<SIZES_BY_NAMEResult> {
+  return await sanityFetch({
+    query: SIZES_BY_NAME,
+    params: { sizeNames },
+  });
+}
+
+// =============================================================================
+// DYNAMIC FILTER DATA (Context-Aware)
+// =============================================================================
+
+export interface ColorFilterData {
+  type: "color";
+  data: GET_COLORS_FOR_CATEGORY_QUERYResult;
+}
+
+export interface SizeFilterData {
+  type: "size";
+  data: GET_SIZES_FOR_CATEGORY_QUERYResult;
+}
+
+export type FilterData = ColorFilterData | SizeFilterData;
+
+/**
+ * Get category filter data with context-aware filtering
+ * Returns array of enabled filters with their available values
+ * Filter options are dynamic based on other active filters
+ */
+export async function getCategoryFilterData(
+  category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>,
+  searchParams?: { page?: string; colors?: string; sizes?: string }
+): Promise<FilterData[]> {
+  const filterResults: FilterData[] = [];
+
+  // Parse searchParams
+  const selectedColorNames = searchParams?.colors?.split(",") || [];
+  const selectedSizeNames = searchParams?.sizes?.split(",") || [];
+
+  // Convert selected names to IDs for queries
+  let colorIds: string[] | undefined;
+  let sizeIds: string[] | undefined;
+
+  if (selectedColorNames.length > 0) {
+    const colors = await getColorsByName(selectedColorNames);
+    colorIds = colors.map((c) => c._id);
+  }
+
+  if (selectedSizeNames.length > 0) {
+    const sizes = await getSizesByName(selectedSizeNames);
+    sizeIds = sizes.map((s: { _id: string }) => s._id);
+  }
+
+  // Fetch color filter values (context-aware with size filter)
+  if (category.enableColorFilter) {
+    const colors = await sanityFetch<GET_COLORS_FOR_CATEGORY_QUERYResult>({
+      query: GET_COLORS_FOR_CATEGORY_QUERY,
+      params: {
+        categoryId: category._id,
+        sizeIds: sizeIds || null,
+      },
+      tags: ["product", "color", "size"],
+    });
+
+    if (colors.length > 0) {
+      filterResults.push({ type: "color", data: colors });
+    }
+  }
+
+  // Fetch size filter values (context-aware with color filter)
+  if (category.enableSizeFilter) {
+    const sizes = await sanityFetch<GET_SIZES_FOR_CATEGORY_QUERYResult>({
+      query: GET_SIZES_FOR_CATEGORY_QUERY,
+      params: {
+        categoryId: category._id,
+        colorIds: colorIds || null,
+      },
+      tags: ["product", "color", "size"],
+    });
+
+    if (sizes.length > 0) {
+      filterResults.push({ type: "size", data: sizes });
+    }
+  }
+
+  return filterResults;
+}
+
+// =============================================================================
+// UNIFIED FILTERING (Scalable with Optional Parameters)
+// =============================================================================
+
+/**
+ * Get products with optional color and size filters (unified approach)
+ * This single function handles all filter combinations
+ * @param categoryId - Category ID to filter by
+ * @param page - Current page number for pagination
+ * @param colorIds - Optional array of color IDs (pass null/undefined for no color filter)
+ * @param sizeIds - Optional array of size IDs (pass null/undefined for no size filter)
+ */
+export async function getProductsWithFilters(
+  categoryId: string,
+  page: number,
+  colorIds?: string[] | null,
+  sizeIds?: string[] | null
+): Promise<PRODUCTS_WITH_FILTERS_QUERYResult> {
+  const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+
+  return await sanityFetch<PRODUCTS_WITH_FILTERS_QUERYResult>({
+    query: PRODUCTS_WITH_FILTERS_QUERY,
+    params: {
+      categoryId,
+      startIndex,
+      endIndex,
+      colorIds: colorIds && colorIds.length > 0 ? colorIds : null,
+      sizeIds: sizeIds && sizeIds.length > 0 ? sizeIds : null,
+    },
+    tags: ["product", "category", "color", "size"],
+  });
+}
+
+/**
+ * Get count of products with optional color and size filters (unified approach)
+ * @param categoryId - Category ID to filter by
+ * @param colorIds - Optional array of color IDs (pass null/undefined for no color filter)
+ * @param sizeIds - Optional array of size IDs (pass null/undefined for no size filter)
+ */
+export async function getProductsCountWithFilters(
+  categoryId: string,
+  colorIds?: string[] | null,
+  sizeIds?: string[] | null
+): Promise<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult> {
+  return await sanityFetch<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult>({
+    query: PRODUCTS_COUNT_WITH_FILTERS_QUERY,
+    params: {
+      categoryId,
+      colorIds: colorIds && colorIds.length > 0 ? colorIds : null,
+      sizeIds: sizeIds && sizeIds.length > 0 ? sizeIds : null,
+    },
+    tags: ["product", "category", "color", "size"],
   });
 }

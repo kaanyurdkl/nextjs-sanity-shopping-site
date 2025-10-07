@@ -6,9 +6,13 @@ import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface SidebarProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
+  searchParams?: { page?: string; colors?: string; sizes?: string };
 }
 
-export default async function Sidebar({ category }: SidebarProps) {
+export default async function Sidebar({
+  category,
+  searchParams,
+}: SidebarProps) {
   const categoryHasFilters =
     category.enableColorFilter ||
     category.enableSizeFilter ||
@@ -21,7 +25,7 @@ export default async function Sidebar({ category }: SidebarProps) {
       </nav>
       {categoryHasFilters && (
         <section aria-label="Product filters">
-          <CategoryFilters category={category} />
+          <CategoryFilters category={category} searchParams={searchParams} />
         </section>
       )}
     </aside>

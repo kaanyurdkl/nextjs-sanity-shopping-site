@@ -377,3 +377,141 @@ export const PRODUCTS_COUNT_BY_CATEGORYID_QUERY = defineQuery(`
     && count(variants[isActive == true && stockQuantity > 0]) > 0
   ])
 `);
+
+// =============================================================================
+// DYNAMIC FILTER QUERIES (Context-Aware)
+// =============================================================================
+
+/**
+ * Get available colors for a category with optional size filter
+ * If sizeIds provided, only return colors from products that have those sizes
+ */
+export const GET_COLORS_FOR_CATEGORY_QUERY = defineQuery(`
+  *[_type == "color" && _id in *[
+    _type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[
+      isActive == true
+      && stockQuantity > 0
+      && (!defined($sizeIds) || size._ref in $sizeIds)
+    ]) > 0
+  ].variants[isActive == true && stockQuantity > 0].color._ref]
+  {_id, name, hexCode} | order(name asc)
+`);
+
+/**
+ * Get available sizes for a category with optional color filter
+ * If colorIds provided, only return sizes from products that have those colors
+ */
+export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
+  *[_type == "size" && _id in *[
+    _type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[
+      isActive == true
+      && stockQuantity > 0
+      && (!defined($colorIds) || color._ref in $colorIds)
+    ]) > 0
+  ].variants[isActive == true && stockQuantity > 0].size._ref]
+  {_id, name, code, sortOrder} | order(sortOrder asc)
+`);
+
+/**
+ * Get sizes by name (lowercase matching)
+ * Used to convert size names from URL to size IDs
+ */
+export const SIZES_BY_NAME = defineQuery(`
+  *[_type == "size" && string::lower(name) in $sizeNames]{_id, name, code, sortOrder}
+`);
+
+// =============================================================================
+// UNIFIED FILTER QUERIES (Scalable with Optional Parameters)
+// =============================================================================
+
+/**
+ * Get paginated products with optional color and size filters
+ * Uses !defined() pattern to make filters optional
+ * This single query handles all filter combinations:
+ * - No filters
+ * - Color only
+ * - Size only
+ * - Both color and size
+ */
+export const PRODUCTS_WITH_FILTERS_QUERY = defineQuery(`
+  *[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[
+      isActive == true
+      && stockQuantity > 0
+      && (!defined($colorIds) || color._ref in $colorIds)
+      && (!defined($sizeIds) || size._ref in $sizeIds)
+    ]) > 0
+  ]
+  | order(_createdAt desc) [$startIndex...$endIndex] {
+    _id,
+    name,
+    "slug": slug.current,
+    basePrice,
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    hoverImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    "variants": variants[isActive == true && stockQuantity > 0] {
+      size->{
+        _id,
+        name,
+        code
+      },
+      stockQuantity,
+      color->{
+        _id,
+        name,
+        hexCode,
+        code
+      }
+    },
+    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0
+  }
+`);
+
+/**
+ * Get count of products with optional color and size filters
+ * Mirrors the logic of PRODUCTS_WITH_FILTERS_QUERY for pagination
+ */
+export const PRODUCTS_COUNT_WITH_FILTERS_QUERY = defineQuery(`
+  count(*[_type == "product"
+    && $categoryId in categoryHierarchy
+    && isActive == true
+    && count(variants[
+      isActive == true
+      && stockQuantity > 0
+      && (!defined($colorIds) || color._ref in $colorIds)
+      && (!defined($sizeIds) || size._ref in $sizeIds)
+    ]) > 0
+  ])
+`);
