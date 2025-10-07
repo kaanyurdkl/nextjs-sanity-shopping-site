@@ -7,12 +7,13 @@ interface Color {
   _id: string;
   name: string;
   hexCode: string;
+  productCount: number;
 }
 interface ColorFilterProps {
-  colors: Color[];
+  data: Color[];
 }
 
-export default function ColorFilter({ colors }: ColorFilterProps) {
+export default function ColorFilter({ data }: ColorFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -45,22 +46,27 @@ export default function ColorFilter({ colors }: ColorFilterProps) {
       setSelectedColorNames(newSelectedColorNames);
     }
 
+    // Build new URL with updated filters
+    const params = new URLSearchParams(searchParams.toString());
+
     if (newSelectedColorNames.length > 0) {
-      const params = new URLSearchParams();
-
       params.set("colors", newSelectedColorNames.join(","));
-
-      router.push(`?${params.toString()}`);
     } else {
-      router.push(pathname);
+      params.delete("colors");
     }
+
+    // Remove page parameter when filter changes (reset to page 1)
+    params.delete("page");
+
+    const newUrl = params.toString() ? `?${params.toString()}` : pathname;
+    router.push(newUrl);
   }
 
   return (
     <div>
       <h4 className="font-medium mb-3">Color</h4>
       <div className="space-y-2">
-        {colors.map((color) => {
+        {data.map((color) => {
           return (
             <label
               key={color._id}
@@ -73,6 +79,7 @@ export default function ColorFilter({ colors }: ColorFilterProps) {
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <span className="text-sm">{color.name}</span>
+              <span className="text-xs text-gray-500 ml-auto">({color.productCount})</span>
             </label>
           );
         })}

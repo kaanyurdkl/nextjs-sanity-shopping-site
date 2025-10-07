@@ -19,15 +19,13 @@ export default function Pagination({ totalPages }: PaginationProps) {
   const getPageUrl = (page: number) => {
     const params = new URLSearchParams();
 
-    // Add existing search params (like colors)
-    if (searchParams) {
-      Object.entries(searchParams).forEach(([key, value]) => {
-        if (key !== "page") {
-          // Don't include current page param
-          params.set(key, value);
-        }
-      });
-    }
+    // Add existing search params (like colors, sizes)
+    searchParams.forEach((value, key) => {
+      if (key !== "page") {
+        // Don't include current page param
+        params.set(key, value);
+      }
+    });
 
     // Add page param (except for page 1)
     if (page > 1) {
