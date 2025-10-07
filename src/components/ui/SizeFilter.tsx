@@ -19,39 +19,37 @@ export default function SizeFilter({ data }: SizeFilterProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [selectedSizeNames, setSelectedSizeNames] = useState<string[]>([]);
+  const [selectedSizeCodes, setSelectedSizeCodes] = useState<string[]>([]);
 
   useEffect(() => {
     const sizesParam: string | null = searchParams.get("sizes");
-    const currentSelectedSizeNames = sizesParam
-      ? sizesParam
-          .split(",")
-          .map((sizeName) => sizeName.trim().toLowerCase())
+    const currentSelectedSizeCodes = sizesParam
+      ? sizesParam.split(",").map((sizeCode) => sizeCode.trim().toLowerCase())
       : [];
 
-    setSelectedSizeNames(currentSelectedSizeNames);
+    setSelectedSizeCodes(currentSelectedSizeCodes);
   }, [searchParams]);
 
   function handleChange(size: Size, isChecked: boolean) {
-    const changedSizeName = size.name.toLowerCase();
+    const changedSizeCode = size.code.toLowerCase();
 
-    let newSelectedSizeNames: string[];
+    let newSelectedSizeCodes: string[];
 
     if (isChecked) {
-      newSelectedSizeNames = [...selectedSizeNames, changedSizeName];
-      setSelectedSizeNames(newSelectedSizeNames);
+      newSelectedSizeCodes = [...selectedSizeCodes, changedSizeCode];
+      setSelectedSizeCodes(newSelectedSizeCodes);
     } else {
-      newSelectedSizeNames = selectedSizeNames.filter(
-        (sizeName) => sizeName !== changedSizeName
+      newSelectedSizeCodes = selectedSizeCodes.filter(
+        (sizeCode) => sizeCode !== changedSizeCode
       );
-      setSelectedSizeNames(newSelectedSizeNames);
+      setSelectedSizeCodes(newSelectedSizeCodes);
     }
 
     // Build new URL with updated filters
     const params = new URLSearchParams(searchParams.toString());
 
-    if (newSelectedSizeNames.length > 0) {
-      params.set("sizes", newSelectedSizeNames.join(","));
+    if (newSelectedSizeCodes.length > 0) {
+      params.set("sizes", newSelectedSizeCodes.join(","));
     } else {
       params.delete("sizes");
     }
@@ -76,10 +74,10 @@ export default function SizeFilter({ data }: SizeFilterProps) {
               <input
                 type="checkbox"
                 onChange={(e) => handleChange(size, Boolean(e.target.checked))}
-                checked={selectedSizeNames?.includes(size.name.toLowerCase())}
+                checked={selectedSizeCodes?.includes(size.code.toLowerCase())}
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
-              <span className="text-sm">{size.name}</span>
+              <span className="text-sm">{size.code}</span>
             </label>
           );
         })}

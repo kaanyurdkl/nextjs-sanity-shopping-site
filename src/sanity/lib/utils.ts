@@ -11,11 +11,11 @@ import type {
   PRODUCTS_BY_CATEGORYID_QUERYResult,
   PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult,
   PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult,
-  SIZES_BY_NAMEResult,
   GET_COLORS_FOR_CATEGORY_QUERYResult,
   GET_SIZES_FOR_CATEGORY_QUERYResult,
   PRODUCTS_WITH_FILTERS_QUERYResult,
   PRODUCTS_COUNT_WITH_FILTERS_QUERYResult,
+  SIZES_BY_CODEResult,
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -31,11 +31,11 @@ import {
   PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY,
   FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
   PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
-  SIZES_BY_NAME,
   GET_COLORS_FOR_CATEGORY_QUERY,
   GET_SIZES_FOR_CATEGORY_QUERY,
   PRODUCTS_WITH_FILTERS_QUERY,
   PRODUCTS_COUNT_WITH_FILTERS_QUERY,
+  SIZES_BY_CODE,
 } from "./queries";
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
@@ -287,12 +287,12 @@ export async function getProductsCountByCategoryId(
  * Get sizes by name (lowercase matching)
  * Used to convert size names from URL to size IDs
  */
-export async function getSizesByName(
-  sizeNames: string[]
-): Promise<SIZES_BY_NAMEResult> {
+export async function getSizesByCode(
+  sizeCodes: string[]
+): Promise<SIZES_BY_CODEResult> {
   return await sanityFetch({
-    query: SIZES_BY_NAME,
-    params: { sizeNames },
+    query: SIZES_BY_CODE,
+    params: { sizeCodes },
   });
 }
 
@@ -325,7 +325,7 @@ export async function getCategoryFilterData(
 
   // Parse searchParams
   const selectedColorNames = searchParams?.colors?.split(",") || [];
-  const selectedSizeNames = searchParams?.sizes?.split(",") || [];
+  const selectedSizeCodes = searchParams?.sizes?.split(",") || [];
 
   // Convert selected names to IDs for queries
   let colorIds: string[] | undefined;
@@ -336,9 +336,9 @@ export async function getCategoryFilterData(
     colorIds = colors.map((c) => c._id);
   }
 
-  if (selectedSizeNames.length > 0) {
-    const sizes = await getSizesByName(selectedSizeNames);
-    sizeIds = sizes.map((s: { _id: string }) => s._id);
+  if (selectedSizeCodes.length > 0) {
+    const sizes = await getSizesByCode(selectedSizeCodes);
+    sizeIds = sizes.map((s) => s._id);
   }
 
   // Fetch color filter values (context-aware with size filter)

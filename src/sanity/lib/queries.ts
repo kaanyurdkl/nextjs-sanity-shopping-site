@@ -422,8 +422,8 @@ export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
  * Get sizes by name (lowercase matching)
  * Used to convert size names from URL to size IDs
  */
-export const SIZES_BY_NAME = defineQuery(`
-  *[_type == "size" && string::lower(name) in $sizeNames]{_id, name, code, sortOrder}
+export const SIZES_BY_CODE = defineQuery(`
+  *[_type == "size" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}
 `);
 
 // =============================================================================

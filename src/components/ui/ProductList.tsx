@@ -4,7 +4,7 @@ import Pagination from "@/components/ui/Pagination";
 // UTILS
 import {
   getColorsByName,
-  getSizesByName,
+  getSizesByCode,
   getProductsWithFilters,
   getProductsCountWithFilters,
 } from "@/sanity/lib/utils";
@@ -35,9 +35,9 @@ export default async function ProductList({
   }
 
   if (searchParams?.sizes) {
-    const sizeNames = searchParams.sizes.split(",");
-    const sizes = await getSizesByName(sizeNames);
-    sizeIds = sizes.map((size: { _id: string }) => size._id);
+    const sizeCodes = searchParams.sizes.split(",");
+    const sizes = await getSizesByCode(sizeCodes);
+    sizeIds = sizes.map((size) => size._id);
   }
 
   // Fetch products and count using unified filter approach

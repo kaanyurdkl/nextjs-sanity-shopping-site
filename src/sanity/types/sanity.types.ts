@@ -983,9 +983,9 @@ export type GET_SIZES_FOR_CATEGORY_QUERYResult = Array<{
   code: string;
   sortOrder: number;
 }>;
-// Variable: SIZES_BY_NAME
-// Query: *[_type == "size" && string::lower(name) in $sizeNames]{_id, name, code, sortOrder}
-export type SIZES_BY_NAMEResult = Array<{
+// Variable: SIZES_BY_CODE
+// Query: *[_type == "size" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}
+export type SIZES_BY_CODEResult = Array<{
   _id: string;
   name: string;
   code: string;
@@ -1064,7 +1064,7 @@ declare module "@sanity/client" {
     "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0]) > 0\n  ])\n": PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
     "\n  *[_type == \"color\" && _id in *[\n    _type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].color._ref]\n  {_id, name, hexCode} | order(name asc)\n": GET_COLORS_FOR_CATEGORY_QUERYResult;
     "\n  *[_type == \"size\" && _id in *[\n    _type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].size._ref]\n  {_id, name, code, sortOrder} | order(sortOrder asc)\n": GET_SIZES_FOR_CATEGORY_QUERYResult;
-    "\n  *[_type == \"size\" && string::lower(name) in $sizeNames]{_id, name, code, sortOrder}\n": SIZES_BY_NAMEResult;
+    "\n  *[_type == \"size\" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}\n": SIZES_BY_CODEResult;
     "\n  *[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ]\n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_WITH_FILTERS_QUERYResult;
     "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ])\n": PRODUCTS_COUNT_WITH_FILTERS_QUERYResult;
   }
