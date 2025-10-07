@@ -71,7 +71,7 @@ export default function ColorFilter({ data }: ColorFilterProps) {
   }
 
   return (
-    <Accordion type="single" className="border border-black px-2" collapsible>
+    <Accordion type="single" className="border border-black px-4" collapsible>
       <AccordionItem value="colorFilter">
         <AccordionTrigger className="cursor-pointer uppercase font-bold">
           Colour

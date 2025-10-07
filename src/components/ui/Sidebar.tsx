@@ -19,7 +19,7 @@ export default async function Sidebar({
     category.enablePriceFilter;
 
   return (
-    <aside className="w-48 flex-shrink-0">
+    <aside className="w-64 flex-shrink-0">
       <nav aria-label="Category navigation">
         <CategorySelectors category={category} />
       </nav>
