@@ -20,7 +20,7 @@ export default async function CategoryFilters({
   return (
     <div>
       <h3 className="font-bold mb-2 uppercase">Filters</h3>
-      <div className="space-y-4">
+      <div className="space-y-4 pb-0.5">
         {filterData.map((filter, index) => {
           if (filter.type === "color") {
             return <ColorFilter key={`color-${index}`} data={filter.data} />;

@@ -1,7 +1,15 @@
 "use client";
 
+// LIBRARIES
 import { useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+// COMPONENTS
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface Size {
   _id: string;
@@ -63,27 +71,32 @@ export default function SizeFilter({ data }: SizeFilterProps) {
   }
 
   return (
-    <div>
-      <h4 className="font-medium mb-3">Size</h4>
-      <div className="space-y-2">
-        {data.map((size) => {
-          return (
-            <label
-              key={size._id}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                onChange={(e) => handleChange(size, Boolean(e.target.checked))}
-                checked={selectedSizeCodes?.includes(size.code.toLowerCase())}
-                className="rounded border-gray-300 text-black focus:ring-black"
-              />
-              <span className="text-sm">{size.code}</span>
-              <span className="text-xs text-gray-500 ml-auto">({size.productCount})</span>
-            </label>
-          );
-        })}
-      </div>
-    </div>
+    <Accordion type="single" className="border border-black px-2" collapsible>
+      <AccordionItem value="colorFilter">
+        <AccordionTrigger className="cursor-pointer">Size</AccordionTrigger>
+        <AccordionContent>
+          <div className="flex flex-wrap gap-2">
+            {data.map((size) => {
+              const isSelected = selectedSizeCodes?.includes(
+                size.code.toLowerCase()
+              );
+              return (
+                <button
+                  key={size._id}
+                  onClick={() => handleChange(size, !isSelected)}
+                  className={`p-2 text-sm space-x-1 font-medium cursor-pointer border transition-colors border-black ${
+                    isSelected
+                      ? "bg-black text-white hover:bg-gray-800"
+                      : "bg-white hover:bg-gray-100 text-black"
+                  }`}
+                >
+                  <span>{size.code}</span> <span>[{size.productCount}]</span>
+                </button>
+              );
+            })}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
