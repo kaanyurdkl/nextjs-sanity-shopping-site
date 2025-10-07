@@ -385,6 +385,7 @@ export const PRODUCTS_COUNT_BY_CATEGORYID_QUERY = defineQuery(`
 /**
  * Get available colors for a category with optional size filter
  * If sizeIds provided, only return colors from products that have those sizes
+ * Includes product count for each color
  */
 export const GET_COLORS_FOR_CATEGORY_QUERY = defineQuery(`
   *[_type == "color" && _id in *[
@@ -397,12 +398,27 @@ export const GET_COLORS_FOR_CATEGORY_QUERY = defineQuery(`
       && (!defined($sizeIds) || size._ref in $sizeIds)
     ]) > 0
   ].variants[isActive == true && stockQuantity > 0].color._ref]
-  {_id, name, hexCode} | order(name asc)
+  {
+    _id,
+    name,
+    hexCode,
+    "productCount": count(*[
+      _type == "product"
+      && $categoryId in categoryHierarchy
+      && isActive == true
+      && ^._id in variants[
+        isActive == true
+        && stockQuantity > 0
+        && (!defined($sizeIds) || size._ref in $sizeIds)
+      ].color._ref
+    ])
+  } | order(name asc)
 `);
 
 /**
  * Get available sizes for a category with optional color filter
  * If colorIds provided, only return sizes from products that have those colors
+ * Includes product count for each size
  */
 export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
   *[_type == "size" && _id in *[
@@ -415,7 +431,22 @@ export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
       && (!defined($colorIds) || color._ref in $colorIds)
     ]) > 0
   ].variants[isActive == true && stockQuantity > 0].size._ref]
-  {_id, name, code, sortOrder} | order(sortOrder asc)
+  {
+    _id,
+    name,
+    code,
+    sortOrder,
+    "productCount": count(*[
+      _type == "product"
+      && $categoryId in categoryHierarchy
+      && isActive == true
+      && ^._id in variants[
+        isActive == true
+        && stockQuantity > 0
+        && (!defined($colorIds) || color._ref in $colorIds)
+      ].size._ref
+    ])
+  } | order(sortOrder asc)
 `);
 
 /**

@@ -8,6 +8,7 @@ interface Size {
   name: string;
   code: string;
   sortOrder: number;
+  productCount: number;
 }
 
 interface SizeFilterProps {
@@ -78,6 +79,7 @@ export default function SizeFilter({ data }: SizeFilterProps) {
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <span className="text-sm">{size.code}</span>
+              <span className="text-xs text-gray-500 ml-auto">({size.productCount})</span>
             </label>
           );
         })}

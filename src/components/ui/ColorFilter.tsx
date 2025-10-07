@@ -7,6 +7,7 @@ interface Color {
   _id: string;
   name: string;
   hexCode: string;
+  productCount: number;
 }
 interface ColorFilterProps {
   data: Color[];
@@ -78,6 +79,7 @@ export default function ColorFilter({ data }: ColorFilterProps) {
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <span className="text-sm">{color.name}</span>
+              <span className="text-xs text-gray-500 ml-auto">({color.productCount})</span>
             </label>
           );
         })}
