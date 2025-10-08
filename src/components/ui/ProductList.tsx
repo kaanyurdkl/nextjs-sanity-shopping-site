@@ -57,12 +57,10 @@ export default async function ProductList({
   const totalPages = Math.ceil(productsCount / PRODUCTS_PER_PAGE);
 
   return (
-    <div>
-      <div className="mb-6">
-        <p className="text-sm text-gray-600">{productsCount} products</p>
-      </div>
+    <div className="space-y-8">
+      <p className="text-sm text-gray-600">{productsCount} products</p>
 
-      <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mb-8">
+      <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {products.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}

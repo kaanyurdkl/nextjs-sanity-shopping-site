@@ -17,6 +17,8 @@ export default async function CategoryFilters({
 }: CategoryFiltersProps) {
   const filterData = await getCategoryFilterData(category, searchParams);
 
+  console.log("CategoryFilters");
+
   return (
     <div>
       <h3 className="font-bold mb-4 uppercase">Filters</h3>

@@ -25,6 +25,8 @@ export default async function CategoryPage({
 
   const isListingPage = category.pageType === "listing";
 
+  console.log("CategoryPage");
+
   if (isListingPage) {
     return (
       <CategoryListingPage
