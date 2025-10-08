@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+// STORE
+import { useFilterStore } from "@/stores/filter-store";
 
 interface Size {
   _id: string;
@@ -28,8 +30,10 @@ export default function SizeFilter({ data }: SizeFilterProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { addSize, removeSize, selectedSizes } = useFilterStore();
   const [selectedSizeCodes, setSelectedSizeCodes] = useState<string[]>([]);
 
+  // Sync Zustand store with URL params on mount/change
   useEffect(() => {
     const sizesParam: string | null = searchParams.get("sizes");
     const currentSelectedSizeCodes = sizesParam
@@ -37,11 +41,49 @@ export default function SizeFilter({ data }: SizeFilterProps) {
       : [];
 
     setSelectedSizeCodes(currentSelectedSizeCodes);
-  }, [searchParams]);
+
+    // Sync store with URL - add sizes that are in URL but not in store
+    currentSelectedSizeCodes.forEach((sizeCode) => {
+      const sizeInData = data.find((s) => s.code.toLowerCase() === sizeCode);
+      const isInStore = selectedSizes.some(
+        (s) => s.code.toLowerCase() === sizeCode
+      );
+
+      if (sizeInData && !isInStore) {
+        addSize({
+          _id: sizeInData._id,
+          code: sizeInData.code,
+          name: sizeInData.name,
+        });
+      }
+    });
+
+    // Remove sizes from store that are not in URL
+    selectedSizes.forEach((size) => {
+      const isInUrl = currentSelectedSizeCodes.includes(
+        size.code.toLowerCase()
+      );
+      if (!isInUrl) {
+        removeSize(size._id);
+      }
+    });
+  }, [searchParams, data, selectedSizes, addSize, removeSize]);
 
   function handleChange(size: Size, isChecked: boolean) {
     const changedSizeCode = size.code.toLowerCase();
 
+    // Update Zustand store
+    if (isChecked) {
+      addSize({
+        _id: size._id,
+        code: size.code,
+        name: size.name,
+      });
+    } else {
+      removeSize(size._id);
+    }
+
+    // Update URL
     let newSelectedSizeCodes: string[];
 
     if (isChecked) {
@@ -71,7 +113,12 @@ export default function SizeFilter({ data }: SizeFilterProps) {
   }
 
   return (
-    <Accordion type="single" className="border border-black px-4" collapsible>
+    <Accordion
+      type="single"
+      className="border border-black px-4"
+      collapsible
+      defaultValue="colorFilter"
+    >
       <AccordionItem value="colorFilter">
         <AccordionTrigger className="cursor-pointer uppercase font-bold">
           Size
