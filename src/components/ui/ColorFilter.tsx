@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+// STORE
+import { useFilterStore } from "@/stores/filter-store";
 
 interface Color {
   _id: string;
@@ -26,8 +28,10 @@ export default function ColorFilter({ data }: ColorFilterProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { addColor, removeColor, selectedColors } = useFilterStore();
   const [selectedColorNames, setSelectedColorNames] = useState<string[]>([]);
 
+  // Sync Zustand store with URL params on mount/change
   useEffect(() => {
     const colorsParam: string | null = searchParams.get("colors");
     const currentSelectedColorNames = colorsParam
@@ -37,11 +41,49 @@ export default function ColorFilter({ data }: ColorFilterProps) {
       : [];
 
     setSelectedColorNames(currentSelectedColorNames);
-  }, [searchParams]);
+
+    // Sync store with URL - add colors that are in URL but not in store
+    currentSelectedColorNames.forEach((colorName) => {
+      const colorInData = data.find((c) => c.name.toLowerCase() === colorName);
+      const isInStore = selectedColors.some(
+        (c) => c.name.toLowerCase() === colorName
+      );
+
+      if (colorInData && !isInStore) {
+        addColor({
+          _id: colorInData._id,
+          name: colorInData.name,
+          hexCode: colorInData.hexCode,
+        });
+      }
+    });
+
+    // Remove colors from store that are not in URL
+    selectedColors.forEach((color) => {
+      const isInUrl = currentSelectedColorNames.includes(
+        color.name.toLowerCase()
+      );
+      if (!isInUrl) {
+        removeColor(color._id);
+      }
+    });
+  }, [searchParams, data, selectedColors, addColor, removeColor]);
 
   function handleChange(color: Color, isChecked: Boolean) {
     const changedColorName = color.name.toLowerCase();
 
+    // Update Zustand store
+    if (isChecked) {
+      addColor({
+        _id: color._id,
+        name: color.name,
+        hexCode: color.hexCode,
+      });
+    } else {
+      removeColor(color._id);
+    }
+
+    // Update URL
     let newSelectedColorNames: string[];
 
     if (isChecked) {
@@ -71,7 +113,12 @@ export default function ColorFilter({ data }: ColorFilterProps) {
   }
 
   return (
-    <Accordion type="single" className="border border-black px-4" collapsible>
+    <Accordion
+      type="single"
+      className="border border-black px-4"
+      collapsible
+      defaultValue="colorFilter"
+    >
       <AccordionItem value="colorFilter">
         <AccordionTrigger className="cursor-pointer uppercase font-bold">
           Colour

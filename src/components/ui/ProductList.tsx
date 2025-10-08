@@ -12,6 +12,7 @@ import {
 import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 // CONSTANTS
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
+import { Suspense } from "react";
 
 interface ProductListProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
@@ -68,7 +69,9 @@ export default async function ProductList({
 
       {totalPages && totalPages > 1 && (
         <nav aria-label="Product pagination">
-          <Pagination totalPages={totalPages} />
+          <Suspense fallback={null}>
+            <Pagination totalPages={totalPages} />
+          </Suspense>
         </nav>
       )}
     </div>

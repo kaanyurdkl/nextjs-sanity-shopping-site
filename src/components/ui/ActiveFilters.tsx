@@ -2,28 +2,61 @@
 
 // LIBRARIES
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+// STORE
+import { useFilterStore } from "@/stores/filter-store";
 
 export default function ActiveFilters() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const colors = searchParams.get("colors")?.split(",") || [];
-  const sizes = searchParams.get("sizes")?.split(",") || [];
+  const {
+    selectedColors,
+    selectedSizes,
+    removeColor,
+    removeSize,
+    clearAll: clearStore,
+  } = useFilterStore();
 
-  const hasActiveFilters = colors.length > 0 || sizes.length > 0;
+  const hasActiveFilters =
+    selectedColors.length > 0 || selectedSizes.length > 0;
 
-  function removeFilter(type: "colors" | "sizes", value: string) {
+  function removeColorFilter(colorId: string, colorName: string) {
+    removeColor(colorId);
+
     const params = new URLSearchParams(searchParams.toString());
-    const current = params.get(type)?.split(",") || [];
+    const current = params.get("colors")?.split(",") || [];
     const updated = current.filter(
-      (v) => v.toLowerCase() !== value.toLowerCase()
+      (v) => v.toLowerCase() !== colorName.toLowerCase()
     );
 
     if (updated.length > 0) {
-      params.set(type, updated.join(","));
+      params.set("colors", updated.join(","));
     } else {
-      params.delete(type);
+      params.delete("colors");
+    }
+
+    params.delete("page");
+
+    const newUrl = params.toString()
+      ? `${pathname}?${params.toString()}`
+      : pathname;
+    router.push(newUrl);
+  }
+
+  function removeSizeFilter(sizeId: string, sizeCode: string) {
+    removeSize(sizeId);
+
+    const params = new URLSearchParams(searchParams.toString());
+    const current = params.get("sizes")?.split(",") || [];
+    const updated = current.filter(
+      (v) => v.toLowerCase() !== sizeCode.toLowerCase()
+    );
+
+    if (updated.length > 0) {
+      params.set("sizes", updated.join(","));
+    } else {
+      params.delete("sizes");
     }
 
     params.delete("page");
@@ -35,6 +68,8 @@ export default function ActiveFilters() {
   }
 
   function clearAll() {
+    clearStore();
+
     const params = new URLSearchParams(searchParams.toString());
     params.delete("colors");
     params.delete("sizes");
@@ -55,31 +90,31 @@ export default function ActiveFilters() {
       <div className="flex items-center gap-2 mb-2 flex-wrap">
         <span className="text-sm font-medium">Active Filters:</span>
 
-        {colors.map((color) => (
+        {selectedColors.map((color) => (
           <button
-            key={`color-${color}`}
-            onClick={() => removeFilter("colors", color)}
-            className="px-3 py-1 bg-black text-white text-sm flex items-center gap-2 hover:bg-gray-800"
+            key={`color-${color._id}`}
+            onClick={() => removeColorFilter(color._id, color.name)}
+            className="px-3 py-1 cursor-pointer bg-black text-white text-sm flex items-center gap-2 hover:bg-gray-800"
           >
-            {color}
+            {color.name}
             <span>✕</span>
           </button>
         ))}
 
-        {sizes.map((size) => (
+        {selectedSizes.map((size) => (
           <button
-            key={`size-${size}`}
-            onClick={() => removeFilter("sizes", size)}
-            className="px-3 py-1 bg-black text-white text-sm flex items-center gap-2 hover:bg-gray-800"
+            key={`size-${size._id}`}
+            onClick={() => removeSizeFilter(size._id, size.code)}
+            className="px-3 py-1 cursor-pointer bg-black text-white text-sm flex items-center gap-2 hover:bg-gray-800"
           >
-            {size}
+            {size.code}
             <span>✕</span>
           </button>
         ))}
 
         <button
           onClick={clearAll}
-          className="text-sm underline hover:no-underline"
+          className="text-sm cursor-pointer underline hover:no-underline"
         >
           Clear All
         </button>

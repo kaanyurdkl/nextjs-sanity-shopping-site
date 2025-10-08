@@ -16,7 +16,6 @@ export default async function CategoryListingPage({
   category,
   searchParams,
 }: CategoryListingPageProps) {
-  console.log("CategoryListingPage");
   return (
     <main className="max-w-8xl mx-auto px-6 py-8">
       <div className="flex gap-8">

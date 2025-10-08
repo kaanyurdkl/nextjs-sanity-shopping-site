@@ -1,10 +1,11 @@
 // COMPONENTS
+import { Suspense } from "react";
 import ColorFilter from "@/components/ui/ColorFilter";
+import SizeFilter from "@/components/ui/SizeFilter";
 // UTILS
 import { getCategoryFilterData } from "@/sanity/lib/utils";
 // TYPES
 import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
-import SizeFilter from "./SizeFilter";
 
 interface CategoryFiltersProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
@@ -17,20 +18,20 @@ export default async function CategoryFilters({
 }: CategoryFiltersProps) {
   const filterData = await getCategoryFilterData(category, searchParams);
 
-  console.log("CategoryFilters");
-
   return (
     <div>
       <h3 className="font-bold mb-4 uppercase">Filters</h3>
       <div className="space-y-4 pb-0.5">
-        {filterData.map((filter, index) => {
-          if (filter.type === "color") {
-            return <ColorFilter key={`color-${index}`} data={filter.data} />;
-          } else if (filter.type === "size") {
-            return <SizeFilter key={`size-${index}`} data={filter.data} />;
-          }
-          return null;
-        })}
+        <Suspense fallback={null}>
+          {filterData.map((filter, index) => {
+            if (filter.type === "color") {
+              return <ColorFilter key={`color-${index}`} data={filter.data} />;
+            } else if (filter.type === "size") {
+              return <SizeFilter key={`size-${index}`} data={filter.data} />;
+            }
+            return null;
+          })}
+        </Suspense>
       </div>
     </div>
   );

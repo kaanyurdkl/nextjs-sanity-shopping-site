@@ -18,8 +18,6 @@ export default async function Sidebar({
     category.enableSizeFilter ||
     category.enablePriceFilter;
 
-  console.log("Sidebar");
-
   return (
     <aside className="w-64 flex-shrink-0">
       <nav aria-label="Category navigation">
