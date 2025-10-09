@@ -36,7 +36,9 @@ export default async function CategoryPage({
   if (category.pageType === "landing") {
     return (
       <>
-        <Breadcrumbs slug={slug} />
+        <div className="max-w-8xl mx-auto px-6 pt-8">
+          <Breadcrumbs slug={slug} />
+        </div>
         <CategoryLandingPage category={category} />
       </>
     );
@@ -44,7 +46,9 @@ export default async function CategoryPage({
 
   return (
     <>
-      <Breadcrumbs slug={slug} />
+      <div className="max-w-8xl mx-auto px-6 pt-8">
+        <Breadcrumbs slug={slug} />
+      </div>
       <CategoryListingPage
         category={category}
         searchParams={resolvedSearchParams}
