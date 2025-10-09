@@ -9,7 +9,7 @@ import ActiveFilters from "../ui/ActiveFilters";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string; sizes?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string };
 }
 
 export default async function CategoryListingPage({

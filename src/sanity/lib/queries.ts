@@ -505,6 +505,8 @@ export const PRODUCTS_WITH_FILTERS_QUERY = defineQuery(`
   *[_type == "product"
     && $categoryId in categoryHierarchy
     && isActive == true
+    && (!defined($minPrice) || basePrice >= $minPrice)
+    && (!defined($maxPrice) || basePrice <= $maxPrice)
     && count(variants[
       isActive == true
       && stockQuantity > 0
@@ -569,6 +571,8 @@ export const PRODUCTS_COUNT_WITH_FILTERS_QUERY = defineQuery(`
   count(*[_type == "product"
     && $categoryId in categoryHierarchy
     && isActive == true
+    && (!defined($minPrice) || basePrice >= $minPrice)
+    && (!defined($maxPrice) || basePrice <= $maxPrice)
     && count(variants[
       isActive == true
       && stockQuantity > 0

@@ -420,18 +420,22 @@ export async function getCategoryFilterData(
 // =============================================================================
 
 /**
- * Get products with optional color and size filters (unified approach)
+ * Get products with optional color, size, and price filters (unified approach)
  * This single function handles all filter combinations
  * @param categoryId - Category ID to filter by
  * @param page - Current page number for pagination
  * @param colorIds - Optional array of color IDs (pass null/undefined for no color filter)
  * @param sizeIds - Optional array of size IDs (pass null/undefined for no size filter)
+ * @param minPrice - Optional minimum price filter
+ * @param maxPrice - Optional maximum price filter
  */
 export async function getProductsWithFilters(
   categoryId: string,
   page: number,
   colorIds?: string[] | null,
-  sizeIds?: string[] | null
+  sizeIds?: string[] | null,
+  minPrice?: number | null,
+  maxPrice?: number | null
 ): Promise<PRODUCTS_WITH_FILTERS_QUERYResult> {
   const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
   const endIndex = startIndex + PRODUCTS_PER_PAGE;
@@ -444,21 +448,27 @@ export async function getProductsWithFilters(
       endIndex,
       colorIds: colorIds && colorIds.length > 0 ? colorIds : null,
       sizeIds: sizeIds && sizeIds.length > 0 ? sizeIds : null,
+      minPrice: minPrice ?? null,
+      maxPrice: maxPrice ?? null,
     },
     tags: ["product", "category", "color", "size"],
   });
 }
 
 /**
- * Get count of products with optional color and size filters (unified approach)
+ * Get count of products with optional color, size, and price filters (unified approach)
  * @param categoryId - Category ID to filter by
  * @param colorIds - Optional array of color IDs (pass null/undefined for no color filter)
  * @param sizeIds - Optional array of size IDs (pass null/undefined for no size filter)
+ * @param minPrice - Optional minimum price filter
+ * @param maxPrice - Optional maximum price filter
  */
 export async function getProductsCountWithFilters(
   categoryId: string,
   colorIds?: string[] | null,
-  sizeIds?: string[] | null
+  sizeIds?: string[] | null,
+  minPrice?: number | null,
+  maxPrice?: number | null
 ): Promise<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult> {
   return await sanityFetch<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult>({
     query: PRODUCTS_COUNT_WITH_FILTERS_QUERY,
@@ -466,6 +476,8 @@ export async function getProductsCountWithFilters(
       categoryId,
       colorIds: colorIds && colorIds.length > 0 ? colorIds : null,
       sizeIds: sizeIds && sizeIds.length > 0 ? sizeIds : null,
+      minPrice: minPrice ?? null,
+      maxPrice: maxPrice ?? null,
     },
     tags: ["product", "category", "color", "size"],
   });

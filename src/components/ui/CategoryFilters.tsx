@@ -10,7 +10,7 @@ import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface CategoryFiltersProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string; sizes?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string };
 }
 
 export default async function CategoryFilters({
@@ -18,8 +18,6 @@ export default async function CategoryFilters({
   searchParams,
 }: CategoryFiltersProps) {
   const filterData = await getCategoryFilterData(category, searchParams);
-
-  console.log("filterData", filterData);
 
   return (
     <div>

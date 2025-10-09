@@ -16,7 +16,7 @@ import { Suspense } from "react";
 
 interface ProductListProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string; sizes?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string };
 }
 
 export default async function ProductList({
@@ -28,6 +28,8 @@ export default async function ProductList({
   // Parse filter parameters
   let colorIds: string[] | null = null;
   let sizeIds: string[] | null = null;
+  let minPrice: number | null = null;
+  let maxPrice: number | null = null;
 
   if (searchParams?.colors) {
     const colorNames = searchParams.colors.split(",");
@@ -41,18 +43,30 @@ export default async function ProductList({
     sizeIds = sizes.map((size) => size._id);
   }
 
+  if (searchParams?.minPrice) {
+    minPrice = parseFloat(searchParams.minPrice);
+  }
+
+  if (searchParams?.maxPrice) {
+    maxPrice = parseFloat(searchParams.maxPrice);
+  }
+
   // Fetch products and count using unified filter approach
   const products = await getProductsWithFilters(
     category._id,
     currentPage,
     colorIds,
-    sizeIds
+    sizeIds,
+    minPrice,
+    maxPrice
   );
 
   const productsCount = await getProductsCountWithFilters(
     category._id,
     colorIds,
-    sizeIds
+    sizeIds,
+    minPrice,
+    maxPrice
   );
 
   const totalPages = Math.ceil(productsCount / PRODUCTS_PER_PAGE);

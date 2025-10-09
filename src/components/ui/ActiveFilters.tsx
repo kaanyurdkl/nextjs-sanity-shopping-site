@@ -15,11 +15,16 @@ export default function ActiveFilters() {
     selectedSizes,
     removeColor,
     removeSize,
+    clearPriceRange,
     clearAll: clearStore,
   } = useFilterStore();
 
+  const minPriceParam = searchParams.get("minPrice");
+  const maxPriceParam = searchParams.get("maxPrice");
+  const hasPriceFilter = minPriceParam || maxPriceParam;
+
   const hasActiveFilters =
-    selectedColors.length > 0 || selectedSizes.length > 0;
+    selectedColors.length > 0 || selectedSizes.length > 0 || hasPriceFilter;
 
   function removeColorFilter(colorId: string, colorName: string) {
     removeColor(colorId);
@@ -67,12 +72,28 @@ export default function ActiveFilters() {
     router.push(newUrl);
   }
 
+  function removePriceFilter() {
+    clearPriceRange();
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("minPrice");
+    params.delete("maxPrice");
+    params.delete("page");
+
+    const newUrl = params.toString()
+      ? `${pathname}?${params.toString()}`
+      : pathname;
+    router.push(newUrl);
+  }
+
   function clearAll() {
     clearStore();
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("colors");
     params.delete("sizes");
+    params.delete("minPrice");
+    params.delete("maxPrice");
     params.delete("page");
 
     const newUrl = params.toString()
@@ -111,6 +132,16 @@ export default function ActiveFilters() {
             <span>✕</span>
           </button>
         ))}
+
+        {hasPriceFilter && (
+          <button
+            onClick={removePriceFilter}
+            className="px-3 py-1 cursor-pointer bg-black text-white text-sm flex items-center gap-2 hover:bg-gray-800"
+          >
+            ${minPriceParam || "0"} - ${maxPriceParam || "0"}
+            <span>✕</span>
+          </button>
+        )}
 
         <button
           onClick={clearAll}
