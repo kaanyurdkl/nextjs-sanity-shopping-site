@@ -522,7 +522,13 @@ export const PRODUCTS_WITH_FILTERS_QUERY = defineQuery(`
       && (!defined($sizeIds) || size._ref in $sizeIds)
     ]) > 0
   ]
-  | order(_createdAt desc) [$startIndex...$endIndex] {
+  | order(
+      select(
+        $sortOrder == "price-asc" => 0 - basePrice,
+        $sortOrder == "price-desc" => basePrice,
+        0 - _createdAt
+      ) desc
+    ) [$startIndex...$endIndex] {
     _id,
     name,
     "slug": slug.current,

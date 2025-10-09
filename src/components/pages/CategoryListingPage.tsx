@@ -3,13 +3,14 @@ import { Suspense } from "react";
 import CategoryHeader from "@/components/ui/CategoryHeader";
 import Sidebar from "@/components/ui/Sidebar";
 import ProductList from "@/components/ui/ProductList";
+import SortFilter from "@/components/ui/SortFilter";
 // TYPES
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import ActiveFilters from "../ui/ActiveFilters";
 
 interface CategoryListingPageProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string; sort?: string };
 }
 
 export default async function CategoryListingPage({
@@ -25,6 +26,8 @@ export default async function CategoryListingPage({
           <CategoryHeader title={category.title} />
 
           <ActiveFilters />
+
+          <SortFilter />
 
           <Suspense
             fallback={<div className="text-center py-8">Loading...</div>}

@@ -16,7 +16,7 @@ import { Suspense } from "react";
 
 interface ProductListProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
-  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string };
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string; sort?: string };
 }
 
 export default async function ProductList({
@@ -30,6 +30,7 @@ export default async function ProductList({
   let sizeIds: string[] | null = null;
   let minPrice: number | null = null;
   let maxPrice: number | null = null;
+  const sortOrder = searchParams?.sort || null;
 
   if (searchParams?.colors) {
     const colorNames = searchParams.colors.split(",");
@@ -58,7 +59,8 @@ export default async function ProductList({
     colorIds,
     sizeIds,
     minPrice,
-    maxPrice
+    maxPrice,
+    sortOrder
   );
 
   const productsCount = await getProductsCountWithFilters(

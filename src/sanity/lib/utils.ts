@@ -434,6 +434,7 @@ export async function getCategoryFilterData(
  * @param sizeIds - Optional array of size IDs (pass null/undefined for no size filter)
  * @param minPrice - Optional minimum price filter
  * @param maxPrice - Optional maximum price filter
+ * @param sortOrder - Sort order: "newest" (default), "price-asc", "price-desc"
  */
 export async function getProductsWithFilters(
   categoryId: string,
@@ -441,7 +442,8 @@ export async function getProductsWithFilters(
   colorIds?: string[] | null,
   sizeIds?: string[] | null,
   minPrice?: number | null,
-  maxPrice?: number | null
+  maxPrice?: number | null,
+  sortOrder?: string | null
 ): Promise<PRODUCTS_WITH_FILTERS_QUERYResult> {
   const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
   const endIndex = startIndex + PRODUCTS_PER_PAGE;
@@ -456,6 +458,7 @@ export async function getProductsWithFilters(
       sizeIds: sizeIds && sizeIds.length > 0 ? sizeIds : null,
       minPrice: minPrice ?? null,
       maxPrice: maxPrice ?? null,
+      sortOrder: sortOrder || "newest",
     },
     tags: ["product", "category", "color", "size"],
   });
