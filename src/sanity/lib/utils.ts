@@ -346,13 +346,15 @@ export type FilterData = ColorFilterData | SizeFilterData | PriceFilterData;
  */
 export async function getCategoryFilterData(
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>,
-  searchParams?: { page?: string; colors?: string; sizes?: string }
+  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string }
 ): Promise<FilterData[]> {
   const filterResults: FilterData[] = [];
 
   // Parse searchParams
   const selectedColorNames = searchParams?.colors?.split(",") || [];
   const selectedSizeCodes = searchParams?.sizes?.split(",") || [];
+  const minPrice = searchParams?.minPrice ? parseFloat(searchParams.minPrice) : null;
+  const maxPrice = searchParams?.maxPrice ? parseFloat(searchParams.maxPrice) : null;
 
   // Convert selected names to IDs for queries
   let colorIds: string[] | undefined;
@@ -368,13 +370,15 @@ export async function getCategoryFilterData(
     sizeIds = sizes.map((s) => s._id);
   }
 
-  // Fetch color filter values (context-aware with size filter)
+  // Fetch color filter values (context-aware with size and price filters)
   if (category.enableColorFilter) {
     const colors = await sanityFetch<GET_COLORS_FOR_CATEGORY_QUERYResult>({
       query: GET_COLORS_FOR_CATEGORY_QUERY,
       params: {
         categoryId: category._id,
         sizeIds: sizeIds || null,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
       },
       tags: ["product", "color", "size"],
     });
@@ -384,13 +388,15 @@ export async function getCategoryFilterData(
     }
   }
 
-  // Fetch size filter values (context-aware with color filter)
+  // Fetch size filter values (context-aware with color and price filters)
   if (category.enableSizeFilter) {
     const sizes = await sanityFetch<GET_SIZES_FOR_CATEGORY_QUERYResult>({
       query: GET_SIZES_FOR_CATEGORY_QUERY,
       params: {
         categoryId: category._id,
         colorIds: colorIds || null,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
       },
       tags: ["product", "color", "size"],
     });

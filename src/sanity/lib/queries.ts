@@ -392,6 +392,8 @@ export const GET_COLORS_FOR_CATEGORY_QUERY = defineQuery(`
     _type == "product"
     && $categoryId in categoryHierarchy
     && isActive == true
+    && (!defined($minPrice) || basePrice >= $minPrice)
+    && (!defined($maxPrice) || basePrice <= $maxPrice)
     && count(variants[
       isActive == true
       && stockQuantity > 0
@@ -406,6 +408,8 @@ export const GET_COLORS_FOR_CATEGORY_QUERY = defineQuery(`
       _type == "product"
       && $categoryId in categoryHierarchy
       && isActive == true
+      && (!defined($minPrice) || basePrice >= $minPrice)
+      && (!defined($maxPrice) || basePrice <= $maxPrice)
       && ^._id in variants[
         isActive == true
         && stockQuantity > 0
@@ -425,6 +429,8 @@ export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
     _type == "product"
     && $categoryId in categoryHierarchy
     && isActive == true
+    && (!defined($minPrice) || basePrice >= $minPrice)
+    && (!defined($maxPrice) || basePrice <= $maxPrice)
     && count(variants[
       isActive == true
       && stockQuantity > 0
@@ -440,6 +446,8 @@ export const GET_SIZES_FOR_CATEGORY_QUERY = defineQuery(`
       _type == "product"
       && $categoryId in categoryHierarchy
       && isActive == true
+      && (!defined($minPrice) || basePrice >= $minPrice)
+      && (!defined($maxPrice) || basePrice <= $maxPrice)
       && ^._id in variants[
         isActive == true
         && stockQuantity > 0

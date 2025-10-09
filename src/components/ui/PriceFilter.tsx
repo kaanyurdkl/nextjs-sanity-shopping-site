@@ -28,6 +28,7 @@ export default function PriceFilter({ data }: PriceFilterProps) {
 
   const minPrice = data.minPrice ?? 0;
   const maxPrice = data.maxPrice ?? 100;
+  const isPriceRangeSame = minPrice === maxPrice;
 
   const [localMin, setLocalMin] = useState<number>(minPrice);
   const [localMax, setLocalMax] = useState<number>(maxPrice);
@@ -83,10 +84,14 @@ export default function PriceFilter({ data }: PriceFilterProps) {
   const handleApplyFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (localMin > minPrice || localMax < maxPrice) {
+    // Check if user has set a custom price range (different from the available range)
+    const hasCustomRange = localMin !== minPrice || localMax !== maxPrice;
+
+    if (hasCustomRange) {
       params.set("minPrice", localMin.toFixed(0));
       params.set("maxPrice", localMax.toFixed(0));
     } else {
+      // Only delete if the values match the full available range
       params.delete("minPrice");
       params.delete("maxPrice");
     }
@@ -166,6 +171,7 @@ export default function PriceFilter({ data }: PriceFilterProps) {
         <AccordionContent>
           <div className="space-y-4 pt-2">
             {/* Price Inputs */}
+            {!isPriceRangeSame && (
             <div className="flex gap-2">
               <div className="flex-1">
                 <div className="relative">
@@ -196,37 +202,44 @@ export default function PriceFilter({ data }: PriceFilterProps) {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Dual Handle Slider */}
-            <div className="relative pt-2 pb-4 px-2">
-              <div
-                ref={sliderRef}
-                className="relative h-1 bg-gray-300 cursor-pointer"
-              >
-                {/* Active Range */}
+            {!isPriceRangeSame ? (
+              <div className="relative pt-2 pb-4 px-2">
                 <div
-                  className="absolute h-full bg-black"
-                  style={{
-                    left: `${minPercentage}%`,
-                    right: `${100 - maxPercentage}%`,
-                  }}
-                />
+                  ref={sliderRef}
+                  className="relative h-1 bg-gray-300 cursor-pointer"
+                >
+                  {/* Active Range */}
+                  <div
+                    className="absolute h-full bg-black"
+                    style={{
+                      left: `${minPercentage}%`,
+                      right: `${100 - maxPercentage}%`,
+                    }}
+                  />
 
-                {/* Min Handle */}
-                <div
-                  className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
-                  style={{ left: `${minPercentage}%` }}
-                  onMouseDown={(e) => handleSliderMouseDown(e, "min")}
-                />
+                  {/* Min Handle */}
+                  <div
+                    className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
+                    style={{ left: `${minPercentage}%` }}
+                    onMouseDown={(e) => handleSliderMouseDown(e, "min")}
+                  />
 
-                {/* Max Handle */}
-                <div
-                  className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
-                  style={{ left: `${maxPercentage}%` }}
-                  onMouseDown={(e) => handleSliderMouseDown(e, "max")}
-                />
+                  {/* Max Handle */}
+                  <div
+                    className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
+                    style={{ left: `${maxPercentage}%` }}
+                    onMouseDown={(e) => handleSliderMouseDown(e, "max")}
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="py-2 text-sm text-gray-600 text-center">
+                Only one price point available: ${minPrice}
+              </div>
+            )}
 
             {/* Apply Button */}
             <button
