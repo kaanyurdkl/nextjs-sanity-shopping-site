@@ -457,6 +457,37 @@ export const SIZES_BY_CODE = defineQuery(`
   *[_type == "size" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}
 `);
 
+/**
+ * Get price range for products in a category
+ * Returns min and max price values for active products with stock
+ */
+export const GET_PRICE_RANGE_FOR_CATEGORY_QUERY = defineQuery(`
+  {
+    "minPrice": math::min(*[
+      _type == "product"
+      && $categoryId in categoryHierarchy
+      && isActive == true
+      && count(variants[
+        isActive == true
+        && stockQuantity > 0
+        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)
+        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)
+      ]) > 0
+    ].basePrice),
+    "maxPrice": math::max(*[
+      _type == "product"
+      && $categoryId in categoryHierarchy
+      && isActive == true
+      && count(variants[
+        isActive == true
+        && stockQuantity > 0
+        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)
+        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)
+      ]) > 0
+    ].basePrice)
+  }
+`);
+
 // =============================================================================
 // UNIFIED FILTER QUERIES (Scalable with Optional Parameters)
 // =============================================================================

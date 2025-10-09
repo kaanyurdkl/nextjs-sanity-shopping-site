@@ -12,19 +12,28 @@ export interface SelectedSize {
   name: string;
 }
 
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
 interface FilterStore {
   selectedColors: SelectedColor[];
   selectedSizes: SelectedSize[];
+  priceRange: PriceRange | null;
   addColor: (color: SelectedColor) => void;
   removeColor: (colorId: string) => void;
   addSize: (size: SelectedSize) => void;
   removeSize: (sizeId: string) => void;
+  setPriceRange: (range: PriceRange) => void;
+  clearPriceRange: () => void;
   clearAll: () => void;
 }
 
 export const useFilterStore = create<FilterStore>((set) => ({
   selectedColors: [],
   selectedSizes: [],
+  priceRange: null,
   addColor: (color) =>
     set((state) => ({
       selectedColors: [...state.selectedColors, color],
@@ -41,9 +50,18 @@ export const useFilterStore = create<FilterStore>((set) => ({
     set((state) => ({
       selectedSizes: state.selectedSizes.filter((s) => s._id !== sizeId),
     })),
+  setPriceRange: (range) =>
+    set({
+      priceRange: range,
+    }),
+  clearPriceRange: () =>
+    set({
+      priceRange: null,
+    }),
   clearAll: () =>
     set({
       selectedColors: [],
       selectedSizes: [],
+      priceRange: null,
     }),
 }));

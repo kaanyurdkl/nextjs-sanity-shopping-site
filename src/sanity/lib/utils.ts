@@ -16,6 +16,7 @@ import type {
   PRODUCTS_WITH_FILTERS_QUERYResult,
   PRODUCTS_COUNT_WITH_FILTERS_QUERYResult,
   SIZES_BY_CODEResult,
+  GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult,
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -36,6 +37,7 @@ import {
   PRODUCTS_WITH_FILTERS_QUERY,
   PRODUCTS_COUNT_WITH_FILTERS_QUERY,
   SIZES_BY_CODE,
+  GET_PRICE_RANGE_FOR_CATEGORY_QUERY,
 } from "./queries";
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
@@ -296,6 +298,26 @@ export async function getSizesByCode(
   });
 }
 
+/**
+ * Get price range for products in a category
+ * Returns min and max price values, optionally filtered by color and size
+ */
+export async function getPriceRangeForCategory(
+  categoryId: string,
+  colorIds?: string[] | null,
+  sizeIds?: string[] | null
+): Promise<GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult> {
+  return await sanityFetch({
+    query: GET_PRICE_RANGE_FOR_CATEGORY_QUERY,
+    params: {
+      categoryId,
+      colorIds: colorIds || null,
+      sizeIds: sizeIds || null,
+    },
+    tags: ["product", "category"],
+  });
+}
+
 // =============================================================================
 // DYNAMIC FILTER DATA (Context-Aware)
 // =============================================================================
@@ -310,7 +332,12 @@ export interface SizeFilterData {
   data: GET_SIZES_FOR_CATEGORY_QUERYResult;
 }
 
-export type FilterData = ColorFilterData | SizeFilterData;
+export interface PriceFilterData {
+  type: "price";
+  data: GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult;
+}
+
+export type FilterData = ColorFilterData | SizeFilterData | PriceFilterData;
 
 /**
  * Get category filter data with context-aware filtering
@@ -370,6 +397,18 @@ export async function getCategoryFilterData(
 
     if (sizes.length > 0) {
       filterResults.push({ type: "size", data: sizes });
+    }
+  }
+
+  // Fetch price range for category (filtered by active color/size filters)
+  if (category.enablePriceFilter) {
+    const priceRange = await getPriceRangeForCategory(
+      category._id,
+      colorIds,
+      sizeIds
+    );
+    if (priceRange.minPrice !== null && priceRange.maxPrice !== null) {
+      filterResults.push({ type: "price", data: priceRange });
     }
   }
 

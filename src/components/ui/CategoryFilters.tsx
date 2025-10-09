@@ -2,6 +2,7 @@
 import { Suspense } from "react";
 import ColorFilter from "@/components/ui/ColorFilter";
 import SizeFilter from "@/components/ui/SizeFilter";
+import PriceFilter from "@/components/ui/PriceFilter";
 // UTILS
 import { getCategoryFilterData } from "@/sanity/lib/utils";
 // TYPES
@@ -18,6 +19,8 @@ export default async function CategoryFilters({
 }: CategoryFiltersProps) {
   const filterData = await getCategoryFilterData(category, searchParams);
 
+  console.log("filterData", filterData);
+
   return (
     <div>
       <h3 className="font-bold mb-4 uppercase">Filters</h3>
@@ -28,6 +31,8 @@ export default async function CategoryFilters({
               return <ColorFilter key={`color-${index}`} data={filter.data} />;
             } else if (filter.type === "size") {
               return <SizeFilter key={`size-${index}`} data={filter.data} />;
+            } else if (filter.type === "price") {
+              return <PriceFilter key={`price-${index}`} data={filter.data} />;
             }
             return null;
           })}
