@@ -198,7 +198,7 @@ export default function PriceFilter({ data }: PriceFilterProps) {
             </div>
 
             {/* Dual Handle Slider */}
-            <div className="relative pt-2 pb-4">
+            <div className="relative pt-2 pb-4 px-2">
               <div
                 ref={sliderRef}
                 className="relative h-1 bg-gray-300 cursor-pointer"
@@ -214,14 +214,14 @@ export default function PriceFilter({ data }: PriceFilterProps) {
 
                 {/* Min Handle */}
                 <div
-                  className="absolute w-4 h-4 bg-black rounded-full cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
+                  className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
                   style={{ left: `${minPercentage}%` }}
                   onMouseDown={(e) => handleSliderMouseDown(e, "min")}
                 />
 
                 {/* Max Handle */}
                 <div
-                  className="absolute w-4 h-4 bg-black rounded-full cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
+                  className="absolute w-4 h-4 bg-black cursor-pointer -translate-x-1/2 -translate-y-1/2 top-1/2"
                   style={{ left: `${maxPercentage}%` }}
                   onMouseDown={(e) => handleSliderMouseDown(e, "max")}
                 />
