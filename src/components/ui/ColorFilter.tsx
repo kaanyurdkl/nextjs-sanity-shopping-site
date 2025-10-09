@@ -31,7 +31,7 @@ export default function ColorFilter({ data }: ColorFilterProps) {
   const { addColor, removeColor, selectedColors } = useFilterStore();
   const [selectedColorNames, setSelectedColorNames] = useState<string[]>([]);
 
-  // Sync Zustand store with URL params on mount/change
+  // Sync local state and Zustand store with URL params
   useEffect(() => {
     const colorsParam: string | null = searchParams.get("colors");
     const currentSelectedColorNames = colorsParam
@@ -42,32 +42,30 @@ export default function ColorFilter({ data }: ColorFilterProps) {
 
     setSelectedColorNames(currentSelectedColorNames);
 
-    // Sync store with URL - add colors that are in URL but not in store
-    currentSelectedColorNames.forEach((colorName) => {
-      const colorInData = data.find((c) => c.name.toLowerCase() === colorName);
-      const isInStore = selectedColors.some(
-        (c) => c.name.toLowerCase() === colorName
-      );
+    // Build target store state from URL
+    const targetStoreColors = currentSelectedColorNames
+      .map((colorName) => {
+        const colorInData = data.find((c) => c.name.toLowerCase() === colorName);
+        return colorInData
+          ? {
+              _id: colorInData._id,
+              name: colorInData.name,
+              hexCode: colorInData.hexCode,
+            }
+          : null;
+      })
+      .filter((c) => c !== null);
 
-      if (colorInData && !isInStore) {
-        addColor({
-          _id: colorInData._id,
-          name: colorInData.name,
-          hexCode: colorInData.hexCode,
-        });
-      }
-    });
+    // Only update store if it's different from target
+    const storeColorNames = selectedColors.map((c) => c.name.toLowerCase()).sort();
+    const targetColorNames = targetStoreColors.map((c) => c.name.toLowerCase()).sort();
 
-    // Remove colors from store that are not in URL
-    selectedColors.forEach((color) => {
-      const isInUrl = currentSelectedColorNames.includes(
-        color.name.toLowerCase()
-      );
-      if (!isInUrl) {
-        removeColor(color._id);
-      }
-    });
-  }, [searchParams, data, selectedColors, addColor, removeColor]);
+    if (JSON.stringify(storeColorNames) !== JSON.stringify(targetColorNames)) {
+      // Clear and rebuild store
+      selectedColors.forEach((color) => removeColor(color._id));
+      targetStoreColors.forEach((color) => addColor(color));
+    }
+  }, [searchParams, data]);
 
   function handleChange(color: Color, isChecked: Boolean) {
     const changedColorName = color.name.toLowerCase();
