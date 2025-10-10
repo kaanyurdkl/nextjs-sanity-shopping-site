@@ -201,6 +201,120 @@ export const PAGINATED_PRODUCTS_BY_CATEGORYID_QUERY = defineQuery(`
 `);
 
 // =============================================================================
+// PRODUCT QUERIES
+// =============================================================================
+
+/**
+ * Fetch product by ID with all details
+ * Used for product detail page
+ */
+export const PRODUCT_BY_ID_QUERY = defineQuery(`
+  *[_type == "product" && _id == $id && isActive == true][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+    category->{
+      _id,
+      title,
+      "slug": slug.current,
+      parent->{
+        _id,
+        title,
+        "slug": slug.current
+      }
+    },
+    sizeGroup->{
+      _id,
+      name,
+      sizes
+    },
+    variants[] {
+      size,
+      color->{
+        _id,
+        name,
+        code,
+        hexCode
+      },
+      sku,
+      stockQuantity,
+      isActive
+    },
+    thumbnail {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    hoverImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    images[] {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    keyFeatures,
+    materials,
+    sizeAndFit,
+    careInstructions,
+    relatedProducts[]->{
+      _id,
+      name,
+      "slug": slug.current,
+      basePrice,
+      thumbnail {
+        asset->{
+          _id,
+          url
+        },
+        alt
+      }
+    },
+    reviews[]->{
+      _id,
+      rating,
+      title,
+      comment,
+      isVerifiedPurchase,
+      createdAt,
+      user->{
+        firstName,
+        lastName
+      }
+    },
+    isFeatured
+  }
+`);
+
+// =============================================================================
 // USER QUERIES
 // =============================================================================
 

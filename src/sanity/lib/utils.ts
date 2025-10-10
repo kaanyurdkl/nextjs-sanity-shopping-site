@@ -17,6 +17,7 @@ import type {
   PRODUCTS_COUNT_WITH_FILTERS_QUERYResult,
   SIZES_BY_CODEResult,
   GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult,
+  PRODUCT_BY_ID_QUERYResult,
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -38,6 +39,7 @@ import {
   PRODUCTS_COUNT_WITH_FILTERS_QUERY,
   SIZES_BY_CODE,
   GET_PRICE_RANGE_FOR_CATEGORY_QUERY,
+  PRODUCT_BY_ID_QUERY,
 } from "./queries";
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 
@@ -127,6 +129,24 @@ export async function getPaginatedProductsByCategoryId(
       endIndex,
     },
     tags: ["product", "category"],
+  });
+}
+
+// =============================================================================
+// PRODUCT UTILITIES
+// =============================================================================
+
+/**
+ * Fetch product by ID
+ * Used for product detail page
+ */
+export async function getProductById(
+  id: string
+): Promise<PRODUCT_BY_ID_QUERYResult> {
+  return await sanityFetch({
+    query: PRODUCT_BY_ID_QUERY,
+    params: { id },
+    tags: ["product"],
   });
 }
 

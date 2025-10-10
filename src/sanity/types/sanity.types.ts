@@ -840,6 +840,251 @@ export type PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
   }> | null;
   hasStock: boolean | null;
 }>;
+// Variable: PRODUCT_BY_ID_QUERY
+// Query: *[_type == "product" && _id == $id && isActive == true][0] {    _id,    name,    "slug": slug.current,    description,    basePrice,    category->{      _id,      title,      "slug": slug.current,      parent->{        _id,        title,        "slug": slug.current      }    },    sizeGroup->{      _id,      name,      sizes    },    variants[] {      size,      color->{        _id,        name,        code,        hexCode      },      sku,      stockQuantity,      isActive    },    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    images[] {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    keyFeatures,    materials,    sizeAndFit,    careInstructions,    relatedProducts[]->{      _id,      name,      "slug": slug.current,      basePrice,      thumbnail {        asset->{          _id,          url        },        alt      }    },    reviews[]->{      _id,      rating,      title,      comment,      isVerifiedPurchase,      createdAt,      user->{        firstName,        lastName      }    },    isFeatured  }
+export type PRODUCT_BY_ID_QUERYResult = {
+  _id: string;
+  name: string;
+  slug: string;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  basePrice: number;
+  category: {
+    _id: string;
+    title: string;
+    slug: string;
+    parent: {
+      _id: string;
+      title: string;
+      slug: string;
+    } | null;
+  };
+  sizeGroup: null;
+  variants: Array<{
+    size: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "size";
+    };
+    color: {
+      _id: string;
+      name: string;
+      code: string;
+      hexCode: string;
+    };
+    sku: string;
+    stockQuantity: number;
+    isActive: boolean | null;
+  }> | null;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  };
+  hoverImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  images: Array<{
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    alt: string | null;
+  }> | null;
+  keyFeatures: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  materials: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  sizeAndFit: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  careInstructions: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  relatedProducts: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+    basePrice: number;
+    thumbnail: {
+      asset: {
+        _id: string;
+        url: string | null;
+      } | null;
+      alt: string | null;
+    };
+  }> | null;
+  reviews: null;
+  isFeatured: boolean | null;
+} | null;
 // Variable: USER_BY_EMAIL_QUERY
 // Query: *[_type == "user" && email == $email][0]{    firstName,    lastName,    email  }
 export type USER_BY_EMAIL_QUERYResult = {
@@ -1064,6 +1309,7 @@ declare module "@sanity/client" {
     "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORYID_QUERYResult;
     "\n  count(*[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true])\n": PRODUCTS_COUNT_BY_CATEGORY_QUERYResult;
     "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult;
+    "\n  *[_type == \"product\" && _id == $id && isActive == true][0] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    description,\n    basePrice,\n    category->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      parent->{\n        _id,\n        title,\n        \"slug\": slug.current\n      }\n    },\n    sizeGroup->{\n      _id,\n      name,\n      sizes\n    },\n    variants[] {\n      size,\n      color->{\n        _id,\n        name,\n        code,\n        hexCode\n      },\n      sku,\n      stockQuantity,\n      isActive\n    },\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    images[] {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    keyFeatures,\n    materials,\n    sizeAndFit,\n    careInstructions,\n    relatedProducts[]->{\n      _id,\n      name,\n      \"slug\": slug.current,\n      basePrice,\n      thumbnail {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    },\n    reviews[]->{\n      _id,\n      rating,\n      title,\n      comment,\n      isVerifiedPurchase,\n      createdAt,\n      user->{\n        firstName,\n        lastName\n      }\n    },\n    isFeatured\n  }\n": PRODUCT_BY_ID_QUERYResult;
     "\n  *[_type == \"user\" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n": USER_BY_EMAIL_QUERYResult;
     "\n  {\n    \"colorValues\": *[_type == \"color\" && _id in *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n": CATEGORY_FILTER_VALUES_QUERYResult;
     "\n  *[_type == \"color\" && string::lower(name) in $colorNames]{_id}\n  ": COLORS_BY_NAMEResult;
