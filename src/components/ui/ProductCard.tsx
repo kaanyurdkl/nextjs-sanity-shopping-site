@@ -18,7 +18,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { name, slug, basePrice, thumbnail, hoverImage, variants, hasStock } =
+  const { _id, name, basePrice, thumbnail, hoverImage, variants, hasStock } =
     product;
 
   // Compute unique colors from variants
@@ -58,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative">
       {/* Product Image */}
-      <Link href={`/products/${slug}`} className="block">
+      <Link href={`/product/${_id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
           {thumbnailUrl ? (
             <>
@@ -93,7 +93,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="mt-4 space-y-4">
         <div className="space-y-1">
           {/* Product Name */}
-          <Link href={`/products/${slug}`} className="block hover:underline">
+          <Link href={`/product/${_id}`} className="block hover:underline">
             <h3 className="uppercase">{name}</h3>
           </Link>
           {/* Price */}
