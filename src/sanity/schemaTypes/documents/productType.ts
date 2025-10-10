@@ -53,6 +53,7 @@ export const productType = defineType({
       name: "description",
       title: "Description",
       type: "blockContent",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "thumbnail",

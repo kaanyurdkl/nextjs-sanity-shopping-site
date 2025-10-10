@@ -218,7 +218,7 @@ export type Product = {
   _rev: string;
   name: string;
   slug: Slug;
-  description?: Array<{
+  description: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -876,7 +876,7 @@ export type PRODUCT_BY_ID_QUERYResult = {
     alt?: string;
     _type: "image";
     _key: string;
-  }> | null;
+  }>;
   basePrice: number;
   category: {
     _id: string;
