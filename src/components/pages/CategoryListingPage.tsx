@@ -4,6 +4,7 @@ import CategoryHeader from "@/components/ui/CategoryHeader";
 import Sidebar from "@/components/ui/Sidebar";
 import ProductList from "@/components/ui/ProductList";
 import SortFilter from "@/components/ui/SortFilter";
+import ProductGridSkeleton from "@/components/ui/ProductGridSkeleton";
 // TYPES
 import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 import ActiveFilters from "../ui/ActiveFilters";
@@ -30,7 +31,7 @@ export default async function CategoryListingPage({
           <SortFilter />
 
           <Suspense
-            fallback={<div className="text-center py-8">Loading...</div>}
+            fallback={<ProductGridSkeleton />}
             key={JSON.stringify(searchParams)}
           >
             <ProductList searchParams={searchParams} category={category} />
