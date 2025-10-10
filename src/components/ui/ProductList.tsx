@@ -1,6 +1,5 @@
 // COMPONENTS
-import ProductCard from "@/components/ui/ProductCard";
-import Pagination from "@/components/ui/Pagination";
+import ProductListWrapper from "@/components/ui/ProductListWrapper";
 // UTILS
 import {
   getColorsByName,
@@ -12,7 +11,6 @@ import {
 import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
 // CONSTANTS
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
-import { Suspense } from "react";
 
 interface ProductListProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;
@@ -74,22 +72,10 @@ export default async function ProductList({
   const totalPages = Math.ceil(productsCount / PRODUCTS_PER_PAGE);
 
   return (
-    <div className="space-y-8">
-      <p className="text-sm text-gray-600">{productsCount} products</p>
-
-      <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
-        ))}
-      </section>
-
-      {totalPages && totalPages > 1 && (
-        <nav aria-label="Product pagination">
-          <Suspense fallback={null}>
-            <Pagination totalPages={totalPages} />
-          </Suspense>
-        </nav>
-      )}
-    </div>
+    <ProductListWrapper
+      products={products}
+      productsCount={productsCount}
+      totalPages={totalPages}
+    />
   );
 }
