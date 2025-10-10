@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { getProductById } from "@/sanity/lib/utils";
 
 interface ProductPageProps {
@@ -13,5 +14,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
     return <div>Product not found</div>;
   }
 
-  return <div>product: {product.name}</div>;
+  return (
+    <div>
+      <Breadcrumbs slug={product.category.slug.split("/")} />
+      product: {product.category.slug}
+    </div>
+  );
 }
