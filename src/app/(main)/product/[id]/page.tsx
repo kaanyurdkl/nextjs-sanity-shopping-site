@@ -16,7 +16,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div>
-      <Breadcrumbs slug={product.category.slug.split("/")} />
+      <Breadcrumbs slug={[...product.category.slug.split("/"), product.slug]} />
       product: {product.category.slug}
     </div>
   );
