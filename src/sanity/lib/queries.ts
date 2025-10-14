@@ -231,7 +231,12 @@ export const PRODUCT_BY_ID_QUERY = defineQuery(`
       sizes
     },
     variants[] {
-      size,
+      size->{
+        _id,
+        name,
+        code,
+        sortOrder
+      },
       color->{
         _id,
         name,

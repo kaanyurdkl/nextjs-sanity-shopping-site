@@ -1,7 +1,7 @@
 "use client";
 
 // LIBRARIES
-import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 // COMPONENTS
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
@@ -12,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 // UTILS
 import { urlFor } from "@/sanity/lib/image";
 // TYPES
@@ -22,6 +23,10 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+  console.log("ProductDetails");
+
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const uniqueColors = product.variants?.reduce(
@@ -49,14 +54,42 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     selectedColor = product.variants[0].color;
   }
 
-  // {  color: { name: red }, size: { code: s } }
-  // {  color: { name: red }, size: { code: m } }
-  // {  color: { name: red }, size: { code: l } }
-  // {  color: { name: white }, size: { code: s } }
-  // {  color: { name: white }, size: { code: m } }
-  // {  color: { name: white }, size: { code: l } }
+  const sizes = product.variants
+    .filter((variant) => variant.color._id === selectedColor?._id)
+    .map((variant) => variant.size);
 
-  // [ { name: red }, { name: white } ]
+  let selectedSize: (typeof sizes)[0] | undefined;
+
+  if (searchParams.get("size")) {
+    const searchParamsSize = searchParams.get("size")?.trim().toLowerCase();
+
+    selectedSize = sizes.find(
+      (size) => size.code.toLowerCase() === searchParamsSize
+    );
+  }
+
+  function handleColorChange(colorName: string) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (params.has("size")) {
+      params.delete("size");
+    }
+
+    params.set("color", colorName.toLowerCase());
+
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  function handleSizeChange(sizeCode: string) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (selectedSize && selectedSize.code === sizeCode) {
+      params.delete("size");
+    } else {
+      params.set("size", sizeCode.toLowerCase());
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }
 
   return (
     <div>
@@ -107,6 +140,8 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 >
                   <input
                     type="radio"
+                    name="color"
+                    onChange={() => handleColorChange(color.name)}
                     className="appearance-none absolute block w-full h-full inset-0 cursor-pointer"
                   />
                   <span
@@ -116,6 +151,36 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 </label>
               ))}
             </div>
+          </div>
+          <div>
+            <div>Size</div>
+            <div className="flex gap-x-4">
+              {sizes?.map((size) => (
+                <label
+                  key={size._id}
+                  className={`relative flex ${size._id === selectedSize?._id ? "bg-black text-white" : "bg-white text-black"} items-center border justify-center cursor-pointer h-8 w-14 transition-colors`}
+                >
+                  <input
+                    type="checkbox"
+                    name="size"
+                    checked={size._id === selectedSize?._id}
+                    onChange={() => handleSizeChange(size.code)}
+                    className="appearance-none absolute block w-full h-full inset-0 cursor-pointer"
+                  />
+                  <span className="absolute inset-0.5 flex items-center justify-center">
+                    {size.code}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Button
+              disabled={!selectedColor || !selectedSize}
+              className="w-full"
+            >
+              Add to Cart
+            </Button>
           </div>
         </div>
       </div>
