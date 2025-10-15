@@ -5,43 +5,45 @@ import { persist } from "zustand/middleware";
 import { PRODUCT_BY_ID_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface CartItem {
-  product: PRODUCT_BY_ID_QUERYResult;
+  productId: string;
+  productName: string;
+  variantSku: string;
+  color: string;
+  colorHex: string;
+  size: string;
+  price: number;
   quantity: number;
+  imageUrl: string;
 }
 
 interface CartStore {
   cartItems: CartItem[];
-  addCartItem: (product: PRODUCT_BY_ID_QUERYResult) => void;
+  addCartItem: (product: Omit<CartItem, "quantity">) => void;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
       cartItems: [],
-      addCartItem: (newProduct) =>
+      addCartItem: (item) =>
         set((state) => {
-          let updatedCartItems;
-
           const existingItem = state.cartItems.find(
-            (cartItem) => cartItem.product._id === newProduct._id
+            (cartItem) => cartItem.variantSku === item.variantSku
           );
 
           if (existingItem) {
-            updatedCartItems = state.cartItems.map((cartItem) =>
-              cartItem.product._id === existingItem.product?._id
-                ? { ...cartItem, quantity: cartItem.quantity + 1 }
-                : cartItem
-            );
-
-            return { cartItems: updatedCartItems };
+            return {
+              cartItems: state.cartItems.map((cartItem) =>
+                cartItem.variantSku === item.variantSku
+                  ? { ...cartItem, quantity: cartItem.quantity + 1 }
+                  : cartItem
+              ),
+            };
           } else {
-            updatedCartItems = [
-              ...state.cartItems,
-              { product: newProduct, quantity: 1 },
-            ];
+            return {
+              cartItems: [...state.cartItems, { ...item, quantity: 1 }],
+            };
           }
-
-          return { cartItems: updatedCartItems };
         }),
     }),
     { name: "cart-storage" }

@@ -48,7 +48,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     [] as NonNullable<typeof product.variants>[0]["color"][]
   );
 
-  let selectedColor;
+  let selectedColor: NonNullable<typeof uniqueColors>[0] | undefined;
 
   if (searchParams.get("color")) {
     const searchParamsColor = searchParams.get("color")?.trim().toLowerCase();
@@ -57,7 +57,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       (color) => color.name.toLowerCase() === searchParamsColor
     );
   } else {
-    selectedColor = product.variants[0].color;
+    selectedColor = product.variants?.[0]?.color;
   }
 
   const sizes = product.variants
@@ -98,9 +98,39 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   }
 
   function addToCart() {
-    if (!selectedColor || !selectedSize) return;
+    if (!selectedColor || !selectedSize || !product.variants) return;
 
-    addCartItem(product);
+    // Find the exact variant for this color/size combination
+    const selectedVariant = product.variants.find(
+      (variant) =>
+        variant.color._id === selectedColor._id &&
+        variant.size._id === selectedSize._id
+    );
+
+    if (!selectedVariant || selectedVariant.stockQuantity === 0) {
+      return;
+    }
+
+    // Get the thumbnail image URL
+    if (!product.thumbnail.asset?.url) return;
+
+    const imageUrl = urlFor(product.thumbnail.asset.url)
+      .width(200)
+      .height(250)
+      .format("webp")
+      .quality(85)
+      .url();
+
+    addCartItem({
+      productId: product._id,
+      productName: product.name,
+      variantSku: selectedVariant.sku,
+      color: selectedColor.name,
+      colorHex: selectedColor.hexCode,
+      size: selectedSize.name,
+      price: product.basePrice,
+      imageUrl,
+    });
   }
 
   return (
