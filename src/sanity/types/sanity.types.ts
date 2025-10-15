@@ -275,7 +275,7 @@ export type Product = {
     alt?: string;
     _type: "image";
   };
-  images?: Array<{
+  images: Array<{
     asset?: {
       _ref: string;
       _type: "reference";
@@ -303,7 +303,7 @@ export type Product = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "productType";
   };
-  variants?: Array<{
+  variants: Array<{
     color: {
       _ref: string;
       _type: "reference";
@@ -784,8 +784,8 @@ export type PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
       hexCode: string;
       code: string;
     };
-  }> | null;
-  hasStock: boolean | null;
+  }>;
+  hasStock: boolean;
 }>;
 // Variable: PRODUCTS_COUNT_BY_CATEGORY_QUERY
 // Query: count(*[_type == "product" && $categoryId in categoryHierarchy && isActive == true])
@@ -837,8 +837,8 @@ export type PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
       hexCode: string;
       code: string;
     };
-  }> | null;
-  hasStock: boolean | null;
+  }>;
+  hasStock: boolean;
 }>;
 // Variable: PRODUCT_BY_ID_QUERY
 // Query: *[_type == "product" && _id == $id && isActive == true][0] {    _id,    name,    "slug": slug.current,    description,    basePrice,    category->{      _id,      title,      "slug": slug.current,      parent->{        _id,        title,        "slug": slug.current      }    },    sizeGroup->{      _id,      name,      sizes    },    variants[] {      size->{        _id,        name,        code,        sortOrder      },      color->{        _id,        name,        code,        hexCode      },      sku,      stockQuantity,      isActive    },    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    images[] {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    keyFeatures,    materials,    sizeAndFit,    careInstructions,    relatedProducts[]->{      _id,      name,      "slug": slug.current,      basePrice,      thumbnail {        asset->{          _id,          url        },        alt      }    },    reviews[]->{      _id,      rating,      title,      comment,      isVerifiedPurchase,      createdAt,      user->{        firstName,        lastName      }    },    isFeatured  }
@@ -905,7 +905,7 @@ export type PRODUCT_BY_ID_QUERYResult = {
     sku: string;
     stockQuantity: number;
     isActive: boolean | null;
-  }> | null;
+  }>;
   thumbnail: {
     asset: {
       _id: string;
@@ -944,7 +944,7 @@ export type PRODUCT_BY_ID_QUERYResult = {
       } | null;
     } | null;
     alt: string | null;
-  }> | null;
+  }>;
   keyFeatures: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -1155,8 +1155,8 @@ export type PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult = Array<{
       hexCode: string;
       code: string;
     };
-  }> | null;
-  hasStock: boolean | null;
+  }>;
+  hasStock: boolean;
 }>;
 // Variable: PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY
 // Query: *[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0  ]  | order(_createdAt desc) [$startIndex...$endIndex] {    _id,    name,    "slug": slug.current,    basePrice,    thumbnail {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    hoverImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },    "variants": variants[isActive == true && stockQuantity > 0] {      size->{        _id,        name,        code      },      stockQuantity,      color->{        _id,        name,        hexCode,        code      }    },    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0  }
@@ -1204,8 +1204,8 @@ export type PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult = Array<{
       hexCode: string;
       code: string;
     };
-  }> | null;
-  hasStock: boolean | null;
+  }>;
+  hasStock: boolean;
 }>;
 // Variable: FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY
 // Query: count(*[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0  ])
@@ -1290,8 +1290,8 @@ export type PRODUCTS_WITH_FILTERS_QUERYResult = Array<{
       hexCode: string;
       code: string;
     };
-  }> | null;
-  hasStock: boolean | null;
+  }>;
+  hasStock: boolean;
 }>;
 // Variable: PRODUCTS_COUNT_WITH_FILTERS_QUERY
 // Query: count(*[_type == "product"    && $categoryId in categoryHierarchy    && isActive == true    && (!defined($minPrice) || basePrice >= $minPrice)    && (!defined($maxPrice) || basePrice <= $maxPrice)    && count(variants[      isActive == true      && stockQuantity > 0      && (!defined($colorIds) || color._ref in $colorIds)      && (!defined($sizeIds) || size._ref in $sizeIds)    ]) > 0  ])

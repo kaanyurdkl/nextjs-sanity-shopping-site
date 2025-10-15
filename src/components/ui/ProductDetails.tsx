@@ -35,7 +35,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   console.log("cartItems", cartItems);
 
-  const uniqueColors = product.variants?.reduce(
+  const uniqueColors = product.variants.reduce(
     (acc, variant) => {
       const colorExists = acc.find((color) => color._id === variant.color._id);
 
@@ -57,7 +57,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       (color) => color.name.toLowerCase() === searchParamsColor
     );
   } else {
-    selectedColor = product.variants?.[0]?.color;
+    selectedColor = product.variants[0].color;
   }
 
   const sizes = product.variants
@@ -139,7 +139,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         <div>
           <Carousel className="w-full">
             <CarouselContent>
-              {product.images?.map((image, index) => {
+              {product.images.map((image, index) => {
                 const imageUrl = urlFor(image.asset.url)
                   .width(1600)
                   .height(1200)

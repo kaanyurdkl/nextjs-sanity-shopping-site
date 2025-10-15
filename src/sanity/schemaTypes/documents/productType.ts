@@ -95,6 +95,7 @@ export const productType = defineType({
       name: "images",
       title: "Additional Product Images",
       type: "array",
+      validation: (Rule) => Rule.required().min(1),
       of: [
         defineArrayMember({
           type: "image",
@@ -151,6 +152,7 @@ export const productType = defineType({
       name: "variants",
       title: "Product Variants",
       type: "array",
+      validation: (Rule) => Rule.required().min(1),
       of: [
         defineArrayMember({
           type: "object",

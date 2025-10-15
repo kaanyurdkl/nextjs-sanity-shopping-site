@@ -1855,7 +1855,7 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       },
       "basePrice": {
         "type": "objectAttribute",
@@ -2043,7 +2043,7 @@
             }
           }
         },
-        "optional": true
+        "optional": false
       },
       "isActive": {
         "type": "objectAttribute",
