@@ -17,17 +17,23 @@ import { Button } from "@/components/ui/button";
 import { urlFor } from "@/sanity/lib/image";
 // TYPES
 import { PRODUCT_BY_ID_QUERYResult } from "@/sanity/types/sanity.types";
+import { useCartStore } from "@/stores/cart-store";
 
 interface ProductDetailsProps {
   product: NonNullable<PRODUCT_BY_ID_QUERYResult>;
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
-  console.log("ProductDetails");
+  // console.log("ProductDetails");
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const addCartItem = useCartStore((state) => state.addCartItem);
+
+  console.log("cartItems", cartItems);
 
   const uniqueColors = product.variants?.reduce(
     (acc, variant) => {
@@ -80,15 +86,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  function handleSizeChange(sizeCode: string) {
+  function handleSizeChange(isChecked: boolean, sizeCode: string) {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (selectedSize && selectedSize.code === sizeCode) {
-      params.delete("size");
-    } else {
+    if (isChecked) {
       params.set("size", sizeCode.toLowerCase());
+    } else {
+      params.delete("size");
     }
     router.push(`${pathname}?${params.toString()}`);
+  }
+
+  function addToCart() {
+    if (!selectedColor || !selectedSize) return;
+
+    addCartItem(product);
   }
 
   return (
@@ -141,6 +153,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   <input
                     type="radio"
                     name="color"
+                    checked={color._id === selectedColor?._id}
                     onChange={() => handleColorChange(color.name)}
                     className="appearance-none absolute block w-full h-full inset-0 cursor-pointer"
                   />
@@ -154,17 +167,19 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           </div>
           <div>
             <div>Size</div>
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-x-4">
               {sizes?.map((size) => (
                 <label
                   key={size._id}
-                  className={`relative flex ${size._id === selectedSize?._id ? "bg-black text-white" : "bg-white text-black"} items-center border justify-center cursor-pointer h-8 w-14 transition-colors`}
+                  className={`relative flex ${size._id === selectedSize?._id ? "bg-black hover:bg-gray-800 text-white" : "bg-white text-black hover:bg-gray-200"} items-center border justify-center cursor-pointer h-8 w-14 transition-colors`}
                 >
                   <input
                     type="checkbox"
                     name="size"
                     checked={size._id === selectedSize?._id}
-                    onChange={() => handleSizeChange(size.code)}
+                    onChange={(e) =>
+                      handleSizeChange(e.target.checked, size.code)
+                    }
                     className="appearance-none absolute block w-full h-full inset-0 cursor-pointer"
                   />
                   <span className="absolute inset-0.5 flex items-center justify-center">
@@ -178,6 +193,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             <Button
               disabled={!selectedColor || !selectedSize}
               className="w-full"
+              onClick={addToCart}
             >
               Add to Cart
             </Button>
