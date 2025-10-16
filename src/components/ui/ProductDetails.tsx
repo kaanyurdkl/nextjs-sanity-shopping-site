@@ -24,16 +24,13 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
-  // console.log("ProductDetails");
+  console.log("ProductDetails");
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const cartItems = useCartStore((state) => state.cartItems);
   const addCartItem = useCartStore((state) => state.addCartItem);
-
-  console.log("cartItems", cartItems);
 
   const uniqueColors = product.variants.reduce(
     (acc, variant) => {

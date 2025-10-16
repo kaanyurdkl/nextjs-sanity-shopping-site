@@ -19,11 +19,12 @@ interface CartItem {
 interface CartStore {
   cartItems: CartItem[];
   addCartItem: (product: Omit<CartItem, "quantity">) => void;
+  getCartItemsCount: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       cartItems: [],
       addCartItem: (item) =>
         set((state) => {
@@ -45,6 +46,9 @@ export const useCartStore = create<CartStore>()(
             };
           }
         }),
+      getCartItemsCount: () => {
+        return get().cartItems.reduce((total, item) => total + item.quantity, 0);
+      },
     }),
     { name: "cart-storage" }
   )
