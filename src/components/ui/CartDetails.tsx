@@ -9,6 +9,13 @@ export default function CartDetails() {
   const cartItemsCount = useStore(useCartStore, (state) =>
     state.getCartItemsCount()
   );
+  const incrementCartItemQuantity = useCartStore(
+    (state) => state.incrementCartItemQuantity
+  );
+  const decrementCartItemQuantity = useCartStore(
+    (state) => state.decrementCartItemQuantity
+  );
+  const removeCartItem = useCartStore((state) => state.removeCartItem);
 
   return (
     <div>
@@ -51,6 +58,29 @@ export default function CartDetails() {
                 <p className="font-bold mt-auto">
                   Total: ${cartItem.quantity * cartItem.price}
                 </p>
+              </div>
+              <div className="flex flex-col gap-2 ml-auto">
+                <button
+                  onClick={() => incrementCartItemQuantity(cartItem.variantSku)}
+                  className="px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors"
+                >
+                  +
+                </button>
+                <span className="text-center font-semibold">
+                  {cartItem.quantity}
+                </span>
+                <button
+                  onClick={() => decrementCartItemQuantity(cartItem.variantSku)}
+                  className="px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors"
+                >
+                  -
+                </button>
+                <button
+                  onClick={() => removeCartItem(cartItem.variantSku)}
+                  className="mt-2 px-4 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors"
+                >
+                  Remove
+                </button>
               </div>
             </div>
           ))}

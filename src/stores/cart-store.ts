@@ -1,8 +1,6 @@
 // LIBRARIES
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-// TYPES
-import { PRODUCT_BY_ID_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface CartItem {
   productId: string;
@@ -20,6 +18,9 @@ interface CartStore {
   cartItems: CartItem[];
   addCartItem: (product: Omit<CartItem, "quantity">) => void;
   getCartItemsCount: () => number;
+  incrementCartItemQuantity: (sku: string) => void;
+  decrementCartItemQuantity: (sku: string) => void;
+  removeCartItem: (sku: string) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -47,7 +48,43 @@ export const useCartStore = create<CartStore>()(
           }
         }),
       getCartItemsCount: () => {
-        return get().cartItems.reduce((total, item) => total + item.quantity, 0);
+        return get().cartItems.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+      },
+      incrementCartItemQuantity: (sku) => {
+        set((state) => {
+          return {
+            cartItems: state.cartItems.map((cartItem) =>
+              cartItem.variantSku === sku
+                ? { ...cartItem, quantity: cartItem.quantity + 1 }
+                : cartItem
+            ),
+          };
+        });
+      },
+      decrementCartItemQuantity: (sku) => {
+        set((state) => {
+          return {
+            cartItems: state.cartItems
+              .map((cartItem) =>
+                cartItem.variantSku === sku
+                  ? { ...cartItem, quantity: cartItem.quantity - 1 }
+                  : cartItem
+              )
+              .filter((cartItem) => cartItem.quantity > 0),
+          };
+        });
+      },
+      removeCartItem: (sku) => {
+        set((state) => {
+          return {
+            cartItems: state.cartItems.filter(
+              (cartItem) => cartItem.variantSku !== sku
+            ),
+          };
+        });
       },
     }),
     { name: "cart-storage" }
