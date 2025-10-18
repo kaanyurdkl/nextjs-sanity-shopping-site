@@ -18,6 +18,7 @@ import type {
   SIZES_BY_CODEResult,
   GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult,
   PRODUCT_BY_ID_QUERYResult,
+  USER_BY_EMAIL_QUERYResult,
 } from "@/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -158,7 +159,9 @@ export async function getProductById(
  * Fetch user by email
  * Used for account pages and authentication
  */
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail(
+  email: string
+): Promise<USER_BY_EMAIL_QUERYResult> {
   return await sanityFetch({
     query: USER_BY_EMAIL_QUERY,
     params: { email },
@@ -366,15 +369,25 @@ export type FilterData = ColorFilterData | SizeFilterData | PriceFilterData;
  */
 export async function getCategoryFilterData(
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>,
-  searchParams?: { page?: string; colors?: string; sizes?: string; minPrice?: string; maxPrice?: string }
+  searchParams?: {
+    page?: string;
+    colors?: string;
+    sizes?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }
 ): Promise<FilterData[]> {
   const filterResults: FilterData[] = [];
 
   // Parse searchParams
   const selectedColorNames = searchParams?.colors?.split(",") || [];
   const selectedSizeCodes = searchParams?.sizes?.split(",") || [];
-  const minPrice = searchParams?.minPrice ? parseFloat(searchParams.minPrice) : null;
-  const maxPrice = searchParams?.maxPrice ? parseFloat(searchParams.maxPrice) : null;
+  const minPrice = searchParams?.minPrice
+    ? parseFloat(searchParams.minPrice)
+    : null;
+  const maxPrice = searchParams?.maxPrice
+    ? parseFloat(searchParams.maxPrice)
+    : null;
 
   // Convert selected names to IDs for queries
   let colorIds: string[] | undefined;
