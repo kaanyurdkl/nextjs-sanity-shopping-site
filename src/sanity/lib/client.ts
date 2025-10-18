@@ -21,6 +21,19 @@ export const readClient = createClient({
 });
 
 /**
+ * Fresh read client for user-specific data
+ * Bypasses CDN to get immediate updates after mutations
+ * Use this for data that changes frequently and needs instant consistency
+ * (e.g., user profiles, cart data, order status)
+ */
+export const freshReadClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false, // Bypass CDN for immediate fresh data
+});
+
+/**
  * Write-enabled Sanity client for server-side operations
  * This client is used for creating, updating, and deleting documents
  *

@@ -1,4 +1,4 @@
-import { sanityFetch } from "./fetch";
+import { sanityFetch, sanityFetchDynamic } from "./fetch";
 import type {
   CATEGORY_BY_SLUG_QUERYResult,
   CATEGORY_CHILDREN_QUERYResult,
@@ -158,14 +158,14 @@ export async function getProductById(
 /**
  * Fetch user by email
  * Used for account pages and authentication
+ * Uses no-cache to always fetch fresh user data after profile updates
  */
 export async function getUserByEmail(
   email: string
 ): Promise<USER_BY_EMAIL_QUERYResult> {
-  return await sanityFetch({
+  return await sanityFetchDynamic({
     query: USER_BY_EMAIL_QUERY,
     params: { email },
-    tags: ["user"],
   });
 }
 

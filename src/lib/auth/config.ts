@@ -36,7 +36,10 @@ export const authConfig = {
       return true;
     },
     async jwt({ token, account, profile }) {
-      if (account && profile) {
+      if (account && profile && profile.sub) {
+        // Add Google ID to token
+        token.googleId = profile.sub;
+
         try {
           await syncUserToSanity(profile);
         } catch (error) {
@@ -44,6 +47,13 @@ export const authConfig = {
         }
       }
       return token;
+    },
+    async session({ session, token }) {
+      // Add Google ID to session
+      if (token.googleId) {
+        session.user.googleId = token.googleId as string;
+      }
+      return session;
     },
   },
 } satisfies NextAuthConfig;

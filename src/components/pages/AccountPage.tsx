@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { USER_BY_EMAIL_QUERYResult } from "@/sanity/types/sanity.types";
+import ProfileTab from "./ProfileTab";
 
 interface AccountPageProps {
   user: NonNullable<USER_BY_EMAIL_QUERYResult>;
@@ -78,15 +79,8 @@ export default function AccountPage({ user }: AccountPageProps) {
               role="tabpanel"
               id="profile-panel"
               aria-labelledby="profile-tab"
-              tabIndex={0}
             >
-              <h2 className="text-2xl font-bold uppercase mb-6">Profile</h2>
-              <div className="border p-6">
-                <p>Profile content - Coming soon</p>
-                <p className="text-sm text-gray-600 mt-4">
-                  User: {user.firstName} {user.lastName}
-                </p>
-              </div>
+              <ProfileTab user={user} />
             </section>
           )}
 
@@ -95,7 +89,6 @@ export default function AccountPage({ user }: AccountPageProps) {
               role="tabpanel"
               id="orders-panel"
               aria-labelledby="orders-tab"
-              tabIndex={0}
             >
               <h2 className="text-2xl font-bold uppercase mb-6">Orders</h2>
               <div className="border p-6">
@@ -109,7 +102,6 @@ export default function AccountPage({ user }: AccountPageProps) {
               role="tabpanel"
               id="addresses-panel"
               aria-labelledby="addresses-tab"
-              tabIndex={0}
             >
               <h2 className="text-2xl font-bold uppercase mb-6">Addresses</h2>
               <div className="border p-6">
