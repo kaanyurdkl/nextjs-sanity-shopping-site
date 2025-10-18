@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
 import { getUserByEmail } from "@/sanity/lib/utils";
+import AccountPage from "@/components/pages/AccountPage";
 
-export default async function AccountPage() {
+export default async function Page() {
   const session = await auth();
 
   if (!session?.user?.email) {
@@ -10,9 +11,9 @@ export default async function AccountPage() {
 
   const user = await getUserByEmail(session.user.email);
 
-  return (
-    <div>
-      <h1 className="uppercase text-4xl font-extrabold">Account</h1>
-    </div>
-  );
+  if (!user) {
+    return <div>User not found</div>;
+  }
+
+  return <AccountPage user={user} />;
 }

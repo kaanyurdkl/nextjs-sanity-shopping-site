@@ -329,9 +329,12 @@ export const PRODUCT_BY_ID_QUERY = defineQuery(`
  */
 export const USER_BY_EMAIL_QUERY = defineQuery(`
   *[_type == "user" && email == $email][0]{
+    _id,
     firstName,
     lastName,
-    email
+    email,
+    phoneNumber,
+    addresses
   }
 `);
 

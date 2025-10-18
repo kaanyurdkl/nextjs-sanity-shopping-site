@@ -44,7 +44,13 @@ export type Promotion = {
   _rev: string;
   name: string;
   description: string;
-  type: "percentage" | "fixed_amount" | "bundle" | "bogo" | "tiered" | "threshold";
+  type:
+    | "percentage"
+    | "fixed_amount"
+    | "bundle"
+    | "bogo"
+    | "tiered"
+    | "threshold";
   percentageConfig?: {
     discountPercentage?: number;
     minimumQuantity?: number;
@@ -107,7 +113,16 @@ export type Order = {
   _updatedAt: string;
   _rev: string;
   orderNumber: string;
-  status: "confirmation" | "processing" | "shipped" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "cancelled" | "refunded";
+  status:
+    | "confirmation"
+    | "processing"
+    | "shipped"
+    | "in_transit"
+    | "out_for_delivery"
+    | "delivered"
+    | "delayed"
+    | "cancelled"
+    | "refunded";
   userId?: {
     _ref: string;
     _type: "reference";
@@ -182,9 +197,11 @@ export type User = {
   firstName: string;
   lastName: string;
   phoneNumber?: string;
-  addresses?: Array<{
-    _key: string;
-  } & Address>;
+  addresses?: Array<
+    {
+      _key: string;
+    } & Address
+  >;
   isActive?: boolean;
   orderEmails?: boolean;
   googleId: string;
@@ -218,37 +235,40 @@ export type Product = {
   _rev: string;
   name: string;
   slug: Slug;
-  description: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
+  description: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
   thumbnail: {
     asset?: {
       _ref: string;
@@ -326,130 +346,142 @@ export type Product = {
   isFeatured?: boolean;
   seoTitle?: string;
   seoDescription?: string;
-  keyFeatures?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
-  materials?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
-  sizeAndFit?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
-  careInstructions?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
+  keyFeatures?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  materials?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  sizeAndFit?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  careInstructions?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
   relatedProducts?: Array<{
     _ref: string;
     _type: "reference";
@@ -517,37 +549,40 @@ export type Category = {
   isActive?: boolean;
 };
 
-export type BlockContent = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  }>;
-  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-  listItem?: "bullet";
-  markDefs?: Array<{
-    href?: string;
-    _type: "link";
-    _key: string;
-  }>;
-  level?: number;
-  _type: "block";
-  _key: string;
-} | {
-  asset?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-  };
-  media?: unknown;
-  hotspot?: SanityImageHotspot;
-  crop?: SanityImageCrop;
-  alt?: string;
-  _type: "image";
-  _key: string;
-}>;
+export type BlockContent = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+      _key: string;
+    }
+>;
 
 export type Address = {
   _type: "address";
@@ -558,7 +593,20 @@ export type Address = {
   streetAddress: string;
   aptUnit?: string;
   city: string;
-  province: "AB" | "BC" | "MB" | "NB" | "NL" | "NT" | "NS" | "NU" | "ON" | "PE" | "QC" | "SK" | "YT";
+  province:
+    | "AB"
+    | "BC"
+    | "MB"
+    | "NB"
+    | "NL"
+    | "NT"
+    | "NS"
+    | "NU"
+    | "ON"
+    | "PE"
+    | "QC"
+    | "SK"
+    | "YT";
   postalCode: string;
   country?: string;
   isDefault?: boolean;
@@ -682,7 +730,30 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = PromoCode | Promotion | Order | User | Review | Product | Size | ProductType | Color | Category | BlockContent | Address | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes =
+  | PromoCode
+  | Promotion
+  | Order
+  | User
+  | Review
+  | Product
+  | Size
+  | ProductType
+  | Color
+  | Category
+  | BlockContent
+  | Address
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
+  | SanityImageAsset
+  | SanityImageMetadata
+  | Geopoint
+  | Slug
+  | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/queries.ts
 // Variable: CATEGORY_BY_SLUG_QUERY
@@ -846,37 +917,40 @@ export type PRODUCT_BY_ID_QUERYResult = {
   _id: string;
   name: string;
   slug: string;
-  description: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }>;
+  description: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
   basePrice: number;
   category: {
     _id: string;
@@ -945,130 +1019,142 @@ export type PRODUCT_BY_ID_QUERYResult = {
     } | null;
     alt: string | null;
   }>;
-  keyFeatures: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }> | null;
-  materials: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }> | null;
-  sizeAndFit: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }> | null;
-  careInstructions: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    _key: string;
-  }> | null;
+  keyFeatures: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+  materials: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+  sizeAndFit: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+  careInstructions: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
   relatedProducts: Array<{
     _id: string;
     name: string;
@@ -1301,26 +1387,30 @@ export type PRODUCTS_COUNT_WITH_FILTERS_QUERYResult = number;
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n  *[_type == \"category\" && slug.current == $slug && isActive == true][0] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    parent->{\n      _id,\n      title,\n      \"slug\": slug.current\n    },\n    enableSizeFilter,\n    enableColorFilter,\n    enablePriceFilter\n  }\n": CATEGORY_BY_SLUG_QUERYResult;
-    "\n  *[_type == \"category\" && parent._ref == $parentId && isActive == true] | order(title asc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType\n  }\n": CATEGORY_CHILDREN_QUERYResult;
-    "\n  *[_type == \"category\" && !defined(parent) && isActive == true] | order(_createdAt) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    pageType,\n    \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n      _id,\n      title,\n      \"slug\": slug.current,\n      pageType,\n      \"children\": *[_type == \"category\" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n        _id,\n        title,\n        \"slug\": slug.current,\n        pageType\n      }\n    }\n  }\n": NAVBAR_CATEGORIES_QUERYResult;
-    "\n  count(*[_type == \"category\" && parent._ref == $categoryId && isActive == true]) > 0\n": HAS_CHILDREN_QUERYResult;
-    "\n  *[_type == \"category\" && parent._ref == $categoryId && isActive == true] {\n    _id\n  }\n": GET_CHILDREN_QUERYResult;
-    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_BY_CATEGORYID_QUERYResult;
-    "\n  count(*[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true])\n": PRODUCTS_COUNT_BY_CATEGORY_QUERYResult;
-    "\n  *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult;
-    "\n  *[_type == \"product\" && _id == $id && isActive == true][0] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    description,\n    basePrice,\n    category->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      parent->{\n        _id,\n        title,\n        \"slug\": slug.current\n      }\n    },\n    sizeGroup->{\n      _id,\n      name,\n      sizes\n    },\n    variants[] {\n      size->{\n        _id,\n        name,\n        code,\n        sortOrder\n      },\n      color->{\n        _id,\n        name,\n        code,\n        hexCode\n      },\n      sku,\n      stockQuantity,\n      isActive\n    },\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    images[] {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    keyFeatures,\n    materials,\n    sizeAndFit,\n    careInstructions,\n    relatedProducts[]->{\n      _id,\n      name,\n      \"slug\": slug.current,\n      basePrice,\n      thumbnail {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    },\n    reviews[]->{\n      _id,\n      rating,\n      title,\n      comment,\n      isVerifiedPurchase,\n      createdAt,\n      user->{\n        firstName,\n        lastName\n      }\n    },\n    isFeatured\n  }\n": PRODUCT_BY_ID_QUERYResult;
-    "\n  *[_type == \"user\" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n": USER_BY_EMAIL_QUERYResult;
-    "\n  {\n    \"colorValues\": *[_type == \"color\" && _id in *[_type == \"product\" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n": CATEGORY_FILTER_VALUES_QUERYResult;
-    "\n  *[_type == \"color\" && string::lower(name) in $colorNames]{_id}\n  ": COLORS_BY_NAMEResult;
-    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ])\n": PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERYResult | FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
-    "\n  *[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ]\n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult | PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult;
-    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0]) > 0\n  ])\n": PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
-    "\n  *[_type == \"color\" && _id in *[\n    _type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].color._ref]\n  {\n    _id,\n    name,\n    hexCode,\n    \"productCount\": count(*[\n      _type == \"product\"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && (!defined($minPrice) || basePrice >= $minPrice)\n      && (!defined($maxPrice) || basePrice <= $maxPrice)\n      && ^._id in variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($sizeIds) || size._ref in $sizeIds)\n      ].color._ref\n    ])\n  } | order(name asc)\n": GET_COLORS_FOR_CATEGORY_QUERYResult;
-    "\n  *[_type == \"size\" && _id in *[\n    _type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].size._ref]\n  {\n    _id,\n    name,\n    code,\n    sortOrder,\n    \"productCount\": count(*[\n      _type == \"product\"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && (!defined($minPrice) || basePrice >= $minPrice)\n      && (!defined($maxPrice) || basePrice <= $maxPrice)\n      && ^._id in variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || color._ref in $colorIds)\n      ].size._ref\n    ])\n  } | order(sortOrder asc)\n": GET_SIZES_FOR_CATEGORY_QUERYResult;
-    "\n  *[_type == \"size\" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}\n": SIZES_BY_CODEResult;
-    "\n  {\n    \"minPrice\": math::min(*[\n      _type == \"product\"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && count(variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)\n        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)\n      ]) > 0\n    ].basePrice),\n    \"maxPrice\": math::max(*[\n      _type == \"product\"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && count(variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)\n        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)\n      ]) > 0\n    ].basePrice)\n  }\n": GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult;
-    "\n  *[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ]\n  | order(\n      select(\n        $sortOrder == \"price-asc\" => 0 - basePrice,\n        $sortOrder == \"price-desc\" => basePrice,\n        0 - _createdAt\n      ) desc\n    ) [$startIndex...$endIndex] {\n    _id,\n    name,\n    \"slug\": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    \"variants\": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    \"hasStock\": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n": PRODUCTS_WITH_FILTERS_QUERYResult;
-    "\n  count(*[_type == \"product\"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ])\n": PRODUCTS_COUNT_WITH_FILTERS_QUERYResult;
+    '\n  *[_type == "category" && slug.current == $slug && isActive == true][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    pageType,\n    parent->{\n      _id,\n      title,\n      "slug": slug.current\n    },\n    enableSizeFilter,\n    enableColorFilter,\n    enablePriceFilter\n  }\n': CATEGORY_BY_SLUG_QUERYResult;
+    '\n  *[_type == "category" && parent._ref == $parentId && isActive == true] | order(title asc) {\n    _id,\n    title,\n    "slug": slug.current,\n    pageType\n  }\n': CATEGORY_CHILDREN_QUERYResult;
+    '\n  *[_type == "category" && !defined(parent) && isActive == true] | order(_createdAt) {\n    _id,\n    title,\n    "slug": slug.current,\n    pageType,\n    "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n      _id,\n      title,\n      "slug": slug.current,\n      pageType,\n      "children": *[_type == "category" && parent._ref == ^._id && isActive == true] | order(_createdAt) {\n        _id,\n        title,\n        "slug": slug.current,\n        pageType\n      }\n    }\n  }\n': NAVBAR_CATEGORIES_QUERYResult;
+    '\n  count(*[_type == "category" && parent._ref == $categoryId && isActive == true]) > 0\n': HAS_CHILDREN_QUERYResult;
+    '\n  *[_type == "category" && parent._ref == $categoryId && isActive == true] {\n    _id\n  }\n': GET_CHILDREN_QUERYResult;
+    '\n  *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n': PRODUCTS_BY_CATEGORYID_QUERYResult;
+    '\n  count(*[_type == "product" && $categoryId in categoryHierarchy && isActive == true])\n': PRODUCTS_COUNT_BY_CATEGORY_QUERYResult;
+    '\n  *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n': PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult;
+    '\n  *[_type == "product" && _id == $id && isActive == true][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    description,\n    basePrice,\n    category->{\n      _id,\n      title,\n      "slug": slug.current,\n      parent->{\n        _id,\n        title,\n        "slug": slug.current\n      }\n    },\n    sizeGroup->{\n      _id,\n      name,\n      sizes\n    },\n    variants[] {\n      size->{\n        _id,\n        name,\n        code,\n        sortOrder\n      },\n      color->{\n        _id,\n        name,\n        code,\n        hexCode\n      },\n      sku,\n      stockQuantity,\n      isActive\n    },\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    images[] {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    keyFeatures,\n    materials,\n    sizeAndFit,\n    careInstructions,\n    relatedProducts[]->{\n      _id,\n      name,\n      "slug": slug.current,\n      basePrice,\n      thumbnail {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    },\n    reviews[]->{\n      _id,\n      rating,\n      title,\n      comment,\n      isVerifiedPurchase,\n      createdAt,\n      user->{\n        firstName,\n        lastName\n      }\n    },\n    isFeatured\n  }\n': PRODUCT_BY_ID_QUERYResult;
+    '\n  *[_type == "user" && email == $email][0]{\n    firstName,\n    lastName,\n    email\n  }\n': USER_BY_EMAIL_QUERYResult;
+    '\n  {\n    "colorValues": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n': CATEGORY_FILTER_VALUES_QUERYResult;
+    '\n  *[_type == "color" && string::lower(name) in $colorNames]{_id}\n  ': COLORS_BY_NAMEResult;
+    '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ])\n':
+      | PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERYResult
+      | FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
+    '\n  *[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ]\n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n':
+      | PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult
+      | PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult;
+    '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0]) > 0\n  ])\n': PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult;
+    '\n  *[_type == "color" && _id in *[\n    _type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].color._ref]\n  {\n    _id,\n    name,\n    hexCode,\n    "productCount": count(*[\n      _type == "product"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && (!defined($minPrice) || basePrice >= $minPrice)\n      && (!defined($maxPrice) || basePrice <= $maxPrice)\n      && ^._id in variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($sizeIds) || size._ref in $sizeIds)\n      ].color._ref\n    ])\n  } | order(name asc)\n': GET_COLORS_FOR_CATEGORY_QUERYResult;
+    '\n  *[_type == "size" && _id in *[\n    _type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n    ]) > 0\n  ].variants[isActive == true && stockQuantity > 0].size._ref]\n  {\n    _id,\n    name,\n    code,\n    sortOrder,\n    "productCount": count(*[\n      _type == "product"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && (!defined($minPrice) || basePrice >= $minPrice)\n      && (!defined($maxPrice) || basePrice <= $maxPrice)\n      && ^._id in variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || color._ref in $colorIds)\n      ].size._ref\n    ])\n  } | order(sortOrder asc)\n': GET_SIZES_FOR_CATEGORY_QUERYResult;
+    '\n  *[_type == "size" && string::lower(code) in $sizeCodes]{_id, name, code, sortOrder}\n': SIZES_BY_CODEResult;
+    '\n  {\n    "minPrice": math::min(*[\n      _type == "product"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && count(variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)\n        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)\n      ]) > 0\n    ].basePrice),\n    "maxPrice": math::max(*[\n      _type == "product"\n      && $categoryId in categoryHierarchy\n      && isActive == true\n      && count(variants[\n        isActive == true\n        && stockQuantity > 0\n        && (!defined($colorIds) || length($colorIds) == 0 || color._ref in $colorIds)\n        && (!defined($sizeIds) || length($sizeIds) == 0 || size._ref in $sizeIds)\n      ]) > 0\n    ].basePrice)\n  }\n': GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult;
+    '\n  *[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ]\n  | order(\n      select(\n        $sortOrder == "price-asc" => 0 - basePrice,\n        $sortOrder == "price-desc" => basePrice,\n        0 - _createdAt\n      ) desc\n    ) [$startIndex...$endIndex] {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n': PRODUCTS_WITH_FILTERS_QUERYResult;
+    '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ])\n': PRODUCTS_COUNT_WITH_FILTERS_QUERYResult;
   }
 }
