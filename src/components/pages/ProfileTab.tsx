@@ -2,6 +2,7 @@
 
 import { useState, useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   updateProfile,
@@ -21,8 +22,8 @@ export default function ProfileTab({ user }: ProfileTabProps) {
     FormData
   >(updateProfile, {});
 
-  // Track previous success state to detect changes
-  const prevSuccessRef = useRef(state.success);
+  // Track previous pending state to detect when submission completes
+  const prevPendingRef = useRef(isPending);
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -32,20 +33,25 @@ export default function ProfileTab({ user }: ProfileTabProps) {
     setIsEditing(true);
   };
 
-  // Handle successful update - close edit mode and force refresh
+  // Handle submission completion - show toast and close edit mode on success
   useEffect(() => {
-    const successChanged = state.success && !prevSuccessRef.current;
+    // Detect when pending transitions from true to false (submission completed)
+    const justCompleted = prevPendingRef.current && !isPending;
 
-    if (successChanged && isEditing) {
-      setIsEditing(false);
-      // Force client-side refresh to refetch server data
-      // This is needed because revalidatePath doesn't always trigger immediate refetch
-      router.refresh();
+    if (justCompleted && isEditing) {
+      if (state.success) {
+        setIsEditing(false);
+        toast.success("Profile updated successfully");
+        // Force client-side refresh to refetch server data
+        router.refresh();
+      } else if (state.success === false && state.message) {
+        toast.error(state.message);
+      }
     }
 
-    // Update the previous success state
-    prevSuccessRef.current = state.success;
-  }, [state.success, isEditing, router]);
+    // Update the previous pending state
+    prevPendingRef.current = isPending;
+  }, [isPending, state.success, state.message, isEditing, router]);
 
   return (
     <div>
@@ -63,28 +69,6 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             </button>
           )}
         </div>
-
-        {/* Success Message */}
-        {state.success && (
-          <div
-            className="mb-4 p-3 bg-green-50 border border-green-200 text-green-800 text-sm"
-            role="alert"
-            aria-live="polite"
-          >
-            {state.message}
-          </div>
-        )}
-
-        {/* Error Message */}
-        {state.success === false && state.message && (
-          <div
-            className="mb-4 p-3 bg-red-50 border border-red-200 text-red-800 text-sm"
-            role="alert"
-            aria-live="assertive"
-          >
-            {state.message}
-          </div>
-        )}
 
         {!isEditing ? (
           // VIEW MODE

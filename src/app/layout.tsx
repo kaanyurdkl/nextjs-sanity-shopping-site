@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Arimo } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${arimo.className}`}>
-      <body className="antialiased text-black bg-white">{children}</body>
+      <body className="antialiased text-black bg-white">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
