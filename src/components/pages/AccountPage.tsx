@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
 import ProfileTab from "./ProfileTab";
+import AddressesTab from "./AddressesTab";
 
 interface AccountPageProps {
   user: NonNullable<USER_BY_GOOGLE_ID_QUERYResult>;
@@ -103,10 +104,7 @@ export default function AccountPage({ user }: AccountPageProps) {
               id="addresses-panel"
               aria-labelledby="addresses-tab"
             >
-              <h2 className="text-2xl font-bold uppercase mb-6">Addresses</h2>
-              <div className="border p-6">
-                <p>Addresses content - Coming soon</p>
-              </div>
+              <AddressesTab user={user} />
             </section>
           )}
         </div>
