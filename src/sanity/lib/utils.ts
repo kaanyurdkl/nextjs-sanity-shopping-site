@@ -1,4 +1,5 @@
 import { sanityFetch, sanityFetchNoCache } from "./fetch";
+import { writeClient } from "./client";
 import type {
   CATEGORY_BY_SLUG_QUERYResult,
   CATEGORY_CHILDREN_QUERYResult,
@@ -201,6 +202,30 @@ export async function getUserIdByGoogleId(
     params: { googleId },
   });
   return result?._id ?? null;
+}
+
+/**
+ * Update user profile information
+ * Used for updating name and phone number in user settings
+ * @param userId - The Sanity document _id of the user
+ * @param profile - Profile data to update
+ */
+export async function updateUserProfile(
+  userId: string,
+  profile: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string | null;
+  }
+) {
+  return await writeClient
+    .patch(userId)
+    .set({
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phoneNumber: profile.phoneNumber,
+    })
+    .commit({ visibility: "sync" });
 }
 
 // =============================================================================

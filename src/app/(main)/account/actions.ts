@@ -2,8 +2,7 @@
 
 import { revalidateTag, revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { writeClient } from "@/sanity/lib/client";
-import { getUserIdByGoogleId } from "@/sanity/lib/utils";
+import { getUserIdByGoogleId, updateUserProfile } from "@/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 
 /**
@@ -82,17 +81,14 @@ export async function updateProfile(
     }
 
     // 4. Update user in Sanity
-    await writeClient
-      .patch(userId)
-      .set({
-        firstName: result.data.firstName,
-        lastName: result.data.lastName,
-        phoneNumber: result.data.phoneNumber || null,
-      })
-      .commit({ visibility: "sync" });
+    await updateUserProfile(userId, {
+      firstName: result.data.firstName,
+      lastName: result.data.lastName,
+      phoneNumber: result.data.phoneNumber || null,
+    });
 
     // 5. Revalidate cache (belt and suspenders approach)
-    // Note: getUserByEmail now uses no-cache, but we still revalidate
+    // Note: getUserByGoogleId uses no-cache, but we still revalidate
     // in case other parts of the app cache user data
     revalidateTag("user");
     revalidatePath("/account");
