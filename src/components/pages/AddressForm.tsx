@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Info } from "lucide-react";
 
 // ACTIONS
 import { addAddressAction } from "@/app/(main)/account/actions";
@@ -26,6 +27,12 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AddressFormProps {
   onCancel: () => void;
@@ -197,9 +204,21 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
 
         {/* Country */}
         <Field>
-          <FieldLabel htmlFor="country" className="text-sm font-semibold">
-            COUNTRY <span className="text-red-600">*</span>
-          </FieldLabel>
+          <div className="flex items-center gap-2">
+            <FieldLabel htmlFor="country" className="text-sm font-semibold">
+              COUNTRY <span className="text-red-600">*</span>
+            </FieldLabel>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-gray-500 cursor-pointer" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>We currently only deliver to Canada</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <Select disabled defaultValue="Canada">
             <SelectTrigger id="country">
               <SelectValue />
