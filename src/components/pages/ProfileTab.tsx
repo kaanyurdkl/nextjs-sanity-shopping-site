@@ -9,6 +9,7 @@ import {
   type ProfileFormState,
 } from "@/app/(main)/account/actions";
 import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
+import { formatCanadianPhoneNumber } from "@/lib/utils/format";
 
 interface ProfileTabProps {
   user: NonNullable<USER_BY_GOOGLE_ID_QUERYResult>;
@@ -83,7 +84,7 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <div>
               <dt className="text-sm text-gray-600 mb-1">Phone Number</dt>
               <dd className="text-base">
-                {user.phoneNumber || "Not provided"}
+                {formatCanadianPhoneNumber(user.phoneNumber)}
               </dd>
             </div>
 
@@ -158,18 +159,32 @@ export default function ProfileTab({ user }: ProfileTabProps) {
                 >
                   Phone Number
                 </label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  defaultValue={user.phoneNumber || ""}
-                  disabled={isPending}
-                  className="w-full border border-black px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-invalid={!!state.errors?.phoneNumber}
-                  aria-describedby={
-                    state.errors?.phoneNumber ? "phoneNumber-error" : undefined
-                  }
-                />
+                <div className="flex border border-black">
+                  <span className="flex items-center px-3 py-2 bg-gray-50 text-black border-r border-black">
+                    +1
+                  </span>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    defaultValue={user.phoneNumber || ""}
+                    disabled={isPending}
+                    placeholder="5555555555"
+                    maxLength={10}
+                    pattern="[0-9]{10}"
+                    inputMode="numeric"
+                    onInput={(e) => {
+                      // Only allow digits
+                      const input = e.currentTarget;
+                      input.value = input.value.replace(/\D/g, "");
+                    }}
+                    className="flex-1 px-3 py-2 border-0 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-invalid={!!state.errors?.phoneNumber}
+                    aria-describedby={
+                      state.errors?.phoneNumber ? "phoneNumber-error" : undefined
+                    }
+                  />
+                </div>
                 {state.errors?.phoneNumber && (
                   <p
                     id="phoneNumber-error"

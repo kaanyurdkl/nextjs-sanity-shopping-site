@@ -25,15 +25,14 @@ export const profileUpdateSchema = z.object({
         // Allow empty string (optional field)
         if (!val) return true;
 
-        // Canadian phone number format validation
-        // Matches: +1 (514) 555-0123, 1-514-555-0123, 514.555.0123, etc.
-        const canadianPhoneRegex =
-          /^(\+1|1)?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/;
+        // Canadian phone number: exactly 10 digits (no formatting)
+        // Example: 6044403922
+        const phoneRegex = /^[0-9]{10}$/;
 
-        return canadianPhoneRegex.test(val);
+        return phoneRegex.test(val);
       },
       {
-        message: "Please enter a valid Canadian phone number",
+        message: "Please enter a valid 10-digit phone number",
       }
     )
     .optional()
