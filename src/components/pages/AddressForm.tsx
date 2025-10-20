@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Info } from "lucide-react";
@@ -34,14 +34,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+// TYPES
+import type { Address } from "@/services/sanity/types/sanity.types";
+
 interface AddressFormProps {
   onCancel: () => void;
   mode: "add" | "edit";
+  initialData?: Address;
 }
 
-export default function AddressForm({ onCancel, mode }: AddressFormProps) {
+export default function AddressForm({
+  onCancel,
+  mode,
+  initialData,
+}: AddressFormProps) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(addAddressAction, {});
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Handle successful submission
   useEffect(() => {
@@ -60,7 +69,15 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
         {mode === "add" ? "ADD ADDRESS" : "EDIT ADDRESS"}
       </h3>
 
-      <form action={formAction} className="space-y-4">
+      <form
+        action={formAction}
+        className="space-y-4"
+        onChange={() => {
+          if (mode === "edit" && !hasChanges) {
+            setHasChanges(true);
+          }
+        }}
+      >
         {/* Address Name */}
         <Field>
           <FieldLabel htmlFor="addressName" className="text-sm font-semibold">
@@ -70,6 +87,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
             id="addressName"
             name="addressName"
             placeholder="Home Address"
+            defaultValue={initialData?.nickname || ""}
             disabled={isPending}
           />
           {state.errors?.nickname && (
@@ -87,6 +105,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
               id="firstName"
               name="firstName"
               placeholder="John"
+              defaultValue={initialData?.firstName || ""}
               disabled={isPending}
             />
             {state.errors?.firstName && (
@@ -101,6 +120,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
               id="lastName"
               name="lastName"
               placeholder="Doe"
+              defaultValue={initialData?.lastName || ""}
               disabled={isPending}
             />
             {state.errors?.lastName && (
@@ -118,6 +138,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
             id="address"
             name="address"
             placeholder="123 Main Street"
+            defaultValue={initialData?.streetAddress || ""}
             disabled={isPending}
           />
           {state.errors?.streetAddress && (
@@ -134,6 +155,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
             id="aptUnit"
             name="aptUnit"
             placeholder="Apt 4B"
+            defaultValue={initialData?.aptUnit || ""}
             disabled={isPending}
           />
           {state.errors?.aptUnit && (
@@ -151,6 +173,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
               id="city"
               name="city"
               placeholder="Montreal"
+              defaultValue={initialData?.city || ""}
               disabled={isPending}
             />
             {state.errors?.city && (
@@ -161,7 +184,11 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
             <FieldLabel htmlFor="province" className="text-sm font-semibold">
               PROVINCE <span className="text-red-600">*</span>
             </FieldLabel>
-            <Select name="province" disabled={isPending}>
+            <Select
+              name="province"
+              disabled={isPending}
+              defaultValue={initialData?.province || undefined}
+            >
               <SelectTrigger id="province">
                 <SelectValue placeholder="Select Province" />
               </SelectTrigger>
@@ -194,6 +221,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
               name="postalCode"
               className="uppercase"
               placeholder="H2X 1A1"
+              defaultValue={initialData?.postalCode || ""}
               disabled={isPending}
             />
             {state.errors?.postalCode && (
@@ -245,6 +273,7 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
               placeholder="5555555555"
               maxLength={10}
               inputMode="numeric"
+              defaultValue={initialData?.phoneNumber || ""}
               disabled={isPending}
               onInput={(e) => {
                 const input = e.currentTarget;
@@ -259,7 +288,12 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
 
         {/* Set as Default */}
         <div className="flex items-center gap-2">
-          <Checkbox id="isDefault" name="isDefault" disabled={isPending} />
+          <Checkbox
+            id="isDefault"
+            name="isDefault"
+            defaultChecked={initialData?.isDefault || false}
+            disabled={isPending}
+          />
           <Label htmlFor="isDefault" className="text-sm">
             Set as default address
           </Label>
@@ -276,7 +310,11 @@ export default function AddressForm({ onCancel, mode }: AddressFormProps) {
           >
             CANCEL
           </Button>
-          <Button type="submit" className="flex-1" disabled={isPending}>
+          <Button
+            type="submit"
+            className="flex-1"
+            disabled={isPending || (mode === "edit" && !hasChanges)}
+          >
             {isPending ? "SAVING..." : "SAVE"}
           </Button>
         </div>

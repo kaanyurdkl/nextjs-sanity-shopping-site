@@ -15,18 +15,23 @@ interface AddressesTabProps {
 
 export default function AddressesTab({ user }: AddressesTabProps) {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [editingAddressIndex, setEditingAddressIndex] = useState<number | null>(
+    null
+  );
 
   const handleAddAddress = () => {
     setIsAddingAddress(true);
+    setEditingAddressIndex(null);
   };
 
   const handleCancel = () => {
     setIsAddingAddress(false);
+    setEditingAddressIndex(null);
   };
 
   const handleEdit = (addressIndex: number) => {
-    // TODO: Implement edit functionality
-    console.log("Edit address at index:", addressIndex);
+    setEditingAddressIndex(addressIndex);
+    setIsAddingAddress(false);
   };
 
   const handleDelete = (addressIndex: number) => {
@@ -40,19 +45,28 @@ export default function AddressesTab({ user }: AddressesTabProps) {
   };
 
   const hasAddresses = user.addresses && user.addresses.length > 0;
+  const isShowingForm = isAddingAddress || editingAddressIndex !== null;
+  const editingAddress =
+    editingAddressIndex !== null && user.addresses
+      ? user.addresses[editingAddressIndex]
+      : null;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold uppercase">Addresses</h2>
 
-        {!isAddingAddress && (
+        {!isShowingForm && (
           <Button onClick={handleAddAddress}>ADD ADDRESS</Button>
         )}
       </div>
 
-      {isAddingAddress ? (
-        <AddressForm onCancel={handleCancel} mode="add" />
+      {isShowingForm ? (
+        <AddressForm
+          onCancel={handleCancel}
+          mode={isAddingAddress ? "add" : "edit"}
+          initialData={editingAddress || undefined}
+        />
       ) : hasAddresses ? (
         <div className="space-y-4">
           {user.addresses!.map((address, index) => (
