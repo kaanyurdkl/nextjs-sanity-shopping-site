@@ -3,20 +3,23 @@
 import { useState, useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { updateProfile, type ProfileFormState } from "@/app/(main)/account/actions";
-import type { USER_BY_EMAIL_QUERYResult } from "@/sanity/types/sanity.types";
+import {
+  updateProfile,
+  type ProfileFormState,
+} from "@/app/(main)/account/actions";
+import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/sanity/types/sanity.types";
 
 interface ProfileTabProps {
-  user: NonNullable<USER_BY_EMAIL_QUERYResult>;
+  user: NonNullable<USER_BY_GOOGLE_ID_QUERYResult>;
 }
 
 export default function ProfileTab({ user }: ProfileTabProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [state, formAction, isPending] = useActionState<ProfileFormState, FormData>(
-    updateProfile,
-    {}
-  );
+  const [state, formAction, isPending] = useActionState<
+    ProfileFormState,
+    FormData
+  >(updateProfile, {});
 
   // Track previous success state to detect changes
   const prevSuccessRef = useRef(state.success);
@@ -95,7 +98,9 @@ export default function ProfileTab({ user }: ProfileTabProps) {
 
             <div>
               <dt className="text-sm text-gray-600 mb-1">Phone Number</dt>
-              <dd className="text-base">{user.phoneNumber || "Not provided"}</dd>
+              <dd className="text-base">
+                {user.phoneNumber || "Not provided"}
+              </dd>
             </div>
 
             <div>
@@ -109,7 +114,10 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <div className="space-y-4">
               {/* First Name Field */}
               <div>
-                <label htmlFor="firstName" className="block text-sm text-gray-600 mb-2">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm text-gray-600 mb-2"
+                >
                   First Name
                 </label>
                 <input
@@ -120,7 +128,9 @@ export default function ProfileTab({ user }: ProfileTabProps) {
                   disabled={isPending}
                   className="w-full border border-black px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-invalid={!!state.errors?.firstName}
-                  aria-describedby={state.errors?.firstName ? "firstName-error" : undefined}
+                  aria-describedby={
+                    state.errors?.firstName ? "firstName-error" : undefined
+                  }
                 />
                 {state.errors?.firstName && (
                   <p id="firstName-error" className="mt-1 text-sm text-red-600">
@@ -131,7 +141,10 @@ export default function ProfileTab({ user }: ProfileTabProps) {
 
               {/* Last Name Field */}
               <div>
-                <label htmlFor="lastName" className="block text-sm text-gray-600 mb-2">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm text-gray-600 mb-2"
+                >
                   Last Name
                 </label>
                 <input
@@ -142,7 +155,9 @@ export default function ProfileTab({ user }: ProfileTabProps) {
                   disabled={isPending}
                   className="w-full border border-black px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-invalid={!!state.errors?.lastName}
-                  aria-describedby={state.errors?.lastName ? "lastName-error" : undefined}
+                  aria-describedby={
+                    state.errors?.lastName ? "lastName-error" : undefined
+                  }
                 />
                 {state.errors?.lastName && (
                   <p id="lastName-error" className="mt-1 text-sm text-red-600">
@@ -153,7 +168,10 @@ export default function ProfileTab({ user }: ProfileTabProps) {
 
               {/* Phone Number Field */}
               <div>
-                <label htmlFor="phoneNumber" className="block text-sm text-gray-600 mb-2">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm text-gray-600 mb-2"
+                >
                   Phone Number
                 </label>
                 <input
@@ -164,10 +182,15 @@ export default function ProfileTab({ user }: ProfileTabProps) {
                   disabled={isPending}
                   className="w-full border border-black px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-invalid={!!state.errors?.phoneNumber}
-                  aria-describedby={state.errors?.phoneNumber ? "phoneNumber-error" : undefined}
+                  aria-describedby={
+                    state.errors?.phoneNumber ? "phoneNumber-error" : undefined
+                  }
                 />
                 {state.errors?.phoneNumber && (
-                  <p id="phoneNumber-error" className="mt-1 text-sm text-red-600">
+                  <p
+                    id="phoneNumber-error"
+                    className="mt-1 text-sm text-red-600"
+                  >
                     {state.errors.phoneNumber[0]}
                   </p>
                 )}
@@ -175,7 +198,10 @@ export default function ProfileTab({ user }: ProfileTabProps) {
 
               {/* Email Address Field (Disabled) */}
               <div>
-                <label htmlFor="email" className="block text-sm text-gray-600 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm text-gray-600 mb-2"
+                >
                   Email Address
                 </label>
                 <input

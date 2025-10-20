@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { USER_BY_EMAIL_QUERYResult } from "@/sanity/types/sanity.types";
+import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/sanity/types/sanity.types";
 import ProfileTab from "./ProfileTab";
 
 interface AccountPageProps {
-  user: NonNullable<USER_BY_EMAIL_QUERYResult>;
+  user: NonNullable<USER_BY_GOOGLE_ID_QUERYResult>;
 }
 
 type TabType = "profile" | "orders" | "addresses";

@@ -1185,6 +1185,25 @@ export type USER_BY_EMAIL_QUERYResult = {
     } & Address
   > | null;
 } | null;
+// Variable: USER_BY_GOOGLE_ID_QUERY
+// Query: *[_type == "user" && googleId == $googleId][0]{    _id,    firstName,    lastName,    email,    phoneNumber,    addresses  }
+export type USER_BY_GOOGLE_ID_QUERYResult = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string | null;
+  addresses: Array<
+    {
+      _key: string;
+    } & Address
+  > | null;
+} | null;
+// Variable: USER_ID_BY_GOOGLE_ID_QUERY
+// Query: *[_type == "user" && googleId == $googleId][0]{ _id }
+export type USER_ID_BY_GOOGLE_ID_QUERYResult = {
+  _id: string;
+} | null;
 // Variable: CATEGORY_FILTER_VALUES_QUERY
 // Query: {    "colorValues": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]      .variants[isActive == true && stockQuantity > 0]      .color._ref]{_id, name, hexCode} | order(name asc)  }
 export type CATEGORY_FILTER_VALUES_QUERYResult = {
@@ -1404,6 +1423,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "product" && $categoryId in categoryHierarchy && isActive == true] \n  | order(_createdAt desc) [$startIndex...$endIndex] {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size,\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n': PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult;
     '\n  *[_type == "product" && _id == $id && isActive == true][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    description,\n    basePrice,\n    category->{\n      _id,\n      title,\n      "slug": slug.current,\n      parent->{\n        _id,\n        title,\n        "slug": slug.current\n      }\n    },\n    sizeGroup->{\n      _id,\n      name,\n      sizes\n    },\n    variants[] {\n      size->{\n        _id,\n        name,\n        code,\n        sortOrder\n      },\n      color->{\n        _id,\n        name,\n        code,\n        hexCode\n      },\n      sku,\n      stockQuantity,\n      isActive\n    },\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    images[] {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    keyFeatures,\n    materials,\n    sizeAndFit,\n    careInstructions,\n    relatedProducts[]->{\n      _id,\n      name,\n      "slug": slug.current,\n      basePrice,\n      thumbnail {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    },\n    reviews[]->{\n      _id,\n      rating,\n      title,\n      comment,\n      isVerifiedPurchase,\n      createdAt,\n      user->{\n        firstName,\n        lastName\n      }\n    },\n    isFeatured\n  }\n': PRODUCT_BY_ID_QUERYResult;
     '\n  *[_type == "user" && email == $email][0]{\n    _id,\n    firstName,\n    lastName,\n    email,\n    phoneNumber,\n    addresses\n  }\n': USER_BY_EMAIL_QUERYResult;
+    '\n  *[_type == "user" && googleId == $googleId][0]{\n    _id,\n    firstName,\n    lastName,\n    email,\n    phoneNumber,\n    addresses\n  }\n': USER_BY_GOOGLE_ID_QUERYResult;
+    '\n  *[_type == "user" && googleId == $googleId][0]{ _id }\n': USER_ID_BY_GOOGLE_ID_QUERYResult;
     '\n  {\n    "colorValues": *[_type == "color" && _id in *[_type == "product" && $categoryId in categoryHierarchy && isActive == true]\n      .variants[isActive == true && stockQuantity > 0]\n      .color._ref]{_id, name, hexCode} | order(name asc)\n  }\n': CATEGORY_FILTER_VALUES_QUERYResult;
     '\n  *[_type == "color" && string::lower(name) in $colorNames]{_id}\n  ': COLORS_BY_NAMEResult;
     '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && count(variants[isActive == true && stockQuantity > 0 && color._ref in $colorIds]) > 0\n  ])\n':

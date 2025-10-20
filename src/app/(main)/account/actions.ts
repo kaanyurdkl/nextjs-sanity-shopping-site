@@ -3,6 +3,7 @@
 import { revalidateTag, revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { writeClient } from "@/sanity/lib/client";
+import { getUserIdByGoogleId } from "@/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 
 /**
@@ -71,12 +72,9 @@ export async function updateProfile(
     }
 
     // 3. Get user ID from Sanity by Google ID
-    const existingUser = await writeClient.fetch(
-      `*[_type == "user" && googleId == $googleId][0]{ _id }`,
-      { googleId: session.user.googleId }
-    );
+    const userId = await getUserIdByGoogleId(session.user.googleId);
 
-    if (!existingUser) {
+    if (!userId) {
       return {
         success: false,
         message: "User not found",
@@ -85,7 +83,7 @@ export async function updateProfile(
 
     // 4. Update user in Sanity
     await writeClient
-      .patch(existingUser._id)
+      .patch(userId)
       .set({
         firstName: result.data.firstName,
         lastName: result.data.lastName,

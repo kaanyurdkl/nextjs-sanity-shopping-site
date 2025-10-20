@@ -21,12 +21,12 @@ export const readClient = createClient({
 });
 
 /**
- * Fresh read client for user-specific data
+ * No-cache read client for user-specific data
  * Bypasses CDN to get immediate updates after mutations
  * Use this for data that changes frequently and needs instant consistency
  * (e.g., user profiles, cart data, order status)
  */
-export const freshReadClient = createClient({
+export const noCacheReadClient = createClient({
   projectId,
   dataset,
   apiVersion,

@@ -1,8 +1,10 @@
-import { sanityFetch, sanityFetchDynamic } from "./fetch";
+import { sanityFetch, sanityFetchNoCache } from "./fetch";
 import type {
   CATEGORY_BY_SLUG_QUERYResult,
   CATEGORY_CHILDREN_QUERYResult,
   CATEGORY_FILTER_VALUES_QUERYResult,
+  USER_BY_GOOGLE_ID_QUERYResult,
+  USER_ID_BY_GOOGLE_ID_QUERYResult,
   COLORS_BY_NAMEResult,
   FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult,
   NAVBAR_CATEGORIES_QUERYResult,
@@ -29,6 +31,8 @@ import {
   PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERY,
   NAVBAR_CATEGORIES_QUERY,
   USER_BY_EMAIL_QUERY,
+  USER_BY_GOOGLE_ID_QUERY,
+  USER_ID_BY_GOOGLE_ID_QUERY,
   COLORS_BY_NAME,
   PAGINATED_PRODUCTS_BY_CATEGORYID_QUERY,
   PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY,
@@ -163,10 +167,40 @@ export async function getProductById(
 export async function getUserByEmail(
   email: string
 ): Promise<USER_BY_EMAIL_QUERYResult> {
-  return await sanityFetchDynamic({
+  return await sanityFetchNoCache({
     query: USER_BY_EMAIL_QUERY,
     params: { email },
   });
+}
+
+/**
+ * Fetch user by Google OAuth ID
+ * Preferred method for account pages (more stable than email)
+ * Uses no-cache to always fetch fresh user data after profile updates
+ */
+export async function getUserByGoogleId(
+  googleId: string
+): Promise<USER_BY_GOOGLE_ID_QUERYResult> {
+  return await sanityFetchNoCache({
+    query: USER_BY_GOOGLE_ID_QUERY,
+    params: { googleId },
+  });
+}
+
+/**
+ * Get user ID by Google ID (optimized for mutations)
+ * Only fetches the _id field needed for patch operations
+ * Uses no-cache to ensure immediate consistency after mutations
+ * @returns The user's _id string, or null if not found
+ */
+export async function getUserIdByGoogleId(
+  googleId: string
+): Promise<string | null> {
+  const result = await sanityFetchNoCache<USER_ID_BY_GOOGLE_ID_QUERYResult>({
+    query: USER_ID_BY_GOOGLE_ID_QUERY,
+    params: { googleId },
+  });
+  return result?._id ?? null;
 }
 
 // =============================================================================

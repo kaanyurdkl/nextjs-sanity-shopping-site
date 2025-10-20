@@ -1,5 +1,5 @@
 import { type QueryParams } from "next-sanity";
-import { readClient, freshReadClient } from "./client";
+import { readClient, noCacheReadClient } from "./client";
 
 /**
  * Enhanced Sanity fetch function following Next.js 15 and Sanity best practices
@@ -42,17 +42,17 @@ export async function sanityFetch<QueryResponse>({
  * Sanity fetch with no caching - for dynamic data that should always be fresh
  * Use this for user-specific data or frequently changing content
  *
- * IMPORTANT: Uses freshReadClient (useCdn: false) to bypass Sanity CDN
+ * IMPORTANT: Uses noCacheReadClient (useCdn: false) to bypass Sanity CDN
  * This ensures immediate consistency after mutations, avoiding CDN propagation delay
  */
-export async function sanityFetchDynamic<QueryResponse>({
+export async function sanityFetchNoCache<QueryResponse>({
   query,
   params = {},
 }: {
   query: string;
   params?: QueryParams;
 }): Promise<QueryResponse> {
-  return freshReadClient.fetch<QueryResponse>(query, params, {
+  return noCacheReadClient.fetch<QueryResponse>(query, params, {
     cache: "no-store", // Always fetch fresh data
   });
 }

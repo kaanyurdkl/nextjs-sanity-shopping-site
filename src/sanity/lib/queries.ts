@@ -338,6 +338,29 @@ export const USER_BY_EMAIL_QUERY = defineQuery(`
   }
 `);
 
+/**
+ * Fetch user by Google OAuth ID
+ * Preferred method for account pages (more stable than email)
+ */
+export const USER_BY_GOOGLE_ID_QUERY = defineQuery(`
+  *[_type == "user" && googleId == $googleId][0]{
+    _id,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    addresses
+  }
+`);
+
+/**
+ * Fetch user ID by Google OAuth ID
+ * Used for mutations where only the document ID is needed
+ */
+export const USER_ID_BY_GOOGLE_ID_QUERY = defineQuery(`
+  *[_type == "user" && googleId == $googleId][0]{ _id }
+`);
+
 // =============================================================================
 // FILTER QUERIES
 // =============================================================================
