@@ -1,4 +1,4 @@
-import { signIn } from "@/lib/auth";
+import { signIn } from "@/services/next-auth/lib";
 import { GoogleIcon } from "@/components/icons";
 
 export default async function SignInPage({

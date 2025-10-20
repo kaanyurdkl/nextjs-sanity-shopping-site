@@ -1,7 +1,7 @@
 // LIBRARIES
-import { auth } from "@/lib/auth";
+import { auth } from "@/services/next-auth/lib";
 // COMPONENTS
-import { AuthProvider } from "@/components/features/auth";
+import { AuthProvider } from "@/services/next-auth/components";
 import { Header } from "@/components/layout";
 
 export default async function MainLayout({

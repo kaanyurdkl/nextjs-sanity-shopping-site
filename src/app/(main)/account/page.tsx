@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/services/next-auth/lib";
 import { getUserByGoogleId } from "@/services/sanity/lib/utils";
 import AccountPage from "@/components/pages/AccountPage";
 

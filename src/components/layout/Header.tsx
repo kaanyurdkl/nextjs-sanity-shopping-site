@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut } from "@/services/next-auth/lib";
 import { getNavbarCategories } from "@/services/sanity/lib/utils";
 import { MegaMenu } from "./MegaMenu";
 

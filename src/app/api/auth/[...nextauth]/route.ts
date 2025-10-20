@@ -1,3 +1,3 @@
-import { handlers } from "@/lib/auth";
+import { handlers } from "@/services/next-auth/lib";
 
 export const { GET, POST } = handlers;

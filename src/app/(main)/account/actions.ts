@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidateTag, revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
+import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId, updateUserProfile } from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 
