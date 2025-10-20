@@ -2,8 +2,13 @@
 
 import { revalidateTag, revalidatePath } from "next/cache";
 import { auth } from "@/services/next-auth/lib";
-import { getUserIdByGoogleId, updateUserProfile } from "@/services/sanity/lib/utils";
+import {
+  getUserIdByGoogleId,
+  updateUserProfile,
+  addAddress,
+} from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
+import { addressSchema } from "@/lib/validations/address";
 
 /**
  * Form state returned from Server Action
@@ -14,6 +19,26 @@ export interface ProfileFormState {
   errors?: {
     firstName?: string[] | undefined;
     lastName?: string[] | undefined;
+    phoneNumber?: string[] | undefined;
+  };
+}
+
+/**
+ * Address form state
+ */
+export interface AddressFormState {
+  success?: boolean;
+  message?: string;
+  errors?: {
+    nickname?: string[] | undefined;
+    firstName?: string[] | undefined;
+    lastName?: string[] | undefined;
+    streetAddress?: string[] | undefined;
+    aptUnit?: string[] | undefined;
+    city?: string[] | undefined;
+    province?: string[] | undefined;
+    postalCode?: string[] | undefined;
+    country?: string[] | undefined;
     phoneNumber?: string[] | undefined;
   };
 }
@@ -102,6 +127,97 @@ export async function updateProfile(
     return {
       success: false,
       message: "Failed to update profile. Please try again.",
+    };
+  }
+}
+
+/**
+ * Add a new address to user's address list
+ * Server Action for handling address form submissions
+ *
+ * @param prevState - Previous form state (from useActionState)
+ * @param formData - Form data from submission
+ * @returns Updated form state with success/error info
+ */
+export async function addAddressAction(
+  _prevState: AddressFormState,
+  formData: FormData
+): Promise<AddressFormState> {
+  try {
+    // 1. Authentication check
+    const session = await auth();
+    if (!session?.user?.googleId) {
+      return {
+        success: false,
+        message: "You must be signed in to add an address",
+      };
+    }
+
+    // 2. Extract and validate form data
+    const rawData = {
+      nickname: formData.get("addressName"),
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      streetAddress: formData.get("address"),
+      aptUnit: formData.get("aptUnit") || "",
+      city: formData.get("city"),
+      province: formData.get("province"),
+      postalCode: formData.get("postalCode"),
+      country: "Canada", // Always set server-side for security
+      phoneNumber: formData.get("phoneNumber") || "",
+      isDefault: formData.get("isDefault") === "on",
+    };
+
+    const result = addressSchema.safeParse(rawData);
+
+    if (!result.success) {
+      // Format Zod errors into field-specific error arrays
+      const fieldErrors: Partial<Record<keyof AddressFormState["errors"], string[]>> = {};
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof AddressFormState["errors"];
+        if (field) {
+          if (!fieldErrors[field]) {
+            fieldErrors[field] = [];
+          }
+          fieldErrors[field]!.push(issue.message);
+        }
+      });
+
+      return {
+        success: false,
+        message: "Please fix the errors below",
+        errors: fieldErrors,
+      };
+    }
+
+    // 3. Get user ID from Sanity by Google ID
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // 4. Add address using utility function (handles default address logic)
+    // Zod validation ensures province type matches Sanity's literal union
+    await addAddress(userId, result.data);
+
+    // 5. Revalidate cache
+    revalidateTag("user");
+    revalidatePath("/account");
+
+    return {
+      success: true,
+      message: "Address added successfully",
+    };
+  } catch (error) {
+    console.error("Add address error:", error);
+    return {
+      success: false,
+      message: "Failed to add address. Please try again.",
     };
   }
 }

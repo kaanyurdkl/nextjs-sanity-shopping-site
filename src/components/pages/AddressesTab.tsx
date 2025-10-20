@@ -13,6 +13,7 @@ interface AddressesTabProps {
 }
 
 export default function AddressesTab({ user }: AddressesTabProps) {
+  console.log("User addresses: ", user.addresses);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
 
   const handleAddAddress = () => {

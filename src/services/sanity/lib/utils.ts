@@ -22,6 +22,7 @@ import type {
   GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult,
   PRODUCT_BY_ID_QUERYResult,
   USER_BY_EMAIL_QUERYResult,
+  Address,
 } from "@/services/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
@@ -226,6 +227,49 @@ export async function updateUserProfile(
       phoneNumber: profile.phoneNumber,
     })
     .commit({ visibility: "sync" });
+}
+
+/**
+ * Add address to user's address list
+ * Handles default address logic: if new address is default, unsets all existing defaults first
+ * User can choose to have no default address
+ * @param userId - The Sanity document _id of the user
+ * @param address - Address data to add (excluding _type and _key which are set automatically)
+ */
+export async function addAddress(
+  userId: string,
+  address: Omit<Address, "_type">
+) {
+  // Start building the patch operation
+  let patch = writeClient.patch(userId).setIfMissing({ addresses: [] });
+
+  // If new address is marked as default, unset all existing default flags
+  if (address.isDefault) {
+    // First, fetch current user to check for existing addresses
+    const user = await writeClient.fetch(
+      `*[_id == $userId][0]{ addresses }`,
+      { userId }
+    );
+
+    if (user?.addresses && user.addresses.length > 0) {
+      // Manually update each address's isDefault field to false
+      user.addresses.forEach((_: unknown, index: number) => {
+        patch = patch.set({ [`addresses[${index}].isDefault`]: false });
+      });
+    }
+  }
+
+  // Append the new address
+  patch = patch.append("addresses", [
+    {
+      _type: "address",
+      _key: `address-${Date.now()}`, // Unique key for the array item
+      ...address,
+    },
+  ]);
+
+  // Commit all changes in a single transaction
+  return await patch.commit({ visibility: "sync" });
 }
 
 // =============================================================================
