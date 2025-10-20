@@ -13,7 +13,7 @@ import {
 // STORE
 import { useFilterStore } from "@/stores/filter-store";
 // TYPES
-import type { GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult } from "@/sanity/types/sanity.types";
+import type { GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface PriceFilterProps {
   data: GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult;

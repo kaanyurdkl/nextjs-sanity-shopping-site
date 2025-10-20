@@ -1,4 +1,4 @@
-import { writeClient } from "@/sanity/lib/client";
+import { writeClient } from "@/services/sanity/lib/client";
 
 /**
  * Syncs Google OAuth user profile data to Sanity CMS

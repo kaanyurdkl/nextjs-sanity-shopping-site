@@ -4,9 +4,9 @@ import ColorFilter from "@/components/ui/ColorFilter";
 import SizeFilter from "@/components/ui/SizeFilter";
 import PriceFilter from "@/components/ui/PriceFilter";
 // UTILS
-import { getCategoryFilterData } from "@/sanity/lib/utils";
+import { getCategoryFilterData } from "@/services/sanity/lib/utils";
 // TYPES
-import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface CategoryFiltersProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;

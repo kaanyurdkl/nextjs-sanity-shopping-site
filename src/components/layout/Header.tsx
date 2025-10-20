@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
-import { getNavbarCategories } from "@/sanity/lib/utils";
+import { getNavbarCategories } from "@/services/sanity/lib/utils";
 import { MegaMenu } from "./MegaMenu";
 
 export default async function Header() {

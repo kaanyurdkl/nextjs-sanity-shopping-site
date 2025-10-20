@@ -3,7 +3,7 @@
 import ProductCard from "@/components/ui/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import { Suspense } from "react";
-import type { PRODUCTS_WITH_FILTERS_QUERYResult } from "@/sanity/types/sanity.types";
+import type { PRODUCTS_WITH_FILTERS_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface ProductGridProps {
   products: PRODUCTS_WITH_FILTERS_QUERYResult;

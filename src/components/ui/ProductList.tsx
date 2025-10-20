@@ -6,9 +6,9 @@ import {
   getSizesByCode,
   getProductsWithFilters,
   getProductsCountWithFilters,
-} from "@/sanity/lib/utils";
+} from "@/services/sanity/lib/utils";
 // TYPES
-import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 // CONSTANTS
 import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
 

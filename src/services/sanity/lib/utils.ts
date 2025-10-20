@@ -22,7 +22,7 @@ import type {
   GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult,
   PRODUCT_BY_ID_QUERYResult,
   USER_BY_EMAIL_QUERYResult,
-} from "@/sanity/types/sanity.types";
+} from "@/services/sanity/types/sanity.types";
 import {
   CATEGORY_BY_SLUG_QUERY,
   CATEGORY_CHILDREN_QUERY,

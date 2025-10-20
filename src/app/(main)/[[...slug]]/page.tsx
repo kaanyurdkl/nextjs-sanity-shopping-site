@@ -4,7 +4,7 @@ import {
   CategoryLandingPage,
   CategoryListingPage,
 } from "@/components/pages";
-import { getCategoryBySlug } from "@/sanity/lib/utils";
+import { getCategoryBySlug } from "@/services/sanity/lib/utils";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface PageProps {

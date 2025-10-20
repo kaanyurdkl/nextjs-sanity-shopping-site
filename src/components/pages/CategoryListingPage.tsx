@@ -6,7 +6,7 @@ import ProductList from "@/components/ui/ProductList";
 import SortFilter from "@/components/ui/SortFilter";
 import ProductGridSkeleton from "@/components/ui/ProductGridSkeleton";
 // TYPES
-import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import type { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 import ActiveFilters from "../ui/ActiveFilters";
 
 interface CategoryListingPageProps {

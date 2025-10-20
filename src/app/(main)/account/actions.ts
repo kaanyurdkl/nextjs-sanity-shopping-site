@@ -2,7 +2,7 @@
 
 import { revalidateTag, revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { getUserIdByGoogleId, updateUserProfile } from "@/sanity/lib/utils";
+import { getUserIdByGoogleId, updateUserProfile } from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 
 /**

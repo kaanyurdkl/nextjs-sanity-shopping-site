@@ -1,9 +1,9 @@
 // COMPONENTS
 import CategorySidebarItem from "@/components/ui/CategorySidebarItem";
 // UTILS
-import { getCategoryChildren } from "@/sanity/lib/utils";
+import { getCategoryChildren } from "@/services/sanity/lib/utils";
 // TYPES
-import { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface CategorySelectorsProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;

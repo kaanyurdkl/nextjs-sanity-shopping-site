@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getUserByGoogleId } from "@/sanity/lib/utils";
+import { getUserByGoogleId } from "@/services/sanity/lib/utils";
 import AccountPage from "@/components/pages/AccountPage";
 
 export default async function Page() {

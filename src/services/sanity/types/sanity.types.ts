@@ -755,7 +755,7 @@ export type AllSanitySchemaTypes =
   | Slug
   | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/sanity/lib/queries.ts
+// Source: ./src/services/sanity/lib/queries.ts
 // Variable: CATEGORY_BY_SLUG_QUERY
 // Query: *[_type == "category" && slug.current == $slug && isActive == true][0] {    _id,    title,    "slug": slug.current,    pageType,    parent->{      _id,      title,      "slug": slug.current    },    enableSizeFilter,    enableColorFilter,    enablePriceFilter  }
 export type CATEGORY_BY_SLUG_QUERYResult = {

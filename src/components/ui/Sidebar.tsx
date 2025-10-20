@@ -2,7 +2,7 @@
 import CategoryFilters from "@/components/ui/CategoryFilters";
 import CategorySelectors from "@/components/ui/CategorySelectors";
 // TYPES
-import type { CATEGORY_BY_SLUG_QUERYResult } from "@/sanity/types/sanity.types";
+import type { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface SidebarProps {
   category: NonNullable<CATEGORY_BY_SLUG_QUERYResult>;

@@ -5,9 +5,9 @@ import Link from "next/link";
 import type {
   PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult,
   PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult,
-} from "@/sanity/types/sanity.types";
+} from "@/services/sanity/types/sanity.types";
 // UTILITIES
-import { urlFor } from "@/sanity/lib/image";
+import { urlFor } from "@/services/sanity/lib/image";
 
 type Product =
   | PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult[0]

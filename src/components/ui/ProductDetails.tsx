@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 // UTILS
-import { urlFor } from "@/sanity/lib/image";
+import { urlFor } from "@/services/sanity/lib/image";
 // TYPES
-import { PRODUCT_BY_ID_QUERYResult } from "@/sanity/types/sanity.types";
+import { PRODUCT_BY_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
 import { useCartStore } from "@/stores/cart-store";
 
 interface ProductDetailsProps {

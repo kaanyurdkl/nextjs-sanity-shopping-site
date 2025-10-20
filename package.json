@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typegen": "sanity schema extract --enforce-required-fields --path=src/sanity/schema.json && sanity typegen generate",
+    "typegen": "sanity schema extract --enforce-required-fields --path=src/services/sanity/schema.json && sanity typegen generate --schema-path=src/services/sanity/schema.json --out-path=src/services/sanity/types/sanity.types.ts",
     "deploy:functions": "sanity blueprints deploy",
     "logs:functions": "sanity functions logs compute-category-hierarchy"
   },

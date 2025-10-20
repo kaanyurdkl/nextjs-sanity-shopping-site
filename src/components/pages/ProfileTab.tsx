@@ -8,7 +8,7 @@ import {
   updateProfile,
   type ProfileFormState,
 } from "@/app/(main)/account/actions";
-import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/sanity/types/sanity.types";
+import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 interface ProfileTabProps {
   user: NonNullable<USER_BY_GOOGLE_ID_QUERYResult>;
