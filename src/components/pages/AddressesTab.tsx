@@ -15,40 +15,40 @@ interface AddressesTabProps {
 
 export default function AddressesTab({ user }: AddressesTabProps) {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [editingAddressIndex, setEditingAddressIndex] = useState<number | null>(
-    null
+  const [editingAddressKey, setEditingAddressKey] = useState<string | null>(
+    null,
   );
 
   const handleAddAddress = () => {
     setIsAddingAddress(true);
-    setEditingAddressIndex(null);
+    setEditingAddressKey(null);
   };
 
   const handleCancel = () => {
     setIsAddingAddress(false);
-    setEditingAddressIndex(null);
+    setEditingAddressKey(null);
   };
 
-  const handleEdit = (addressIndex: number) => {
-    setEditingAddressIndex(addressIndex);
+  const handleEdit = (addressKey: string) => {
+    setEditingAddressKey(addressKey);
     setIsAddingAddress(false);
   };
 
-  const handleDelete = (addressIndex: number) => {
+  const handleDelete = (addressKey: string) => {
     // TODO: Implement delete functionality
-    console.log("Delete address at index:", addressIndex);
+    console.log("Delete address with key:", addressKey);
   };
 
-  const handleSetDefault = (addressIndex: number) => {
+  const handleSetDefault = (addressKey: string) => {
     // TODO: Implement set default functionality
-    console.log("Set default address at index:", addressIndex);
+    console.log("Set default address with key:", addressKey);
   };
 
   const hasAddresses = user.addresses && user.addresses.length > 0;
-  const isShowingForm = isAddingAddress || editingAddressIndex !== null;
+  const isShowingForm = isAddingAddress || editingAddressKey !== null;
   const editingAddress =
-    editingAddressIndex !== null && user.addresses
-      ? user.addresses[editingAddressIndex]
+    editingAddressKey !== null && user.addresses
+      ? user.addresses.find((addr) => addr._key === editingAddressKey)
       : null;
 
   return (
@@ -69,13 +69,13 @@ export default function AddressesTab({ user }: AddressesTabProps) {
         />
       ) : hasAddresses ? (
         <div className="space-y-4">
-          {user.addresses!.map((address, index) => (
+          {user.addresses!.map((address) => (
             <AddressCard
-              key={address._key || index}
+              key={address._key}
               address={address}
-              onEdit={() => handleEdit(index)}
-              onDelete={() => handleDelete(index)}
-              onSetDefault={() => handleSetDefault(index)}
+              onEdit={() => handleEdit(address._key)}
+              onDelete={() => handleDelete(address._key)}
+              onSetDefault={() => handleSetDefault(address._key)}
             />
           ))}
         </div>
