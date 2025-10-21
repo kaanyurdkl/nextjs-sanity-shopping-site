@@ -10,6 +10,7 @@ interface AddressCardProps {
   onEdit: () => void;
   onDelete: () => void;
   onSetDefault: () => void;
+  isDisabled?: boolean;
 }
 
 export default function AddressCard({
@@ -17,6 +18,7 @@ export default function AddressCard({
   onEdit,
   onDelete,
   onSetDefault,
+  isDisabled = false,
 }: AddressCardProps) {
   return (
     <div className="border p-6">
@@ -34,14 +36,19 @@ export default function AddressCard({
         {/* Action buttons */}
         <div className="flex gap-2">
           {!address.isDefault && (
-            <Button onClick={onSetDefault} variant="outline" size="sm">
+            <Button
+              onClick={onSetDefault}
+              variant="outline"
+              size="sm"
+              disabled={isDisabled}
+            >
               Set Default
             </Button>
           )}
-          <Button onClick={onEdit} variant="outline" size="sm">
+          <Button onClick={onEdit} variant="outline" size="sm" disabled={isDisabled}>
             Edit
           </Button>
-          <Button onClick={onDelete} variant="outline" size="sm">
+          <Button onClick={onDelete} variant="outline" size="sm" disabled={isDisabled}>
             Delete
           </Button>
         </div>

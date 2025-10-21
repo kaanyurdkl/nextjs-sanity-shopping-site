@@ -331,6 +331,42 @@ export async function deleteAddress(userId: string, addressKey: string) {
     .commit({ visibility: "sync" });
 }
 
+/**
+ * Set an address as the default address
+ * Unsets all other addresses' default flags and sets the specified address as default
+ * @param userId - The Sanity document _id of the user
+ * @param addressKey - The _key of the address to set as default
+ */
+export async function setDefaultAddress(userId: string, addressKey: string) {
+  // Fetch current user to check for existing addresses
+  const user = await writeClient.fetch(
+    `*[_id == $userId][0]{ addresses }`,
+    { userId }
+  );
+
+  if (!user?.addresses || user.addresses.length === 0) {
+    throw new Error("User has no addresses");
+  }
+
+  // Start building the patch operation
+  let patch = writeClient.patch(userId);
+
+  // Unset isDefault for all addresses
+  user.addresses.forEach((addr: Address & { _key: string }) => {
+    patch = patch.set({
+      [`addresses[_key == "${addr._key}"].isDefault`]: false,
+    });
+  });
+
+  // Set the specified address as default
+  patch = patch.set({
+    [`addresses[_key == "${addressKey}"].isDefault`]: true,
+  });
+
+  // Commit all changes in a single transaction
+  return await patch.commit({ visibility: "sync" });
+}
+
 // =============================================================================
 // FILTER UTILITIES
 // =============================================================================

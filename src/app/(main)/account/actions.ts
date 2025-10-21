@@ -8,6 +8,7 @@ import {
   addAddress,
   updateAddress,
   deleteAddress,
+  setDefaultAddress,
 } from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 import { addressSchema } from "@/lib/validations/address";
@@ -362,6 +363,56 @@ export async function deleteAddressAction(
     return {
       success: false,
       message: "Failed to delete address. Please try again.",
+    };
+  }
+}
+
+/**
+ * Set an address as the default address
+ * Server Action for handling set default address
+ *
+ * @param addressKey - The _key of the address to set as default
+ * @returns Success/error state
+ */
+export async function setDefaultAddressAction(
+  addressKey: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // 1. Authentication check
+    const session = await auth();
+    if (!session?.user?.googleId) {
+      return {
+        success: false,
+        message: "You must be signed in to set a default address",
+      };
+    }
+
+    // 2. Get user ID from Sanity by Google ID
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // 3. Set default address using utility function
+    await setDefaultAddress(userId, addressKey);
+
+    // 4. Revalidate cache
+    revalidateTag("user");
+    revalidatePath("/account");
+
+    return {
+      success: true,
+      message: "Default address updated successfully",
+    };
+  } catch (error) {
+    console.error("Set default address error:", error);
+    return {
+      success: false,
+      message: "Failed to set default address. Please try again.",
     };
   }
 }

@@ -9,7 +9,10 @@ import { Button } from "@/components/ui/button";
 import AddressForm from "@/components/pages/AddressForm";
 import AddressCard from "@/components/pages/AddressCard";
 // ACTIONS
-import { deleteAddressAction } from "@/app/(main)/account/actions";
+import {
+  deleteAddressAction,
+  setDefaultAddressAction,
+} from "@/app/(main)/account/actions";
 // TYPES
 import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
 
@@ -62,8 +65,19 @@ export default function AddressesTab({ user }: AddressesTabProps) {
   };
 
   const handleSetDefault = (addressKey: string) => {
-    // TODO: Implement set default functionality
-    console.log("Set default address with key:", addressKey);
+    startTransition(async () => {
+      toast.promise(setDefaultAddressAction(addressKey), {
+        loading: "Setting default address...",
+        success: (result) => {
+          if (result.success) {
+            router.refresh();
+            return result.message;
+          }
+          throw new Error(result.message);
+        },
+        error: (err) => err.message || "Failed to set default address",
+      });
+    });
   };
 
   const hasAddresses = user.addresses && user.addresses.length > 0;
@@ -79,7 +93,9 @@ export default function AddressesTab({ user }: AddressesTabProps) {
         <h2 className="text-2xl font-bold uppercase">Addresses</h2>
 
         {!isShowingForm && (
-          <Button onClick={handleAddAddress}>ADD ADDRESS</Button>
+          <Button onClick={handleAddAddress} disabled={isPending}>
+            ADD ADDRESS
+          </Button>
         )}
       </div>
 
@@ -98,6 +114,7 @@ export default function AddressesTab({ user }: AddressesTabProps) {
               onEdit={() => handleEdit(address._key)}
               onDelete={() => handleDelete(address._key)}
               onSetDefault={() => handleSetDefault(address._key)}
+              isDisabled={isPending}
             />
           ))}
         </div>
