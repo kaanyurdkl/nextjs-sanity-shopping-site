@@ -6,6 +6,7 @@ import {
   getUserIdByGoogleId,
   updateUserProfile,
   addAddress,
+  updateAddress,
 } from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 import { addressSchema } from "@/lib/validations/address";
@@ -218,6 +219,98 @@ export async function addAddressAction(
     return {
       success: false,
       message: "Failed to add address. Please try again.",
+    };
+  }
+}
+
+/**
+ * Update an existing address in user's address list
+ * Server Action for handling address edit form submissions
+ *
+ * @param addressKey - The _key of the address to update
+ * @param prevState - Previous form state (from useActionState)
+ * @param formData - Form data from submission
+ * @returns Updated form state with success/error info
+ */
+export async function updateAddressAction(
+  addressKey: string,
+  _prevState: AddressFormState,
+  formData: FormData
+): Promise<AddressFormState> {
+  try {
+    // 1. Authentication check
+    const session = await auth();
+    if (!session?.user?.googleId) {
+      return {
+        success: false,
+        message: "You must be signed in to update an address",
+      };
+    }
+
+    // 2. Extract and validate form data
+    const rawData = {
+      nickname: formData.get("addressName"),
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      streetAddress: formData.get("address"),
+      aptUnit: formData.get("aptUnit") || "",
+      city: formData.get("city"),
+      province: formData.get("province"),
+      postalCode: formData.get("postalCode"),
+      country: "Canada", // Always set server-side for security
+      phoneNumber: formData.get("phoneNumber") || "",
+      isDefault: formData.get("isDefault") === "on",
+    };
+
+    const result = addressSchema.safeParse(rawData);
+
+    if (!result.success) {
+      // Format Zod errors into field-specific error arrays
+      const fieldErrors: AddressFormState["errors"] = {};
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof AddressFormState["errors"];
+        if (field) {
+          if (!fieldErrors[field]) {
+            fieldErrors[field] = [];
+          }
+          fieldErrors[field]!.push(issue.message);
+        }
+      });
+
+      return {
+        success: false,
+        message: "Please fix the errors below",
+        errors: fieldErrors,
+      };
+    }
+
+    // 3. Get user ID from Sanity by Google ID
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // 4. Update address using utility function (handles default address logic)
+    await updateAddress(userId, addressKey, result.data);
+
+    // 5. Revalidate cache
+    revalidateTag("user");
+    revalidatePath("/account");
+
+    return {
+      success: true,
+      message: "Address updated successfully",
+    };
+  } catch (error) {
+    console.error("Update address error:", error);
+    return {
+      success: false,
+      message: "Failed to update address. Please try again.",
     };
   }
 }

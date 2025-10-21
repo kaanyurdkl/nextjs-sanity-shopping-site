@@ -6,7 +6,10 @@ import { toast } from "sonner";
 import { Info } from "lucide-react";
 
 // ACTIONS
-import { addAddressAction } from "@/app/(main)/account/actions";
+import {
+  addAddressAction,
+  updateAddressAction,
+} from "@/app/(main)/account/actions";
 
 // COMPONENTS
 import { Button } from "@/components/ui/button";
@@ -40,7 +43,7 @@ import type { Address } from "@/services/sanity/types/sanity.types";
 interface AddressFormProps {
   onCancel: () => void;
   mode: "add" | "edit";
-  initialData?: Address;
+  initialData?: Address & { _key: string };
 }
 
 export default function AddressForm({
@@ -49,19 +52,31 @@ export default function AddressForm({
   initialData,
 }: AddressFormProps) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(addAddressAction, {});
+
+  // Use different actions based on mode
+  const action =
+    mode === "edit" && initialData?._key
+      ? updateAddressAction.bind(null, initialData._key)
+      : addAddressAction;
+
+  const [state, formAction, isPending] = useActionState(action, {});
   const [hasChanges, setHasChanges] = useState(false);
 
   // Handle successful submission
   useEffect(() => {
     if (state.success) {
-      toast.success(state.message || "Address added successfully");
+      toast.success(
+        state.message ||
+          (mode === "edit"
+            ? "Address updated successfully"
+            : "Address added successfully")
+      );
       onCancel(); // Close the form
-      router.refresh(); // Refresh to show new address
+      router.refresh(); // Refresh to show updated/new address
     } else if (state.message && !state.success) {
       toast.error(state.message);
     }
-  }, [state, onCancel, router]);
+  }, [state, onCancel, router, mode]);
 
   return (
     <div className="border p-6">

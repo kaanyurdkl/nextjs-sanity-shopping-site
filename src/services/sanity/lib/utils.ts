@@ -272,6 +272,52 @@ export async function addAddress(
   return await patch.commit({ visibility: "sync" });
 }
 
+/**
+ * Update an existing address in user's address list
+ * Handles default address logic: if address is set as default, unsets all other defaults
+ * @param userId - The Sanity document _id of the user
+ * @param addressKey - The _key of the address to update
+ * @param address - Updated address data (excluding _type and _key which don't change)
+ */
+export async function updateAddress(
+  userId: string,
+  addressKey: string,
+  address: Omit<Address, "_type" | "_key">
+) {
+  // Start building the patch operation
+  let patch = writeClient.patch(userId);
+
+  // If address is being set as default, unset all other default flags first
+  if (address.isDefault) {
+    // Fetch current user to check for existing addresses
+    const user = await writeClient.fetch(
+      `*[_id == $userId][0]{ addresses }`,
+      { userId }
+    );
+
+    if (user?.addresses && user.addresses.length > 0) {
+      // Unset isDefault for all addresses EXCEPT the one being updated
+      user.addresses.forEach((addr: Address & { _key: string }) => {
+        if (addr._key !== addressKey) {
+          patch = patch.set({
+            [`addresses[_key == "${addr._key}"].isDefault`]: false,
+          });
+        }
+      });
+    }
+  }
+
+  // Update the specific address by _key
+  Object.entries(address).forEach(([key, value]) => {
+    patch = patch.set({
+      [`addresses[_key == "${addressKey}"].${key}`]: value,
+    });
+  });
+
+  // Commit all changes in a single transaction
+  return await patch.commit({ visibility: "sync" });
+}
+
 // =============================================================================
 // FILTER UTILITIES
 // =============================================================================
