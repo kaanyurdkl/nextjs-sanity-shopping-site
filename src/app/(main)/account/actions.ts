@@ -163,7 +163,7 @@ export async function addAddressAction(
       aptUnit: formData.get("aptUnit") || "",
       city: formData.get("city"),
       province: formData.get("province"),
-      postalCode: formData.get("postalCode"),
+      postalCode: (formData.get("postalCode") as string)?.toUpperCase() || "",
       country: "Canada", // Always set server-side for security
       phoneNumber: formData.get("phoneNumber") || "",
       isDefault: formData.get("isDefault") === "on",
@@ -256,7 +256,7 @@ export async function updateAddressAction(
       aptUnit: formData.get("aptUnit") || "",
       city: formData.get("city"),
       province: formData.get("province"),
-      postalCode: formData.get("postalCode"),
+      postalCode: (formData.get("postalCode") as string)?.toUpperCase() || "",
       country: "Canada", // Always set server-side for security
       phoneNumber: formData.get("phoneNumber") || "",
       isDefault: formData.get("isDefault") === "on",
