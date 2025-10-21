@@ -318,6 +318,19 @@ export async function updateAddress(
   return await patch.commit({ visibility: "sync" });
 }
 
+/**
+ * Delete an address from user's address list
+ * Removes the address with the matching _key
+ * @param userId - The Sanity document _id of the user
+ * @param addressKey - The _key of the address to delete
+ */
+export async function deleteAddress(userId: string, addressKey: string) {
+  return await writeClient
+    .patch(userId)
+    .unset([`addresses[_key == "${addressKey}"]`])
+    .commit({ visibility: "sync" });
+}
+
 // =============================================================================
 // FILTER UTILITIES
 // =============================================================================

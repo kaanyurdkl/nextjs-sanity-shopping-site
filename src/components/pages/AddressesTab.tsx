@@ -1,11 +1,15 @@
 "use client";
 
 // LIBRARIES
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 // COMPONENTS
 import { Button } from "@/components/ui/button";
 import AddressForm from "@/components/pages/AddressForm";
 import AddressCard from "@/components/pages/AddressCard";
+// ACTIONS
+import { deleteAddressAction } from "@/app/(main)/account/actions";
 // TYPES
 import type { USER_BY_GOOGLE_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
 
@@ -18,6 +22,8 @@ export default function AddressesTab({ user }: AddressesTabProps) {
   const [editingAddressKey, setEditingAddressKey] = useState<string | null>(
     null,
   );
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleAddAddress = () => {
     setIsAddingAddress(true);
@@ -35,8 +41,24 @@ export default function AddressesTab({ user }: AddressesTabProps) {
   };
 
   const handleDelete = (addressKey: string) => {
-    // TODO: Implement delete functionality
-    console.log("Delete address with key:", addressKey);
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this address? This action cannot be undone.",
+    );
+    if (!confirmed) return;
+
+    startTransition(async () => {
+      toast.promise(deleteAddressAction(addressKey), {
+        loading: "Deleting address...",
+        success: (result) => {
+          if (result.success) {
+            router.refresh();
+            return result.message;
+          }
+          throw new Error(result.message);
+        },
+        error: (err) => err.message || "Failed to delete address",
+      });
+    });
   };
 
   const handleSetDefault = (addressKey: string) => {

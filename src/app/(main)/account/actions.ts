@@ -7,6 +7,7 @@ import {
   updateUserProfile,
   addAddress,
   updateAddress,
+  deleteAddress,
 } from "@/services/sanity/lib/utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 import { addressSchema } from "@/lib/validations/address";
@@ -311,6 +312,56 @@ export async function updateAddressAction(
     return {
       success: false,
       message: "Failed to update address. Please try again.",
+    };
+  }
+}
+
+/**
+ * Delete an address from user's address list
+ * Server Action for handling address deletion
+ *
+ * @param addressKey - The _key of the address to delete
+ * @returns Success/error state
+ */
+export async function deleteAddressAction(
+  addressKey: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // 1. Authentication check
+    const session = await auth();
+    if (!session?.user?.googleId) {
+      return {
+        success: false,
+        message: "You must be signed in to delete an address",
+      };
+    }
+
+    // 2. Get user ID from Sanity by Google ID
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // 3. Delete address using utility function
+    await deleteAddress(userId, addressKey);
+
+    // 4. Revalidate cache
+    revalidateTag("user");
+    revalidatePath("/account");
+
+    return {
+      success: true,
+      message: "Address deleted successfully",
+    };
+  } catch (error) {
+    console.error("Delete address error:", error);
+    return {
+      success: false,
+      message: "Failed to delete address. Please try again.",
     };
   }
 }
