@@ -3,6 +3,7 @@ import { type SchemaTypeDefinition } from "sanity";
 // Object types (embedded content)
 import { addressType } from "./objects/addressType";
 import { blockContentType } from "./objects/blockContentType";
+import { cartItemType } from "./objects/cartItemType";
 
 // Document types (top-level content)
 import { categoryType } from "./documents/categoryType";
@@ -15,6 +16,7 @@ import { userType } from "./documents/userType";
 import { orderType } from "./documents/orderType";
 import { promotionType } from "./documents/promotion";
 import { promoCodeType } from "./documents/promoCodeType";
+import { cartType } from "./documents/cartType";
 
 /**
  * Schema registry for all content types in your Sanity project
@@ -27,6 +29,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // Object types (reusable components)
   addressType,
   blockContentType,
+  cartItemType,
 
   // Document types (top-level content)
   categoryType,
@@ -39,6 +42,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   orderType,
   promotionType,
   promoCodeType,
+  cartType,
 ];
 
 // Legacy export for compatibility

@@ -13,6 +13,28 @@
  */
 
 // Source: schema.json
+export type Cart = {
+  _id: string;
+  _type: "cart";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  sessionId?: string;
+  user?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "user";
+  };
+  items?: Array<
+    {
+      _key: string;
+    } & CartItem
+  >;
+  status: "active" | "abandoned" | "converted";
+  expiresAt?: string;
+};
+
 export type PromoCode = {
   _id: string;
   _type: "promoCode";
@@ -225,6 +247,19 @@ export type Review = {
   isVerifiedPurchase?: boolean;
   isApproved?: boolean;
   helpfulCount?: number;
+};
+
+export type CartItem = {
+  _type: "cartItem";
+  product: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "product";
+  };
+  variantSku: string;
+  quantity: number;
+  priceSnapshot: number;
 };
 
 export type Product = {
@@ -503,17 +538,6 @@ export type Size = {
   sortOrder: number;
 };
 
-export type ProductType = {
-  _id: string;
-  _type: "productType";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  description: string;
-  sizeGroup: "letter" | "waist";
-};
-
 export type Color = {
   _id: string;
   _type: "color";
@@ -523,6 +547,17 @@ export type Color = {
   name: string;
   code: string;
   hexCode: string;
+};
+
+export type ProductType = {
+  _id: string;
+  _type: "productType";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  description: string;
+  sizeGroup: "letter" | "waist";
 };
 
 export type Category = {
@@ -731,15 +766,17 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
+  | Cart
   | PromoCode
   | Promotion
   | Order
   | User
   | Review
+  | CartItem
   | Product
   | Size
-  | ProductType
   | Color
+  | ProductType
   | Category
   | BlockContent
   | Address
