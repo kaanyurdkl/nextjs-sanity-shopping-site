@@ -740,3 +740,48 @@ export const PRODUCTS_COUNT_WITH_FILTERS_QUERY = defineQuery(`
     ]) > 0
   ])
 `);
+
+// =============================================================================
+// CART QUERIES
+// =============================================================================
+
+/**
+ * Fetch active cart with full product details for cart page
+ * Joins cart items with product, variant, color, and size data
+ */
+export const CART_WITH_DETAILS_QUERY = defineQuery(`
+  *[_type == "cart" && status == "active" && (
+    (defined($userId) && user._ref == $userId) ||
+    (defined($sessionId) && sessionId == $sessionId)
+  )][0] {
+    _id,
+    items[] {
+      _key,
+      variantSku,
+      quantity,
+      priceSnapshot,
+      "product": *[_type == "product" && _id == ^.product._ref][0] {
+        _id,
+        name,
+        basePrice,
+        thumbnail {
+          asset-> { url }
+        },
+        "variant": variants[sku == ^.^.variantSku][0] {
+          sku,
+          stockQuantity,
+          color-> {
+            _id,
+            name,
+            hexCode
+          },
+          size-> {
+            _id,
+            name,
+            code
+          }
+        }
+      }
+    }
+  }
+`);

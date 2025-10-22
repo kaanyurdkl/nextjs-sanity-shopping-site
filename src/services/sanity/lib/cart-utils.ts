@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
 import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId } from "./utils";
-import { sanityFetch } from "./fetch";
+import { sanityFetchNoCache } from "./fetch";
 import { writeClient } from "./client";
+import { CART_WITH_DETAILS_QUERY } from "./queries";
 import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
+import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
 
 /**
  * Cart Utility Functions
@@ -39,6 +41,35 @@ async function getCartIdentifier(): Promise<
 }
 
 /**
+ * Get cart with full product details
+ * Used for cart page to display all cart items with product info
+ * @returns Cart with joined product, variant, color, and size data
+ */
+export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
+  const identifier = await getCartIdentifier();
+
+  // Build params - always pass both, set to null when not used
+  const params: { userId: string | null; sessionId: string | null } = {
+    userId: null,
+    sessionId: null,
+  };
+
+  if (identifier?.type === "user") {
+    params.userId = identifier.userId;
+  } else if (identifier?.type === "guest") {
+    params.sessionId = identifier.sessionId;
+  }
+
+  // Fetch cart with full product details (no cache for immediate consistency)
+  const cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
+    query: CART_WITH_DETAILS_QUERY,
+    params,
+  });
+
+  return cart;
+}
+
+/**
  * Get total number of items in cart
  * Used for cart badge in header
  * @returns Total item count
@@ -57,26 +88,24 @@ export async function getCartItemCount(): Promise<number> {
   let cart;
 
   if (identifier.type === "user") {
-    // Logged-in user - query by user ID
-    cart = await sanityFetch<{ items: Array<{ quantity: number }> } | null>({
+    // Logged-in user - query by user ID (no cache for immediate consistency)
+    cart = await sanityFetchNoCache<{ items: Array<{ quantity: number }> } | null>({
       query: `*[_type == "cart" && user._ref == $userId && status == "active"][0] {
         items[] {
           quantity
         }
       }`,
       params: { userId: identifier.userId },
-      tags: ["cart"],
     });
   } else {
-    // Guest user - query by session ID
-    cart = await sanityFetch<{ items: Array<{ quantity: number }> } | null>({
+    // Guest user - query by session ID (no cache for immediate consistency)
+    cart = await sanityFetchNoCache<{ items: Array<{ quantity: number }> } | null>({
       query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0] {
         items[] {
           quantity
         }
       }`,
       params: { sessionId: identifier.sessionId },
-      tags: ["cart"],
     });
   }
 

@@ -2,22 +2,28 @@
 
 import Image from "next/image";
 import { Plus, Minus, Bookmark, Trash2 } from "lucide-react";
-import { useCartStore } from "@/stores/cart-store";
-import useStore from "@/hooks/useStore";
+import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { urlFor } from "@/services/sanity/lib/image";
+import {
+  incrementCartItemAction,
+  decrementCartItemAction,
+  removeCartItemAction,
+} from "@/services/sanity/actions/cart-actions";
+import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
 
-export default function CartDetails() {
-  const cartItems = useStore(useCartStore, (state) => state.cartItems);
-  const cartItemsCount = useStore(useCartStore, (state) =>
-    state.getCartItemsCount()
+interface CartDetailsProps {
+  cart: CART_WITH_DETAILS_QUERYResult;
+}
+
+export default function CartDetails({ cart }: CartDetailsProps) {
+  const [isPending, startTransition] = useTransition();
+
+  const cartItems = cart?.items || [];
+  const cartItemsCount = cartItems.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
   );
-  const incrementCartItemQuantity = useCartStore(
-    (state) => state.incrementCartItemQuantity
-  );
-  const decrementCartItemQuantity = useCartStore(
-    (state) => state.decrementCartItemQuantity
-  );
-  const removeCartItem = useCartStore((state) => state.removeCartItem);
 
   return (
     <div>
@@ -30,105 +36,132 @@ export default function CartDetails() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <section className="lg:col-span-2" aria-label="Cart items">
           <ul className="space-y-4 list-none">
-            {cartItems?.map((cartItem) => (
-              <li
-                key={`${cartItem.productId}-${cartItem.variantSku}`}
-                className="border p-4 flex gap-6"
-                aria-label={`${cartItem.productName}, ${cartItem.color}, ${cartItem.size}`}
-              >
-                {/* Product Image */}
-                <div className="relative w-20 h-28 flex-shrink-0 bg-gray-200">
-                  <Image
-                    src={cartItem.imageUrl}
-                    alt={cartItem.productName}
-                    fill
-                    className="object-cover"
-                    sizes="80px"
-                  />
-                </div>
+            {cartItems?.map((cartItem) => {
+              const product = cartItem.product;
+              const variant = product?.variant;
+              const imageUrl = product?.thumbnail?.asset?.url
+                ? urlFor(product.thumbnail.asset.url)
+                    .width(200)
+                    .height(250)
+                    .format("webp")
+                    .quality(85)
+                    .url()
+                : "";
 
-                {/* Product Details */}
-                <div className="flex-1 flex flex-col">
-                  <h3 className="font-bold uppercase text-lg mb-2">
-                    {cartItem.productName}
-                  </h3>
-                  <dl className="space-y-1 text-sm">
-                    <div>
-                      <dt className="inline font-semibold">Unit Price:</dt>
-                      <dd className="inline ml-1">${cartItem.price}</dd>
-                    </div>
-                    <div>
-                      <dt className="inline font-semibold">Color:</dt>
-                      <dd className="inline ml-1">{cartItem.color}</dd>
-                    </div>
-                    <div>
-                      <dt className="inline font-semibold">Size:</dt>
-                      <dd className="inline ml-1">{cartItem.size}</dd>
-                    </div>
-                  </dl>
-                  <p className="font-bold text-base mt-auto">
-                    Total: ${cartItem.quantity * cartItem.price}
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col items-end justify-between gap-3">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      aria-label="Save for later"
-                    >
-                      <Bookmark className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => removeCartItem(cartItem.variantSku)}
-                      aria-label={`Remove ${cartItem.productName} from cart`}
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    </Button>
+              return (
+                <li
+                  key={`${product?._id}-${cartItem.variantSku}`}
+                  className="border p-4 flex gap-6"
+                  aria-label={`${product?.name}, ${variant?.color?.name}, ${variant?.size?.name}`}
+                >
+                  {/* Product Image */}
+                  <div className="relative w-20 h-28 flex-shrink-0 bg-gray-200">
+                    {imageUrl && (
+                      <Image
+                        src={imageUrl}
+                        alt={product?.name || "Product"}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                      />
+                    )}
                   </div>
 
-                  <div
-                    className="flex items-center p-1 border border-black"
-                    role="group"
-                    aria-label="Quantity controls"
-                  >
-                    <Button
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() =>
-                        decrementCartItemQuantity(cartItem.variantSku)
-                      }
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                    <span
-                      className="px-4 text-sm font-semibold"
-                      aria-live="polite"
-                      aria-label={`Quantity: ${cartItem.quantity}`}
-                    >
-                      {cartItem.quantity}
-                    </span>
-                    <Button
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() =>
-                        incrementCartItemQuantity(cartItem.variantSku)
-                      }
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="h-4 w-4" aria-hidden="true" />
-                    </Button>
+                  {/* Product Details */}
+                  <div className="flex-1 flex flex-col">
+                    <h3 className="font-bold uppercase text-lg mb-2">
+                      {product?.name}
+                    </h3>
+                    <dl className="space-y-1 text-sm">
+                      <div>
+                        <dt className="inline font-semibold">Unit Price:</dt>
+                        <dd className="inline ml-1">${product?.basePrice}</dd>
+                      </div>
+                      <div>
+                        <dt className="inline font-semibold">Color:</dt>
+                        <dd className="inline ml-1">{variant?.color?.name}</dd>
+                      </div>
+                      <div>
+                        <dt className="inline font-semibold">Size:</dt>
+                        <dd className="inline ml-1">{variant?.size?.name}</dd>
+                      </div>
+                    </dl>
+                    <p className="font-bold text-base mt-auto">
+                      Total: $
+                      {((product?.basePrice || 0) * (cartItem.quantity || 0)).toFixed(2)}
+                    </p>
                   </div>
-                </div>
-              </li>
-            ))}
+
+                  {/* Actions */}
+                  <div className="flex flex-col items-end justify-between gap-3">
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        aria-label="Save for later"
+                      >
+                        <Bookmark className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        disabled={isPending}
+                        onClick={() =>
+                          startTransition(async () => {
+                            await removeCartItemAction(cartItem.variantSku);
+                          })
+                        }
+                        aria-label={`Remove ${product?.name} from cart`}
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                    </div>
+
+                    <div
+                      className="flex items-center p-1 border border-black"
+                      role="group"
+                      aria-label="Quantity controls"
+                    >
+                      <Button
+                        size="icon"
+                        className="h-8 w-8"
+                        disabled={isPending}
+                        onClick={() =>
+                          startTransition(async () => {
+                            await decrementCartItemAction(cartItem.variantSku);
+                          })
+                        }
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                      <span
+                        className="px-4 text-sm font-semibold"
+                        aria-live="polite"
+                        aria-label={`Quantity: ${cartItem.quantity}`}
+                      >
+                        {cartItem.quantity}
+                      </span>
+                      <Button
+                        size="icon"
+                        className="h-8 w-8"
+                        disabled={isPending}
+                        onClick={() =>
+                          startTransition(async () => {
+                            await incrementCartItemAction(cartItem.variantSku);
+                          })
+                        }
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </section>
         <aside
@@ -148,7 +181,9 @@ export default function CartDetails() {
                 $
                 {cartItems
                   ?.reduce(
-                    (total, item) => total + item.price * item.quantity,
+                    (total, item) =>
+                      total +
+                      (item.product?.basePrice || 0) * (item.quantity || 0),
                     0
                   )
                   .toFixed(2) ?? "0.00"}
@@ -174,7 +209,9 @@ export default function CartDetails() {
                 $
                 {cartItems
                   ?.reduce(
-                    (total, item) => total + item.price * item.quantity,
+                    (total, item) =>
+                      total +
+                      (item.product?.basePrice || 0) * (item.quantity || 0),
                     0
                   )
                   .toFixed(2) ?? "0.00"}

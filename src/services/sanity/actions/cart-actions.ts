@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addItemToCart } from "../lib/cart-utils";
+import { addItemToCart, getCart } from "../lib/cart-utils";
+import { writeClient } from "../lib/client";
 
 /**
  * Server Action: Add item to cart
@@ -16,8 +17,9 @@ export async function addToCartAction(params: {
   try {
     await addItemToCart(params);
 
-    // Revalidate the layout to update cart count in header
-    revalidatePath("/", "layout");
+    // Revalidate paths for immediate UI updates
+    revalidatePath("/"); // Revalidate home page
+    revalidatePath("/", "layout"); // Revalidate layout
 
     return { success: true };
   } catch (error) {
@@ -25,6 +27,124 @@ export async function addToCartAction(params: {
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to add item to cart",
+    };
+  }
+}
+
+/**
+ * Server Action: Increment cart item quantity
+ * Increases quantity by 1 and revalidates cart page
+ */
+export async function incrementCartItemAction(variantSku: string) {
+  try {
+    const cart = await getCart();
+
+    if (!cart?.items) {
+      return { success: false, error: "Cart not found" };
+    }
+
+    const item = cart.items.find((item) => item.variantSku === variantSku);
+
+    if (!item?._key) {
+      return { success: false, error: "Item not found in cart" };
+    }
+
+    const newQuantity = (item.quantity || 0) + 1;
+
+    await writeClient
+      .patch(cart._id)
+      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .commit();
+
+    // Revalidate paths for immediate UI updates
+    revalidatePath("/cart");
+    revalidatePath("/"); // Revalidate home page
+    revalidatePath("/", "layout"); // Revalidate layout
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to increment item quantity:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to update quantity",
+    };
+  }
+}
+
+/**
+ * Server Action: Decrement cart item quantity
+ * Decreases quantity by 1 (minimum 1) and revalidates cart page
+ */
+export async function decrementCartItemAction(variantSku: string) {
+  try {
+    const cart = await getCart();
+
+    if (!cart?.items) {
+      return { success: false, error: "Cart not found" };
+    }
+
+    const item = cart.items.find((item) => item.variantSku === variantSku);
+
+    if (!item?._key) {
+      return { success: false, error: "Item not found in cart" };
+    }
+
+    const newQuantity = Math.max((item.quantity || 1) - 1, 1);
+
+    await writeClient
+      .patch(cart._id)
+      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .commit();
+
+    // Revalidate paths for immediate UI updates
+    revalidatePath("/cart");
+    revalidatePath("/"); // Revalidate home page
+    revalidatePath("/", "layout"); // Revalidate layout
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to decrement item quantity:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to update quantity",
+    };
+  }
+}
+
+/**
+ * Server Action: Remove item from cart
+ * Removes item completely and revalidates cart page
+ */
+export async function removeCartItemAction(variantSku: string) {
+  try {
+    const cart = await getCart();
+
+    if (!cart?.items) {
+      return { success: false, error: "Cart not found" };
+    }
+
+    const item = cart.items.find((item) => item.variantSku === variantSku);
+
+    if (!item?._key) {
+      return { success: false, error: "Item not found in cart" };
+    }
+
+    await writeClient
+      .patch(cart._id)
+      .unset([`items[_key == "${item._key}"]`])
+      .commit();
+
+    // Revalidate paths for immediate UI updates
+    revalidatePath("/cart");
+    revalidatePath("/"); // Revalidate home page
+    revalidatePath("/", "layout"); // Revalidate layout
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to remove item",
     };
   }
 }
