@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId } from "./utils";
 import { sanityFetch } from "./fetch";
+import { writeClient } from "./client";
+import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
 
 /**
  * Cart Utility Functions
@@ -49,6 +51,8 @@ export async function getCartItemCount(): Promise<number> {
     return 0;
   }
 
+  console.log("identifier", identifier);
+
   // Query Sanity for the cart
   let cart;
 
@@ -76,6 +80,8 @@ export async function getCartItemCount(): Promise<number> {
     });
   }
 
+  console.log("cart", cart);
+
   // If no cart found, return 0
   if (!cart?.items) {
     return 0;
@@ -83,4 +89,147 @@ export async function getCartItemCount(): Promise<number> {
 
   // Sum up all the quantities
   return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+/**
+ * Create a new cart for guest user
+ * Generates UUID and sets cookie
+ */
+async function createGuestCart(): Promise<
+  Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
+> {
+  const sessionId = crypto.randomUUID();
+
+  // Set cookie (30 days)
+  const cookieStore = await cookies();
+  cookieStore.set("cart_session", sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 30 * 24 * 60 * 60,
+    path: "/",
+  });
+
+  return (await writeClient.create({
+    _type: "cart",
+    sessionId,
+    items: [],
+    status: "active",
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+  })) as Cart & { _id: string; items?: Array<CartItem & { _key: string }> };
+}
+
+/**
+ * Create a new cart for logged-in user
+ * @param userId - Sanity user document ID
+ */
+async function createUserCart(
+  userId: string,
+): Promise<Cart & { _id: string; items?: Array<CartItem & { _key: string }> }> {
+  return await writeClient.create({
+    _type: "cart",
+    user: { _type: "reference", _ref: userId },
+    items: [],
+    status: "active",
+  });
+}
+
+/**
+ * Get existing cart or create new one
+ * Returns existing cart if found, otherwise creates a new one
+ */
+async function getOrCreateCart(): Promise<
+  Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
+> {
+  const identifier = await getCartIdentifier();
+
+  // Try to get existing cart
+  if (identifier) {
+    let existingCart;
+
+    if (identifier.type === "user") {
+      existingCart = await sanityFetch<Cart>({
+        query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
+        params: { userId: identifier.userId },
+        tags: ["cart"],
+      });
+    } else {
+      existingCart = await sanityFetch<Cart>({
+        query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
+        params: { sessionId: identifier.sessionId },
+        tags: ["cart"],
+      });
+    }
+
+    if (existingCart) {
+      return existingCart as Cart & {
+        _id: string;
+        items?: Array<CartItem & { _key: string }>;
+      };
+    }
+  }
+
+  // No cart exists - create new one
+  const session = await auth();
+
+  if (session?.user?.googleId) {
+    // Logged-in user
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+    if (userId) {
+      return await createUserCart(userId);
+    }
+  }
+
+  // Guest user
+  return await createGuestCart();
+}
+
+/**
+ * Add item to cart or increment quantity if already exists
+ * @param params - Product details to add
+ */
+export async function addItemToCart(params: {
+  productId: string;
+  variantSku: string;
+  quantity: number;
+  priceSnapshot: number;
+}) {
+  const { productId, variantSku, quantity, priceSnapshot } = params;
+
+  // Get or create cart
+  const cart = await getOrCreateCart();
+
+  // Check if item already in cart
+  const existingItemIndex = cart.items?.findIndex(
+    (item) => item.variantSku === variantSku,
+  );
+
+  if (existingItemIndex !== undefined && existingItemIndex >= 0) {
+    // Item exists - increment quantity
+    const existingItem = cart.items![existingItemIndex];
+    const newQuantity = (existingItem.quantity || 0) + quantity;
+
+    await writeClient
+      .patch(cart._id)
+      .set({
+        [`items[_key == "${existingItem._key}"].quantity`]: newQuantity,
+      })
+      .commit();
+  } else {
+    // New item - append to array
+    await writeClient
+      .patch(cart._id)
+      .setIfMissing({ items: [] })
+      .append("items", [
+        {
+          _type: "cartItem",
+          _key: `item-${Date.now()}`,
+          product: { _type: "reference", _ref: productId },
+          variantSku,
+          quantity,
+          priceSnapshot,
+        },
+      ])
+      .commit();
+  }
 }

@@ -2,6 +2,7 @@
 
 // LIBRARIES
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 // COMPONENTS
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
@@ -15,9 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 // UTILS
 import { urlFor } from "@/services/sanity/lib/image";
+// ACTIONS
+import { addToCartAction } from "@/services/sanity/actions/cart-actions";
 // TYPES
 import { PRODUCT_BY_ID_QUERYResult } from "@/services/sanity/types/sanity.types";
-import { useCartStore } from "@/stores/cart-store";
 
 interface ProductDetailsProps {
   product: NonNullable<PRODUCT_BY_ID_QUERYResult>;
@@ -29,8 +31,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const addCartItem = useCartStore((state) => state.addCartItem);
+  const [isPending, startTransition] = useTransition();
 
   const uniqueColors = product.variants.reduce(
     (acc, variant) => {
@@ -108,25 +109,17 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       return;
     }
 
-    // Get the thumbnail image URL
-    if (!product.thumbnail.asset?.url) return;
+    startTransition(async () => {
+      const result = await addToCartAction({
+        productId: product._id,
+        variantSku: selectedVariant.sku,
+        quantity: 1,
+        priceSnapshot: product.basePrice,
+      });
 
-    const imageUrl = urlFor(product.thumbnail.asset.url)
-      .width(200)
-      .height(250)
-      .format("webp")
-      .quality(85)
-      .url();
-
-    addCartItem({
-      productId: product._id,
-      productName: product.name,
-      variantSku: selectedVariant.sku,
-      color: selectedColor.name,
-      colorHex: selectedColor.hexCode,
-      size: selectedSize.name,
-      price: product.basePrice,
-      imageUrl,
+      if (!result.success) {
+        console.error("Failed to add to cart:", result.error);
+      }
     });
   }
 
@@ -218,11 +211,11 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           </div>
           <div>
             <Button
-              disabled={!selectedColor || !selectedSize}
+              disabled={!selectedColor || !selectedSize || isPending}
               className="w-full"
               onClick={addToCart}
             >
-              Add to Cart
+              {isPending ? "Adding..." : "Add to Cart"}
             </Button>
           </div>
         </div>
