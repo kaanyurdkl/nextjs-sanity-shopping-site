@@ -2,12 +2,14 @@ import Link from "next/link";
 import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/services/next-auth/lib";
 import { getNavbarCategories } from "@/services/sanity/lib/utils";
+import { getCartItemCount } from "@/services/sanity/lib/cart-utils";
 import { MegaMenu } from "./MegaMenu";
 
 export default async function Header() {
   const session = await auth();
 
   const categories = await getNavbarCategories();
+  const cartCount = await getCartItemCount();
 
   return (
     <header className="relative h-16 bg-white border-b border-gray-100 flex items-center">
@@ -90,10 +92,15 @@ export default async function Header() {
           )}
           <Link
             href="/cart"
-            className="p-2 hover:bg-gray-50 rounded-md transition-colors"
+            className="p-2 hover:bg-gray-50 rounded-md transition-colors relative"
             aria-label="Shopping cart"
           >
             <ShoppingCart size={20} className="text-black" aria-hidden="true" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
         </div>
       </nav>
