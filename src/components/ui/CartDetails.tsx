@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Plus, Minus, Bookmark, Trash2 } from "lucide-react";
-import { useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { urlFor } from "@/services/sanity/lib/image";
 import {
@@ -16,13 +16,62 @@ interface CartDetailsProps {
   cart: CART_WITH_DETAILS_QUERYResult;
 }
 
+type OptimisticAction =
+  | { type: "increment"; variantSku: string }
+  | { type: "decrement"; variantSku: string }
+  | { type: "remove"; variantSku: string };
+
 export default function CartDetails({ cart }: CartDetailsProps) {
   const [isPending, startTransition] = useTransition();
 
-  const cartItems = cart?.items || [];
+  const [optimisticCart, updateOptimisticCart] = useOptimistic(
+    cart,
+    (currentCart, action: OptimisticAction) => {
+      if (!currentCart?.items) return currentCart;
+
+      const newItems = [...currentCart.items];
+
+      switch (action.type) {
+        case "increment": {
+          const index = newItems.findIndex(
+            (item) => item.variantSku === action.variantSku,
+          );
+          if (index !== -1) {
+            newItems[index] = {
+              ...newItems[index],
+              quantity: (newItems[index].quantity || 0) + 1,
+            };
+          }
+          break;
+        }
+        case "decrement": {
+          const index = newItems.findIndex(
+            (item) => item.variantSku === action.variantSku,
+          );
+          if (index !== -1) {
+            newItems[index] = {
+              ...newItems[index],
+              quantity: Math.max((newItems[index].quantity || 1) - 1, 1),
+            };
+          }
+          break;
+        }
+        case "remove": {
+          const filteredItems = newItems.filter(
+            (item) => item.variantSku !== action.variantSku,
+          );
+          return { ...currentCart, items: filteredItems };
+        }
+      }
+
+      return { ...currentCart, items: newItems };
+    },
+  );
+
+  const cartItems = optimisticCart?.items || [];
   const cartItemsCount = cartItems.reduce(
     (sum, item) => sum + (item.quantity || 0),
-    0
+    0,
   );
 
   return (
@@ -88,7 +137,9 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                     </dl>
                     <p className="font-bold text-base mt-auto">
                       Total: $
-                      {((product?.basePrice || 0) * (cartItem.quantity || 0)).toFixed(2)}
+                      {(
+                        (product?.basePrice || 0) * (cartItem.quantity || 0)
+                      ).toFixed(2)}
                     </p>
                   </div>
 
@@ -108,11 +159,15 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                         size="icon"
                         className="h-8 w-8"
                         disabled={isPending}
-                        onClick={() =>
+                        onClick={() => {
                           startTransition(async () => {
+                            updateOptimisticCart({
+                              type: "remove",
+                              variantSku: cartItem.variantSku,
+                            });
                             await removeCartItemAction(cartItem.variantSku);
-                          })
-                        }
+                          });
+                        }}
                         aria-label={`Remove ${product?.name} from cart`}
                       >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -125,14 +180,18 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                       aria-label="Quantity controls"
                     >
                       <Button
+                        disabled={isPending}
                         size="icon"
                         className="h-8 w-8"
-                        disabled={isPending}
-                        onClick={() =>
+                        onClick={() => {
                           startTransition(async () => {
+                            updateOptimisticCart({
+                              type: "decrement",
+                              variantSku: cartItem.variantSku,
+                            });
                             await decrementCartItemAction(cartItem.variantSku);
-                          })
-                        }
+                          });
+                        }}
                         aria-label="Decrease quantity"
                       >
                         <Minus className="h-4 w-4" aria-hidden="true" />
@@ -145,14 +204,19 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                         {cartItem.quantity}
                       </span>
                       <Button
+                        disabled={isPending}
                         size="icon"
                         className="h-8 w-8"
-                        disabled={isPending}
-                        onClick={() =>
+                        onClick={() => {
                           startTransition(async () => {
+                            updateOptimisticCart({
+                              type: "increment",
+                              variantSku: cartItem.variantSku,
+                            });
+
                             await incrementCartItemAction(cartItem.variantSku);
-                          })
-                        }
+                          });
+                        }}
                         aria-label="Increase quantity"
                       >
                         <Plus className="h-4 w-4" aria-hidden="true" />
@@ -184,7 +248,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                     (total, item) =>
                       total +
                       (item.product?.basePrice || 0) * (item.quantity || 0),
-                    0
+                    0,
                   )
                   .toFixed(2) ?? "0.00"}
               </dd>
@@ -212,7 +276,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                     (total, item) =>
                       total +
                       (item.product?.basePrice || 0) * (item.quantity || 0),
-                    0
+                    0,
                   )
                   .toFixed(2) ?? "0.00"}
               </dd>

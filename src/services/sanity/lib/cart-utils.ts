@@ -82,14 +82,14 @@ export async function getCartItemCount(): Promise<number> {
     return 0;
   }
 
-  console.log("identifier", identifier);
-
   // Query Sanity for the cart
   let cart;
 
   if (identifier.type === "user") {
     // Logged-in user - query by user ID (no cache for immediate consistency)
-    cart = await sanityFetchNoCache<{ items: Array<{ quantity: number }> } | null>({
+    cart = await sanityFetchNoCache<{
+      items: Array<{ quantity: number }>;
+    } | null>({
       query: `*[_type == "cart" && user._ref == $userId && status == "active"][0] {
         items[] {
           quantity
@@ -99,7 +99,9 @@ export async function getCartItemCount(): Promise<number> {
     });
   } else {
     // Guest user - query by session ID (no cache for immediate consistency)
-    cart = await sanityFetchNoCache<{ items: Array<{ quantity: number }> } | null>({
+    cart = await sanityFetchNoCache<{
+      items: Array<{ quantity: number }>;
+    } | null>({
       query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0] {
         items[] {
           quantity
@@ -108,8 +110,6 @@ export async function getCartItemCount(): Promise<number> {
       params: { sessionId: identifier.sessionId },
     });
   }
-
-  console.log("cart", cart);
 
   // If no cart found, return 0
   if (!cart?.items) {

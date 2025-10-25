@@ -26,7 +26,8 @@ export async function addToCartAction(params: {
     console.error("Failed to add item to cart:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to add item to cart",
+      error:
+        error instanceof Error ? error.message : "Failed to add item to cart",
     };
   }
 }
@@ -37,6 +38,7 @@ export async function addToCartAction(params: {
  */
 export async function incrementCartItemAction(variantSku: string) {
   try {
+    console.log("incrementCartItemAction");
     const cart = await getCart();
 
     if (!cart?.items) {
@@ -66,7 +68,8 @@ export async function incrementCartItemAction(variantSku: string) {
     console.error("Failed to increment item quantity:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update quantity",
+      error:
+        error instanceof Error ? error.message : "Failed to update quantity",
     };
   }
 }
@@ -106,7 +109,8 @@ export async function decrementCartItemAction(variantSku: string) {
     console.error("Failed to decrement item quantity:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update quantity",
+      error:
+        error instanceof Error ? error.message : "Failed to update quantity",
     };
   }
 }
