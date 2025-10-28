@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId } from "./utils";
-import { sanityFetchNoCache } from "./fetch";
+import { sanityFetch, sanityFetchNoCache } from "./fetch";
 import { writeClient } from "./client";
 import { CART_WITH_DETAILS_QUERY } from "./queries";
 import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
