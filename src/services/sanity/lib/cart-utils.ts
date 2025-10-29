@@ -47,6 +47,7 @@ async function getCartIdentifier(): Promise<
  */
 export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
   const identifier = await getCartIdentifier();
+  console.log("🔍 getCart called, identifier:", identifier);
 
   // Build params - always pass both, set to null when not used
   const params: { userId: string | null; sessionId: string | null } = {
@@ -219,42 +220,54 @@ async function getOrCreateCart(): Promise<
   Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
 > {
   const identifier = await getCartIdentifier();
-
-  // Check if migration is needed (user logged in but guest cookie still exists)
-  if (identifier?.type === "user") {
-    const cookieStore = await cookies();
-    const guestSessionId = cookieStore.get("cart_session")?.value;
-
-    if (guestSessionId) {
-      // Guest cookie exists + logged in = migration needed
-      console.log("🔄 Migration needed, starting...");
-      const result = await migrateGuestCartToUser(
-        identifier.userId,
-        guestSessionId
-      );
-
-      if (!result.success) {
-        console.error("⚠️ Migration failed, continuing without migration");
-      }
-    }
-  }
+  console.log("🔍 getOrCreateCart called, identifier:", identifier);
 
   // Try to get existing cart
   if (identifier) {
     let existingCart;
 
     if (identifier.type === "user") {
+      // Check if migration is needed FIRST (before querying user cart)
+      const cookieStore = await cookies();
+      const guestSessionId = cookieStore.get("cart_session")?.value;
+      console.log("🔍 User is logged in, checking for guest cookie:", guestSessionId);
+
+      if (guestSessionId) {
+        // Guest cookie exists + logged in = migration needed
+        console.log("🔄 Migration needed, starting...");
+        const result = await migrateGuestCartToUser(
+          identifier.userId,
+          guestSessionId
+        );
+
+        if (!result.success) {
+          console.error("⚠️ Migration failed, continuing without migration");
+        } else {
+          console.log("✅ Migration result:", result);
+        }
+      }
+
+      // Now query for user cart (after migration)
       existingCart = await sanityFetch<Cart>({
         query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
         params: { userId: identifier.userId },
         tags: ["cart"],
       });
     } else {
+      // Guest user - query by sessionId
       existingCart = await sanityFetch<Cart>({
         query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
         params: { sessionId: identifier.sessionId },
         tags: ["cart"],
       });
+
+      // If cookie exists but no cart found, delete the orphaned cookie
+      if (!existingCart) {
+        const cookieStore = await cookies();
+        cookieStore.delete("cart_session");
+        console.log("🧹 Deleted orphaned guest session cookie (cart was likely migrated)");
+        // Don't return - let it create a new cart with new session below
+      }
     }
 
     if (existingCart) {
@@ -291,9 +304,11 @@ export async function addItemToCart(params: {
   priceSnapshot: number;
 }) {
   const { productId, variantSku, quantity, priceSnapshot } = params;
+  console.log("🛒 addItemToCart called with:", { variantSku, quantity });
 
   // Get or create cart
   const cart = await getOrCreateCart();
+  console.log("🛒 Got cart:", cart._id);
 
   // Check if item already in cart
   const existingItemIndex = cart.items?.findIndex(
