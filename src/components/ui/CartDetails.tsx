@@ -11,6 +11,7 @@ import {
   removeCartItemAction,
 } from "@/services/sanity/actions/cart-actions";
 import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
+import Link from "next/link";
 
 interface CartDetailsProps {
   cart: CART_WITH_DETAILS_QUERYResult;
@@ -283,7 +284,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
             </dl>
           </div>
           <Button className="w-full" size="lg" aria-label="Proceed to checkout">
-            PROCEED TO CHECKOUT
+            <Link href="/checkout">PROCEED TO CHECKOUT</Link>
           </Button>
           <div className="flex justify-center gap-2 mt-4">
             <div className="text-xs text-gray-500">

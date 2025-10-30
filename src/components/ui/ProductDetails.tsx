@@ -43,7 +43,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
       return acc;
     },
-    [] as NonNullable<typeof product.variants>[0]["color"][]
+    [] as NonNullable<typeof product.variants>[0]["color"][],
   );
 
   let selectedColor: NonNullable<typeof uniqueColors>[0] | undefined;
@@ -52,7 +52,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     const searchParamsColor = searchParams.get("color")?.trim().toLowerCase();
 
     selectedColor = uniqueColors?.find(
-      (color) => color.name.toLowerCase() === searchParamsColor
+      (color) => color.name.toLowerCase() === searchParamsColor,
     );
   } else {
     selectedColor = product.variants[0].color;
@@ -68,7 +68,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     const searchParamsSize = searchParams.get("size")?.trim().toLowerCase();
 
     selectedSize = sizes.find(
-      (size) => size.code.toLowerCase() === searchParamsSize
+      (size) => size.code.toLowerCase() === searchParamsSize,
     );
   }
 
@@ -96,13 +96,13 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   }
 
   function addToCart() {
-    if (!selectedColor || !selectedSize || !product.variants) return;
+    if (!selectedColor || !selectedSize) return;
 
     // Find the exact variant for this color/size combination
     const selectedVariant = product.variants.find(
       (variant) =>
         variant.color._id === selectedColor._id &&
-        variant.size._id === selectedSize._id
+        variant.size._id === selectedSize._id,
     );
 
     if (!selectedVariant || selectedVariant.stockQuantity === 0) {
