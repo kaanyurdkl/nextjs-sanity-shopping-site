@@ -164,59 +164,9 @@ async function createUserCart(
 }
 
 /**
- * Migrate guest cart to user cart after login
- * Converts guest cart (identified by sessionId) to user cart (identified by userId)
- * @param userId - Sanity user document ID
- * @param guestSessionId - Guest session cookie value
- */
-export async function migrateGuestCartToUser(
-  userId: string,
-  guestSessionId: string,
-) {
-  try {
-    // 1. Find guest cart by sessionId
-    const guestCart = await sanityFetchNoCache<Cart & { _id: string }>({
-      query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0] {
-        _id,
-        items
-      }`,
-      params: { sessionId: guestSessionId },
-    });
-
-    // 2. If no guest cart found or empty, just delete cookie and return
-    if (!guestCart || !guestCart.items?.length) {
-      const cookieStore = await cookies();
-      cookieStore.delete("cart_session");
-      return { success: true, migrated: false };
-    }
-
-    // 3. Convert guest cart to user cart (UPDATE the document)
-    await writeClient
-      .patch(guestCart._id)
-      .set({
-        user: { _type: "reference", _ref: userId },
-      })
-      .unset(["sessionId", "expiresAt"])
-      .commit();
-
-    // 4. Delete guest session cookie
-    const cookieStore = await cookies();
-    cookieStore.delete("cart_session");
-
-    console.log(`✅ Cart migrated: ${guestCart._id} → user ${userId}`);
-    return { success: true, migrated: true };
-  } catch (error) {
-    console.error("❌ Cart migration failed:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
-  }
-}
-
-/**
  * Get existing cart or create new one
  * Returns existing cart if found, otherwise creates a new one
+ * Note: Cart migration happens automatically during login via JWT callback
  */
 async function getOrCreateCart(): Promise<
   Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
@@ -228,25 +178,7 @@ async function getOrCreateCart(): Promise<
     let existingCart;
 
     if (identifier.type === "user") {
-      // Check if migration is needed
-      const cookieStore = await cookies();
-      const guestSessionId = cookieStore.get("cart_session")?.value;
-
-      if (guestSessionId) {
-        // Guest cookie exists + logged in = migration needed
-        const result = await migrateGuestCartToUser(
-          identifier.userId,
-          guestSessionId,
-        );
-
-        if (!result.success) {
-          console.error("⚠️ Migration failed, continuing without migration");
-        } else {
-          console.log("✅ Migration result:", result);
-        }
-      }
-
-      // Now query for user cart
+      // Logged-in user - query by userId
       existingCart = await sanityFetch<Cart>({
         query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
         params: { userId: identifier.userId },
@@ -264,6 +196,7 @@ async function getOrCreateCart(): Promise<
       if (!existingCart) {
         const cookieStore = await cookies();
         cookieStore.delete("cart_session");
+        console.log("🧹 Deleted orphaned guest session cookie (cart was likely migrated)");
       }
     }
 
