@@ -1,11 +1,12 @@
 import { cookies } from "next/headers";
-import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId } from "./utils";
 import { sanityFetch, sanityFetchNoCache } from "./fetch";
 import { writeClient } from "./client";
 import { CART_WITH_DETAILS_QUERY } from "./queries";
 import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
 import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
+import type { Session } from "next-auth";
+import { auth } from "@/services/next-auth/lib";
 
 /**
  * Cart Utility Functions
@@ -16,11 +17,11 @@ import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sani
  * Get cart identifier for current user
  * Returns either userId (logged-in) or sessionId (guest)
  */
-async function getCartIdentifier(): Promise<
+export async function getCartIdentifier(
+  session: Session | null,
+): Promise<
   { type: "user"; userId: string } | { type: "guest"; sessionId: string } | null
 > {
-  // Check if user is logged in
-  const session = await auth();
   if (session?.user?.googleId) {
     const userId = await getUserIdByGoogleId(session.user.googleId);
     if (userId) {
@@ -46,7 +47,9 @@ async function getCartIdentifier(): Promise<
  * @returns Cart with joined product, variant, color, and size data
  */
 export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
-  const identifier = await getCartIdentifier();
+  const session = await auth();
+
+  const identifier = await getCartIdentifier(session);
 
   // Build params - always pass both, set to null when not used
   const params: { userId: string | null; sessionId: string | null } = {
@@ -75,7 +78,9 @@ export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
  * @returns Total item count
  */
 export async function getCartItemCount(): Promise<number> {
-  const identifier = await getCartIdentifier();
+  const session = await auth();
+
+  const identifier = await getCartIdentifier(session);
 
   // If no identifier, no cart exists
   if (!identifier) {
@@ -124,7 +129,7 @@ export async function getCartItemCount(): Promise<number> {
  * Create a new cart for guest user
  * Generates UUID and sets cookie
  */
-async function createGuestCart(): Promise<
+export async function createGuestCart(): Promise<
   Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
 > {
   const sessionId = crypto.randomUUID();
@@ -152,7 +157,7 @@ async function createGuestCart(): Promise<
  * Create a new cart for logged-in user
  * @param userId - Sanity user document ID
  */
-async function createUserCart(
+export async function createUserCart(
   userId: string,
 ): Promise<Cart & { _id: string; items?: Array<CartItem & { _key: string }> }> {
   return await writeClient.create({
@@ -163,112 +168,18 @@ async function createUserCart(
   });
 }
 
-/**
- * Get existing cart or create new one
- * Returns existing cart if found, otherwise creates a new one
- * Note: Cart migration happens automatically during login via JWT callback
- */
-async function getOrCreateCart(): Promise<
-  Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
-> {
-  const identifier = await getCartIdentifier();
-
-  // Try to get existing cart
-  if (identifier) {
-    let existingCart;
-
-    if (identifier.type === "user") {
-      // Logged-in user - query by userId
-      existingCart = await sanityFetch<Cart>({
-        query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
-        params: { userId: identifier.userId },
-        tags: ["cart"],
-      });
-    } else {
-      // Guest user - query by sessionId
-      existingCart = await sanityFetch<Cart>({
-        query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
-        params: { sessionId: identifier.sessionId },
-        tags: ["cart"],
-      });
-
-      // If cookie exists but no cart found, delete the orphaned cookie
-      if (!existingCart) {
-        const cookieStore = await cookies();
-        cookieStore.delete("cart_session");
-        console.log("🧹 Deleted orphaned guest session cookie (cart was likely migrated)");
-      }
-    }
-
-    if (existingCart) {
-      return existingCart as Cart & {
-        _id: string;
-        items?: Array<CartItem & { _key: string }>;
-      };
-    }
-  }
-
-  // No cart exists - create new one
-  const session = await auth();
-
-  if (session?.user?.googleId) {
-    // Logged-in user
-    const userId = await getUserIdByGoogleId(session.user.googleId);
-    if (userId) {
-      return await createUserCart(userId);
-    }
-  }
-
-  // Guest user
-  return await createGuestCart();
+export async function getUserCart(userId: string) {
+  return await sanityFetch<Cart>({
+    query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
+    params: { userId },
+    tags: ["cart"],
+  });
 }
 
-/**
- * Add item to cart or increment quantity if already exists
- * @param params - Product details to add
- */
-export async function addItemToCart(params: {
-  productId: string;
-  variantSku: string;
-  quantity: number;
-  priceSnapshot: number;
-}) {
-  const { productId, variantSku, quantity, priceSnapshot } = params;
-
-  // Get or create cart
-  const cart = await getOrCreateCart();
-
-  // Check if item already in cart
-  const existingItemIndex = cart.items?.findIndex(
-    (item) => item.variantSku === variantSku,
-  );
-
-  if (existingItemIndex !== undefined && existingItemIndex >= 0) {
-    // Item exists - increment quantity
-    const existingItem = cart.items![existingItemIndex];
-    const newQuantity = (existingItem.quantity || 0) + quantity;
-
-    await writeClient
-      .patch(cart._id)
-      .set({
-        [`items[_key == "${existingItem._key}"].quantity`]: newQuantity,
-      })
-      .commit();
-  } else {
-    // New item - append to array
-    await writeClient
-      .patch(cart._id)
-      .setIfMissing({ items: [] })
-      .append("items", [
-        {
-          _type: "cartItem",
-          _key: `item-${Date.now()}`,
-          product: { _type: "reference", _ref: productId },
-          variantSku,
-          quantity,
-          priceSnapshot,
-        },
-      ])
-      .commit();
-  }
+export async function getGuestCart(sessionId: string) {
+  return await sanityFetch<Cart>({
+    query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
+    params: { sessionId },
+    tags: ["cart"],
+  });
 }

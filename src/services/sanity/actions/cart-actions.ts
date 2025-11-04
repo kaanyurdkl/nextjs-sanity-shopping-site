@@ -1,21 +1,108 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addItemToCart, getCart } from "../lib/cart-utils";
+import {
+  createGuestCart,
+  createUserCart,
+  getCart,
+  getCartIdentifier,
+  getGuestCart,
+  getUserCart,
+} from "../lib/cart-utils";
 import { writeClient } from "../lib/client";
+import { sanityFetch } from "../lib/fetch";
+import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
+import { cookies } from "next/headers";
+import { auth } from "@/services/next-auth/lib";
+import { getUserIdByGoogleId } from "../lib/utils";
 
 /**
  * Server Action: Add item to cart
  * Updates cart in Sanity and revalidates header to show updated count
  */
-export async function addToCartAction(params: {
+export async function addToCartAction({
+  productId,
+  variantSku,
+  quantity,
+  priceSnapshot,
+}: {
   productId: string;
   variantSku: string;
   quantity: number;
   priceSnapshot: number;
 }) {
   try {
-    await addItemToCart(params);
+    let cart;
+
+    const session = await auth();
+
+    if (session?.user?.googleId) {
+      const userId = await getUserIdByGoogleId(session.user.googleId);
+
+      if (userId) {
+        const existingCart = await getUserCart(userId);
+
+        if (existingCart) {
+          cart = existingCart;
+        } else {
+          cart = await createUserCart(userId);
+        }
+      } else {
+        throw new Error("User not found");
+      }
+    } else {
+      const cookieStore = await cookies();
+
+      const sessionId = cookieStore.get("cart_session")?.value;
+
+      if (sessionId) {
+        const existingCart = await getGuestCart(sessionId);
+
+        if (existingCart) {
+          cart = existingCart;
+        } else {
+          cookieStore.delete("cart_session");
+
+          cart = await createGuestCart();
+        }
+      } else {
+        cart = await createGuestCart();
+      }
+    }
+
+    // Check if item already in cart
+    const existingItemIndex = cart.items?.findIndex(
+      (item) => item.variantSku === variantSku,
+    );
+
+    if (existingItemIndex !== undefined && existingItemIndex >= 0) {
+      // Item exists - increment quantity
+      const existingItem = cart.items![existingItemIndex];
+      const newQuantity = (existingItem.quantity || 0) + quantity;
+
+      await writeClient
+        .patch(cart._id)
+        .set({
+          [`items[_key == "${existingItem._key}"].quantity`]: newQuantity,
+        })
+        .commit();
+    } else {
+      // New item - append to array
+      await writeClient
+        .patch(cart._id)
+        .setIfMissing({ items: [] })
+        .append("items", [
+          {
+            _type: "cartItem",
+            _key: `item-${Date.now()}`,
+            product: { _type: "reference", _ref: productId },
+            variantSku,
+            quantity,
+            priceSnapshot,
+          },
+        ])
+        .commit();
+    }
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/"); // Revalidate home page
