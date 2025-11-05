@@ -2,8 +2,17 @@ import { cookies } from "next/headers";
 import { getUserIdByGoogleId } from "./utils";
 import { sanityFetch, sanityFetchNoCache } from "./fetch";
 import { writeClient } from "./client";
-import { CART_WITH_DETAILS_QUERY } from "./queries";
-import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
+import {
+  CART_WITH_DETAILS_QUERY,
+  GUEST_CART_QUERY,
+  USER_CART_QUERY,
+} from "./queries";
+import type {
+  Cart,
+  CartItem,
+  GUEST_CART_QUERYResult,
+  USER_CART_QUERYResult,
+} from "@/services/sanity/types/sanity.types";
 import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
 import type { Session } from "next-auth";
 import { auth } from "@/services/next-auth/lib";
@@ -134,8 +143,9 @@ export async function createGuestCart(): Promise<
 > {
   const sessionId = crypto.randomUUID();
 
-  // Set cookie (30 days)
   const cookieStore = await cookies();
+
+  // Set cookie (30 days)
   cookieStore.set("cart_session", sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -168,17 +178,21 @@ export async function createUserCart(
   });
 }
 
-export async function getUserCart(userId: string) {
-  return await sanityFetch<Cart>({
-    query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
+export async function getUserCart(
+  userId: string,
+): Promise<USER_CART_QUERYResult> {
+  return await sanityFetch<USER_CART_QUERYResult>({
+    query: USER_CART_QUERY,
     params: { userId },
     tags: ["cart"],
   });
 }
 
-export async function getGuestCart(sessionId: string) {
-  return await sanityFetch<Cart>({
-    query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
+export async function getGuestCart(
+  sessionId: string,
+): Promise<GUEST_CART_QUERYResult> {
+  return await sanityFetch<GUEST_CART_QUERYResult>({
+    query: GUEST_CART_QUERY,
     params: { sessionId },
     tags: ["cart"],
   });

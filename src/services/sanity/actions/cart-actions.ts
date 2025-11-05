@@ -5,21 +5,14 @@ import {
   createGuestCart,
   createUserCart,
   getCart,
-  getCartIdentifier,
   getGuestCart,
   getUserCart,
 } from "../lib/cart-utils";
 import { writeClient } from "../lib/client";
-import { sanityFetch } from "../lib/fetch";
-import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
 import { cookies } from "next/headers";
 import { auth } from "@/services/next-auth/lib";
 import { getUserIdByGoogleId } from "../lib/utils";
 
-/**
- * Server Action: Add item to cart
- * Updates cart in Sanity and revalidates header to show updated count
- */
 export async function addToCartAction({
   productId,
   variantSku,

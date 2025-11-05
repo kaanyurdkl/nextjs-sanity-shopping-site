@@ -785,3 +785,11 @@ export const CART_WITH_DETAILS_QUERY = defineQuery(`
     }
   }
 `);
+
+export const USER_CART_QUERY = defineQuery(`
+*[_type == "cart" && user._ref == $userId && status == "active"][0]
+`);
+
+export const GUEST_CART_QUERY = defineQuery(`
+*[_type == "cart" && sessionId == $sessionId && status == "active"][0]
+`);
