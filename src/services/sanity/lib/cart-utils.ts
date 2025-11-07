@@ -56,29 +56,39 @@ export async function getCartIdentifier(
  * @returns Cart with joined product, variant, color, and size data
  */
 export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
+  let cart;
+
   const session = await auth();
 
-  const identifier = await getCartIdentifier(session);
+  if (session?.user?.googleId) {
+    const userId = await getUserIdByGoogleId(session.user.googleId);
 
-  // Build params - always pass both, set to null when not used
-  const params: { userId: string | null; sessionId: string | null } = {
-    userId: null,
-    sessionId: null,
-  };
+    if (userId) {
+      cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
+        query: CART_WITH_DETAILS_QUERY,
+        params: { userId, sessionId: null },
+      });
+    } else {
+      throw new Error("User not found");
+    }
+  } else {
+    // Guest user - check for session cookie
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("cart_session")?.value;
 
-  if (identifier?.type === "user") {
-    params.userId = identifier.userId;
-  } else if (identifier?.type === "guest") {
-    params.sessionId = identifier.sessionId;
+    if (sessionId) {
+      cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
+        query: CART_WITH_DETAILS_QUERY,
+        params: { userId: null, sessionId },
+      });
+    }
   }
 
-  // Fetch cart with full product details (no cache for immediate consistency)
-  const cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
-    query: CART_WITH_DETAILS_QUERY,
-    params,
-  });
-
-  return cart;
+  if (!cart) {
+    throw new Error("Cart not found");
+  } else {
+    return cart;
+  }
 }
 
 /**
