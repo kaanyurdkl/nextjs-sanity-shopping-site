@@ -3,15 +3,18 @@ import { getUserIdByGoogleId } from "./utils";
 import { sanityFetch, sanityFetchNoCache } from "./fetch";
 import { writeClient } from "./client";
 import {
-  CART_WITH_DETAILS_QUERY,
   GUEST_CART_QUERY,
+  GUEST_CART_WITH_DETAILS_QUERY,
   USER_CART_QUERY,
+  USER_CART_WITH_DETAILS_QUERY,
 } from "./queries";
 import type {
   Cart,
   CartItem,
   GUEST_CART_QUERYResult,
+  GUEST_CART_WITH_DETAILS_QUERYResult,
   USER_CART_QUERYResult,
+  USER_CART_WITH_DETAILS_QUERYResult,
 } from "@/services/sanity/types/sanity.types";
 import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
 import type { Session } from "next-auth";
@@ -64,10 +67,7 @@ export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
     const userId = await getUserIdByGoogleId(session.user.googleId);
 
     if (userId) {
-      cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
-        query: CART_WITH_DETAILS_QUERY,
-        params: { userId, sessionId: null },
-      });
+      cart = await getUserCartWithDetails(userId);
     } else {
       throw new Error("User not found");
     }
@@ -77,10 +77,7 @@ export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
     const sessionId = cookieStore.get("cart_session")?.value;
 
     if (sessionId) {
-      cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
-        query: CART_WITH_DETAILS_QUERY,
-        params: { userId: null, sessionId },
-      });
+      cart = await getGuestCartWithDetails(sessionId);
     }
   }
 
@@ -198,6 +195,15 @@ export async function getUserCart(
   });
 }
 
+export async function getUserCartWithDetails(
+  userId: string,
+): Promise<USER_CART_WITH_DETAILS_QUERYResult> {
+  return await sanityFetchNoCache<USER_CART_WITH_DETAILS_QUERYResult>({
+    query: USER_CART_WITH_DETAILS_QUERY,
+    params: { userId },
+  });
+}
+
 export async function getGuestCart(
   sessionId: string,
 ): Promise<GUEST_CART_QUERYResult> {
@@ -205,5 +211,14 @@ export async function getGuestCart(
     query: GUEST_CART_QUERY,
     params: { sessionId },
     tags: ["cart"],
+  });
+}
+
+export async function getGuestCartWithDetails(
+  sessionId: string,
+): Promise<GUEST_CART_WITH_DETAILS_QUERYResult> {
+  return await sanityFetchNoCache<GUEST_CART_WITH_DETAILS_QUERYResult>({
+    query: GUEST_CART_WITH_DETAILS_QUERY,
+    params: { sessionId },
   });
 }

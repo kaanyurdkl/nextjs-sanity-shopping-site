@@ -786,6 +786,76 @@ export const CART_WITH_DETAILS_QUERY = defineQuery(`
   }
 `);
 
+export const GUEST_CART_WITH_DETAILS_QUERY = defineQuery(`
+  *[_type == "cart" && status == "active" && sessionId == $sessionId
+  ][0] {
+    _id,
+    items[] {
+      _key,
+      variantSku,
+      quantity,
+      priceSnapshot,
+      "product": *[_type == "product" && _id == ^.product._ref][0] {
+        _id,
+        name,
+        basePrice,
+        thumbnail {
+          asset-> { url }
+        },
+        "variant": variants[sku == ^.^.variantSku][0] {
+          sku,
+          stockQuantity,
+          color-> {
+            _id,
+            name,
+            hexCode
+          },
+          size-> {
+            _id,
+            name,
+            code
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const USER_CART_WITH_DETAILS_QUERY = defineQuery(`
+  *[_type == "cart" && status == "active" && user._ref == $userId
+  ][0] {
+    _id,
+    items[] {
+      _key,
+      variantSku,
+      quantity,
+      priceSnapshot,
+      "product": *[_type == "product" && _id == ^.product._ref][0] {
+        _id,
+        name,
+        basePrice,
+        thumbnail {
+          asset-> { url }
+        },
+        "variant": variants[sku == ^.^.variantSku][0] {
+          sku,
+          stockQuantity,
+          color-> {
+            _id,
+            name,
+            hexCode
+          },
+          size-> {
+            _id,
+            name,
+            code
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const USER_CART_QUERY = defineQuery(`
 *[_type == "cart" && user._ref == $userId && status == "active"][0]
 `);

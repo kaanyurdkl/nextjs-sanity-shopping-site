@@ -1480,6 +1480,76 @@ export type CART_WITH_DETAILS_QUERYResult = {
     } | null;
   }> | null;
 } | null;
+// Variable: GUEST_CART_WITH_DETAILS_QUERY
+// Query: *[_type == "cart" && status == "active" && sessionId == $sessionId  ][0] {    _id,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
+export type GUEST_CART_WITH_DETAILS_QUERYResult = {
+  _id: string;
+  items: Array<{
+    _key: string;
+    variantSku: string;
+    quantity: number;
+    priceSnapshot: number;
+    product: {
+      _id: string;
+      name: string;
+      basePrice: number;
+      thumbnail: {
+        asset: {
+          url: string | null;
+        } | null;
+      };
+      variant: {
+        sku: string;
+        stockQuantity: number;
+        color: {
+          _id: string;
+          name: string;
+          hexCode: string;
+        };
+        size: {
+          _id: string;
+          name: string;
+          code: string;
+        };
+      } | null;
+    } | null;
+  }> | null;
+} | null;
+// Variable: USER_CART_WITH_DETAILS_QUERY
+// Query: *[_type == "cart" && status == "active" && user._ref == $userId  ][0] {    _id,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
+export type USER_CART_WITH_DETAILS_QUERYResult = {
+  _id: string;
+  items: Array<{
+    _key: string;
+    variantSku: string;
+    quantity: number;
+    priceSnapshot: number;
+    product: {
+      _id: string;
+      name: string;
+      basePrice: number;
+      thumbnail: {
+        asset: {
+          url: string | null;
+        } | null;
+      };
+      variant: {
+        sku: string;
+        stockQuantity: number;
+        color: {
+          _id: string;
+          name: string;
+          hexCode: string;
+        };
+        size: {
+          _id: string;
+          name: string;
+          code: string;
+        };
+      } | null;
+    } | null;
+  }> | null;
+} | null;
 // Variable: USER_CART_QUERY
 // Query: *[_type == "cart" && user._ref == $userId && status == "active"][0]
 export type USER_CART_QUERYResult = {
@@ -1559,6 +1629,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ]\n  | order(\n      select(\n        $sortOrder == "price-asc" => 0 - basePrice,\n        $sortOrder == "price-desc" => basePrice,\n        0 - _createdAt\n      ) desc\n    ) [$startIndex...$endIndex] {\n    _id,\n    name,\n    "slug": slug.current,\n    basePrice,\n    thumbnail {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    hoverImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    "variants": variants[isActive == true && stockQuantity > 0] {\n      size->{\n        _id,\n        name,\n        code\n      },\n      stockQuantity,\n      color->{\n        _id,\n        name,\n        hexCode,\n        code\n      }\n    },\n    "hasStock": count(variants[isActive == true && stockQuantity > 0]) > 0\n  }\n': PRODUCTS_WITH_FILTERS_QUERYResult;
     '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ])\n': PRODUCTS_COUNT_WITH_FILTERS_QUERYResult;
     '\n  *[_type == "cart" && status == "active" && (\n    (defined($userId) && user._ref == $userId) ||\n    (defined($sessionId) && sessionId == $sessionId)\n  )][0] {\n    _id,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': CART_WITH_DETAILS_QUERYResult;
+    '\n  *[_type == "cart" && status == "active" && sessionId == $sessionId\n  ][0] {\n    _id,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': GUEST_CART_WITH_DETAILS_QUERYResult;
+    '\n  *[_type == "cart" && status == "active" && user._ref == $userId\n  ][0] {\n    _id,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': USER_CART_WITH_DETAILS_QUERYResult;
     '\n*[_type == "cart" && user._ref == $userId && status == "active"][0]\n': USER_CART_QUERYResult;
     '\n*[_type == "cart" && sessionId == $sessionId && status == "active"][0]\n': GUEST_CART_QUERYResult;
   }
