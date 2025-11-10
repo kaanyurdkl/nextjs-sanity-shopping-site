@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import CartDetails from "@/components/ui/CartDetails";
-import { getCart } from "@/services/sanity/lib/cart-utils";
+import { getCartWithDetails } from "@/services/sanity/lib/cart-utils";
 
 export const metadata: Metadata = {
   title: "Shopping Cart | Your Store",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CartPage() {
-  const cart = await getCart();
+  const cart = await getCartWithDetails();
 
   return (
     <main>

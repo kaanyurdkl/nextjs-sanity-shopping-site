@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import {
   createGuestCart,
   createUserCart,
-  getCart,
+  getCartWithDetails,
   getGuestCart,
   getUserCart,
 } from "../lib/cart-utils";
@@ -119,7 +119,7 @@ export async function addToCartAction({
 export async function incrementCartItemAction(variantSku: string) {
   try {
     console.log("incrementCartItemAction");
-    const cart = await getCart();
+    const cart = await getCartWithDetails();
 
     if (!cart?.items) {
       return { success: false, error: "Cart not found" };
@@ -160,7 +160,7 @@ export async function incrementCartItemAction(variantSku: string) {
  */
 export async function decrementCartItemAction(variantSku: string) {
   try {
-    const cart = await getCart();
+    const cart = await getCartWithDetails();
 
     if (!cart?.items) {
       return { success: false, error: "Cart not found" };
@@ -201,7 +201,7 @@ export async function decrementCartItemAction(variantSku: string) {
  */
 export async function removeCartItemAction(variantSku: string) {
   try {
-    const cart = await getCart();
+    const cart = await getCartWithDetails();
 
     if (!cart?.items) {
       return { success: false, error: "Cart not found" };

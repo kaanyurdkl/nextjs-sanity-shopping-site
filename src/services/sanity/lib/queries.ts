@@ -745,15 +745,17 @@ export const PRODUCTS_COUNT_WITH_FILTERS_QUERY = defineQuery(`
 // CART QUERIES
 // =============================================================================
 
-/**
- * Fetch active cart with full product details for cart page
- * Joins cart items with product, variant, color, and size data
- */
-export const CART_WITH_DETAILS_QUERY = defineQuery(`
-  *[_type == "cart" && status == "active" && (
-    (defined($userId) && user._ref == $userId) ||
-    (defined($sessionId) && sessionId == $sessionId)
-  )][0] {
+export const USER_CART_QUERY = defineQuery(`
+*[_type == "cart" && user._ref == $userId && status == "active"][0]
+`);
+
+export const GUEST_CART_QUERY = defineQuery(`
+*[_type == "cart" && sessionId == $sessionId && status == "active"][0]
+`);
+
+export const USER_CART_WITH_DETAILS_QUERY = defineQuery(`
+  *[_type == "cart" && status == "active" && user._ref == $userId
+  ][0] {
     _id,
     items[] {
       _key,
@@ -821,45 +823,16 @@ export const GUEST_CART_WITH_DETAILS_QUERY = defineQuery(`
   }
 `);
 
-export const USER_CART_WITH_DETAILS_QUERY = defineQuery(`
-  *[_type == "cart" && status == "active" && user._ref == $userId
-  ][0] {
-    _id,
+export const USER_CART_ITEMS_WITH_QUANTITY_QUERY = defineQuery(`
+  *[_type == "cart" && user._ref == $userId && status == "active"][0] {
     items[] {
-      _key,
-      variantSku,
-      quantity,
-      priceSnapshot,
-      "product": *[_type == "product" && _id == ^.product._ref][0] {
-        _id,
-        name,
-        basePrice,
-        thumbnail {
-          asset-> { url }
-        },
-        "variant": variants[sku == ^.^.variantSku][0] {
-          sku,
-          stockQuantity,
-          color-> {
-            _id,
-            name,
-            hexCode
-          },
-          size-> {
-            _id,
-            name,
-            code
-          }
-        }
+      quantity
       }
-    }
-  }
-`);
+    }`);
 
-export const USER_CART_QUERY = defineQuery(`
-*[_type == "cart" && user._ref == $userId && status == "active"][0]
-`);
-
-export const GUEST_CART_QUERY = defineQuery(`
-*[_type == "cart" && sessionId == $sessionId && status == "active"][0]
-`);
+export const GUEST_CART_ITEMS_WITH_QUANTITY_QUERY = defineQuery(`
+  *[_type == "cart" && sessionId == $sessionId && status == "active"][0] {
+    items[] {
+      quantity
+      }
+    }`);
