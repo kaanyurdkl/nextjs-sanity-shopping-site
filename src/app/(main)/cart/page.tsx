@@ -19,7 +19,7 @@ export default async function CartPage() {
   return (
     <main>
       <Breadcrumbs slug={["cart"]} />
-      <CartDetails cart={cart} />
+      {cart ? <CartDetails cart={cart} /> : <p>Your cart is empty</p>}
     </main>
   );
 }

@@ -103,7 +103,7 @@ export async function getCartWithDetails(): Promise<
   }
 
   if (!cart) {
-    throw new Error("Cart not found");
+    return null;
   } else {
     return cart;
   }
