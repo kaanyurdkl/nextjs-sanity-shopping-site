@@ -10,11 +10,16 @@ import {
   decrementCartItemAction,
   removeCartItemAction,
 } from "@/services/sanity/actions/cart-actions";
-import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
+import type {
+  GUEST_CART_WITH_DETAILS_QUERYResult,
+  USER_CART_WITH_DETAILS_QUERYResult,
+} from "@/services/sanity/types/sanity.types";
 import Link from "next/link";
 
 interface CartDetailsProps {
-  cart: CART_WITH_DETAILS_QUERYResult;
+  cart:
+    | USER_CART_WITH_DETAILS_QUERYResult
+    | GUEST_CART_WITH_DETAILS_QUERYResult;
 }
 
 type OptimisticAction =
