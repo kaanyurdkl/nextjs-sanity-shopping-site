@@ -115,6 +115,7 @@ export async function getUserCartWithDetails(
   return await sanityFetchNoCache<USER_CART_WITH_DETAILS_QUERYResult>({
     query: USER_CART_WITH_DETAILS_QUERY,
     params: { userId },
+    tags: ["cart"],
   });
 }
 
@@ -124,6 +125,7 @@ export async function getGuestCartWithDetails(
   return await sanityFetchNoCache<GUEST_CART_WITH_DETAILS_QUERYResult>({
     query: GUEST_CART_WITH_DETAILS_QUERY,
     params: { sessionId },
+    tags: ["cart"],
   });
 }
 
@@ -162,6 +164,7 @@ export async function getUserCartItemsWithQuantity(
   return await sanityFetchNoCache({
     query: USER_CART_ITEMS_WITH_QUANTITY_QUERY,
     params: { userId },
+    tags: ["cart"],
   });
 }
 
@@ -171,5 +174,6 @@ export async function getGuestCartItemsWithQuantity(
   return await sanityFetchNoCache({
     query: GUEST_CART_ITEMS_WITH_QUANTITY_QUERY,
     params: { sessionId },
+    tags: ["cart"],
   });
 }

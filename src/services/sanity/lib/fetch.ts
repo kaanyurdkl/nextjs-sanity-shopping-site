@@ -48,11 +48,15 @@ export async function sanityFetch<QueryResponse>({
 export async function sanityFetchNoCache<QueryResponse>({
   query,
   params = {},
+  tags = [],
 }: {
   query: string;
   params?: QueryParams;
+  tags?: string[];
 }): Promise<QueryResponse> {
   return noCacheReadClient.fetch<QueryResponse>(query, params, {
-    cache: "no-store", // Always fetch fresh data
+    next: {
+      tags,
+    },
   });
 }

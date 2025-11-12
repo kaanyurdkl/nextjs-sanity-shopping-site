@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import {
   createGuestCart,
   createUserCart,
@@ -96,9 +96,7 @@ export async function addToCartAction({
         .commit();
     }
 
-    // Revalidate paths for immediate UI updates
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidateTag("cart");
 
     return { success: true };
   } catch (error) {
@@ -123,16 +121,12 @@ export async function incrementCartItemAction(
   },
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Atomic increment - no need to fetch current quantity
     await writeClient
       .patch(cartId)
       .inc({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
-    // Revalidate paths for immediate UI updates
-    revalidatePath("/cart");
-    revalidatePath("/");
-    revalidatePath("/", "layout");
+    revalidateTag("cart");
 
     return { success: true };
   } catch (error) {
@@ -161,19 +155,15 @@ export async function decrementCartItemAction(
   try {
     // Check if quantity is already at minimum
     if (cartItem.quantity <= 1) {
-      return { success: true }; // No-op if already at minimum
+      return { success: true };
     }
 
-    // Atomic decrement
     await writeClient
       .patch(cartId)
       .dec({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
-    // Revalidate paths for immediate UI updates
-    revalidatePath("/cart");
-    revalidatePath("/");
-    revalidatePath("/", "layout");
+    revalidateTag("cart");
 
     return { success: true };
   } catch (error) {
@@ -200,10 +190,7 @@ export async function removeCartItemAction(
       .unset([`items[_key == "${itemKey}"]`])
       .commit();
 
-    // Revalidate paths for immediate UI updates
-    revalidatePath("/cart");
-    revalidatePath("/");
-    revalidatePath("/", "layout");
+    revalidateTag("cart");
 
     return { success: true };
   } catch (error) {

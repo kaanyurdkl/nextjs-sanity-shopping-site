@@ -56,7 +56,7 @@ export interface AddressFormState {
  */
 export async function updateProfile(
   _prevState: ProfileFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ProfileFormState> {
   try {
     // 1. Authentication check
@@ -144,7 +144,7 @@ export async function updateProfile(
  */
 export async function addAddressAction(
   _prevState: AddressFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AddressFormState> {
   try {
     // 1. Authentication check
@@ -175,7 +175,9 @@ export async function addAddressAction(
 
     if (!result.success) {
       // Format Zod errors into field-specific error arrays
-      const fieldErrors: Partial<Record<keyof AddressFormState["errors"], string[]>> = {};
+      const fieldErrors: Partial<
+        Record<keyof AddressFormState["errors"], string[]>
+      > = {};
 
       result.error.issues.forEach((issue) => {
         const field = issue.path[0] as keyof AddressFormState["errors"];
@@ -237,7 +239,7 @@ export async function addAddressAction(
 export async function updateAddressAction(
   addressKey: string,
   _prevState: AddressFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AddressFormState> {
   try {
     // 1. Authentication check
@@ -325,7 +327,7 @@ export async function updateAddressAction(
  * @returns Success/error state
  */
 export async function deleteAddressAction(
-  addressKey: string
+  addressKey: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     // 1. Authentication check
@@ -375,7 +377,7 @@ export async function deleteAddressAction(
  * @returns Success/error state
  */
 export async function setDefaultAddressAction(
-  addressKey: string
+  addressKey: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     // 1. Authentication check
