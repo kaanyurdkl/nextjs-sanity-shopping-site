@@ -10,11 +10,16 @@ import {
   decrementCartItemAction,
   removeCartItemAction,
 } from "@/services/sanity/actions/cart-actions";
-import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
+import type {
+  GUEST_CART_WITH_DETAILS_QUERYResult,
+  USER_CART_WITH_DETAILS_QUERYResult,
+} from "@/services/sanity/types/sanity.types";
 import Link from "next/link";
 
 interface CartDetailsProps {
-  cart: CART_WITH_DETAILS_QUERYResult;
+  cart:
+    | NonNullable<USER_CART_WITH_DETAILS_QUERYResult>
+    | NonNullable<GUEST_CART_WITH_DETAILS_QUERYResult>;
 }
 
 type OptimisticAction =
@@ -166,7 +171,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               type: "remove",
                               variantSku: cartItem.variantSku,
                             });
-                            await removeCartItemAction(cartItem.variantSku);
+                            await removeCartItemAction(cart._id, cartItem._key);
                           });
                         }}
                         aria-label={`Remove ${product?.name} from cart`}
@@ -190,7 +195,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               type: "decrement",
                               variantSku: cartItem.variantSku,
                             });
-                            await decrementCartItemAction(cartItem.variantSku);
+                            await decrementCartItemAction(cart._id, cartItem);
                           });
                         }}
                         aria-label="Decrease quantity"
@@ -215,7 +220,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               variantSku: cartItem.variantSku,
                             });
 
-                            await incrementCartItemAction(cartItem.variantSku);
+                            await incrementCartItemAction(cart._id, cartItem);
                           });
                         }}
                         aria-label="Increase quantity"

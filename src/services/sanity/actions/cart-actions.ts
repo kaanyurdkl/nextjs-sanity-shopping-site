@@ -1,21 +1,100 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addItemToCart, getCart } from "../lib/cart-utils";
+import {
+  createGuestCart,
+  createUserCart,
+  getGuestCart,
+  getUserCart,
+} from "../lib/cart-utils";
 import { writeClient } from "../lib/client";
+import { cookies } from "next/headers";
+import { auth } from "@/services/next-auth/lib";
+import { getUserIdByGoogleId } from "../lib/utils";
 
-/**
- * Server Action: Add item to cart
- * Updates cart in Sanity and revalidates header to show updated count
- */
-export async function addToCartAction(params: {
+export async function addToCartAction({
+  productId,
+  variantSku,
+  quantity,
+  priceSnapshot,
+}: {
   productId: string;
   variantSku: string;
   quantity: number;
   priceSnapshot: number;
 }) {
   try {
-    await addItemToCart(params);
+    let cart;
+
+    const session = await auth();
+
+    if (session?.user?.googleId) {
+      const userId = await getUserIdByGoogleId(session.user.googleId);
+
+      if (userId) {
+        const existingCart = await getUserCart(userId);
+
+        if (existingCart) {
+          cart = existingCart;
+        } else {
+          cart = await createUserCart(userId);
+        }
+      } else {
+        throw new Error("User not found");
+      }
+    } else {
+      const cookieStore = await cookies();
+
+      const sessionId = cookieStore.get("cart_session")?.value;
+
+      if (sessionId) {
+        const existingCart = await getGuestCart(sessionId);
+
+        if (existingCart) {
+          cart = existingCart;
+        } else {
+          cookieStore.delete("cart_session");
+
+          cart = await createGuestCart();
+        }
+      } else {
+        cart = await createGuestCart();
+      }
+    }
+
+    // Check if item already in cart
+    const existingItemIndex = cart.items?.findIndex(
+      (item) => item.variantSku === variantSku,
+    );
+
+    if (existingItemIndex !== undefined && existingItemIndex >= 0) {
+      // Item exists - increment quantity
+      const existingItem = cart.items![existingItemIndex];
+      const newQuantity = (existingItem.quantity || 0) + quantity;
+
+      await writeClient
+        .patch(cart._id)
+        .set({
+          [`items[_key == "${existingItem._key}"].quantity`]: newQuantity,
+        })
+        .commit();
+    } else {
+      // New item - append to array
+      await writeClient
+        .patch(cart._id)
+        .setIfMissing({ items: [] })
+        .append("items", [
+          {
+            _type: "cartItem",
+            _key: `item-${Date.now()}`,
+            product: { _type: "reference", _ref: productId },
+            variantSku,
+            quantity,
+            priceSnapshot,
+          },
+        ])
+        .commit();
+    }
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/"); // Revalidate home page
@@ -34,34 +113,26 @@ export async function addToCartAction(params: {
 
 /**
  * Server Action: Increment cart item quantity
- * Increases quantity by 1 and revalidates cart page
+ * Uses atomic increment operation for better performance and race condition safety
  */
-export async function incrementCartItemAction(variantSku: string) {
+export async function incrementCartItemAction(
+  cartId: string,
+  cartItem: {
+    _key: string;
+    variantSku: string;
+  },
+): Promise<{ success: boolean; error?: string }> {
   try {
-    console.log("incrementCartItemAction");
-    const cart = await getCart();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
-    }
-
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
-    const newQuantity = (item.quantity || 0) + 1;
-
+    // Atomic increment - no need to fetch current quantity
     await writeClient
-      .patch(cart._id)
-      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .patch(cartId)
+      .inc({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {
@@ -76,33 +147,33 @@ export async function incrementCartItemAction(variantSku: string) {
 
 /**
  * Server Action: Decrement cart item quantity
- * Decreases quantity by 1 (minimum 1) and revalidates cart page
+ * Uses atomic decrement operation for better performance and race condition safety
+ * Note: Minimum quantity of 1 is enforced - use removeCartItemAction to delete items
  */
-export async function decrementCartItemAction(variantSku: string) {
+export async function decrementCartItemAction(
+  cartId: string,
+  cartItem: {
+    _key: string;
+    variantSku: string;
+    quantity: number;
+  },
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const cart = await getCart();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
+    // Check if quantity is already at minimum
+    if (cartItem.quantity <= 1) {
+      return { success: true }; // No-op if already at minimum
     }
 
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
-    const newQuantity = Math.max((item.quantity || 1) - 1, 1);
-
+    // Atomic decrement
     await writeClient
-      .patch(cart._id)
-      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .patch(cartId)
+      .dec({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {
@@ -117,31 +188,22 @@ export async function decrementCartItemAction(variantSku: string) {
 
 /**
  * Server Action: Remove item from cart
- * Removes item completely and revalidates cart page
+ * Removes item completely using optimized approach without fetching full cart
  */
-export async function removeCartItemAction(variantSku: string) {
+export async function removeCartItemAction(
+  cartId: string,
+  itemKey: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const cart = await getCart();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
-    }
-
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
     await writeClient
-      .patch(cart._id)
-      .unset([`items[_key == "${item._key}"]`])
+      .patch(cartId)
+      .unset([`items[_key == "${itemKey}"]`])
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {

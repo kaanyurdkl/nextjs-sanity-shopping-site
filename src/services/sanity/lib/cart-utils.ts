@@ -1,136 +1,44 @@
 import { cookies } from "next/headers";
+
 import { auth } from "@/services/next-auth/lib";
-import { getUserIdByGoogleId } from "./utils";
-import { sanityFetch, sanityFetchNoCache } from "./fetch";
-import { writeClient } from "./client";
-import { CART_WITH_DETAILS_QUERY } from "./queries";
-import type { Cart, CartItem } from "@/services/sanity/types/sanity.types";
-import type { CART_WITH_DETAILS_QUERYResult } from "@/services/sanity/types/sanity.types";
+import { writeClient } from "@/services/sanity/lib/client";
+import { sanityFetch, sanityFetchNoCache } from "@/services/sanity/lib/fetch";
+import {
+  GUEST_CART_ITEMS_WITH_QUANTITY_QUERY,
+  GUEST_CART_QUERY,
+  GUEST_CART_WITH_DETAILS_QUERY,
+  USER_CART_ITEMS_WITH_QUANTITY_QUERY,
+  USER_CART_QUERY,
+  USER_CART_WITH_DETAILS_QUERY,
+} from "@/services/sanity/lib/queries";
+import { getUserIdByGoogleId } from "@/services/sanity/lib/utils";
+import type {
+  Cart,
+  GUEST_CART_ITEMS_WITH_QUANTITY_QUERYResult,
+  GUEST_CART_QUERYResult,
+  GUEST_CART_WITH_DETAILS_QUERYResult,
+  USER_CART_ITEMS_WITH_QUANTITY_QUERYResult,
+  USER_CART_QUERYResult,
+  USER_CART_WITH_DETAILS_QUERYResult,
+} from "@/services/sanity/types/sanity.types";
 
-/**
- * Cart Utility Functions
- * Server-side utilities for managing shopping carts in Sanity
- */
-
-/**
- * Get cart identifier for current user
- * Returns either userId (logged-in) or sessionId (guest)
- */
-async function getCartIdentifier(): Promise<
-  { type: "user"; userId: string } | { type: "guest"; sessionId: string } | null
-> {
-  // Check if user is logged in
-  const session = await auth();
-  if (session?.user?.googleId) {
-    const userId = await getUserIdByGoogleId(session.user.googleId);
-    if (userId) {
-      return { type: "user", userId };
-    }
-  }
-
-  // Guest user - check for session cookie
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get("cart_session")?.value;
-
-  if (sessionId) {
-    return { type: "guest", sessionId };
-  }
-
-  // No logged-in user and no guest session
-  return null;
-}
-
-/**
- * Get cart with full product details
- * Used for cart page to display all cart items with product info
- * @returns Cart with joined product, variant, color, and size data
- */
-export async function getCart(): Promise<CART_WITH_DETAILS_QUERYResult> {
-  const identifier = await getCartIdentifier();
-
-  // Build params - always pass both, set to null when not used
-  const params: { userId: string | null; sessionId: string | null } = {
-    userId: null,
-    sessionId: null,
-  };
-
-  if (identifier?.type === "user") {
-    params.userId = identifier.userId;
-  } else if (identifier?.type === "guest") {
-    params.sessionId = identifier.sessionId;
-  }
-
-  // Fetch cart with full product details (no cache for immediate consistency)
-  const cart = await sanityFetchNoCache<CART_WITH_DETAILS_QUERYResult>({
-    query: CART_WITH_DETAILS_QUERY,
-    params,
+export async function createUserCart(userId: string): Promise<Cart> {
+  const cart: Cart = await writeClient.create({
+    _type: "cart",
+    user: { _type: "reference", _ref: userId },
+    items: [],
+    status: "active",
   });
 
   return cart;
 }
 
-/**
- * Get total number of items in cart
- * Used for cart badge in header
- * @returns Total item count
- */
-export async function getCartItemCount(): Promise<number> {
-  const identifier = await getCartIdentifier();
-
-  // If no identifier, no cart exists
-  if (!identifier) {
-    return 0;
-  }
-
-  // Query Sanity for the cart
-  let cart;
-
-  if (identifier.type === "user") {
-    // Logged-in user - query by user ID (no cache for immediate consistency)
-    cart = await sanityFetchNoCache<{
-      items: Array<{ quantity: number }>;
-    } | null>({
-      query: `*[_type == "cart" && user._ref == $userId && status == "active"][0] {
-        items[] {
-          quantity
-        }
-      }`,
-      params: { userId: identifier.userId },
-    });
-  } else {
-    // Guest user - query by session ID (no cache for immediate consistency)
-    cart = await sanityFetchNoCache<{
-      items: Array<{ quantity: number }>;
-    } | null>({
-      query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0] {
-        items[] {
-          quantity
-        }
-      }`,
-      params: { sessionId: identifier.sessionId },
-    });
-  }
-
-  // If no cart found, return 0
-  if (!cart?.items) {
-    return 0;
-  }
-
-  // Sum up all the quantities
-  return cart.items.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-/**
- * Create a new cart for guest user
- * Generates UUID and sets cookie
- */
-async function createGuestCart(): Promise<
-  Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
-> {
+export async function createGuestCart(): Promise<Cart> {
   const sessionId = crypto.randomUUID();
 
-  // Set cookie (30 days)
   const cookieStore = await cookies();
+
+  // Set cookie (30 days)
   cookieStore.set("cart_session", sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -139,136 +47,129 @@ async function createGuestCart(): Promise<
     path: "/",
   });
 
-  return (await writeClient.create({
+  const cart: Cart = await writeClient.create({
     _type: "cart",
     sessionId,
     items: [],
     status: "active",
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-  })) as Cart & { _id: string; items?: Array<CartItem & { _key: string }> };
+  });
+
+  return cart;
 }
 
-/**
- * Create a new cart for logged-in user
- * @param userId - Sanity user document ID
- */
-async function createUserCart(
+export async function getUserCart(
   userId: string,
-): Promise<Cart & { _id: string; items?: Array<CartItem & { _key: string }> }> {
-  return await writeClient.create({
-    _type: "cart",
-    user: { _type: "reference", _ref: userId },
-    items: [],
-    status: "active",
+): Promise<USER_CART_QUERYResult> {
+  return await sanityFetch<USER_CART_QUERYResult>({
+    query: USER_CART_QUERY,
+    params: { userId },
+    tags: ["cart"],
   });
 }
 
-/**
- * Get existing cart or create new one
- * Returns existing cart if found, otherwise creates a new one
- * Note: Cart migration happens automatically during login via JWT callback
- */
-async function getOrCreateCart(): Promise<
-  Cart & { _id: string; items?: Array<CartItem & { _key: string }> }
+export async function getGuestCart(
+  sessionId: string,
+): Promise<GUEST_CART_QUERYResult> {
+  return await sanityFetch<GUEST_CART_QUERYResult>({
+    query: GUEST_CART_QUERY,
+    params: { sessionId },
+    tags: ["cart"],
+  });
+}
+
+export async function getCartWithDetails(): Promise<
+  USER_CART_WITH_DETAILS_QUERYResult | GUEST_CART_WITH_DETAILS_QUERYResult
 > {
-  const identifier = await getCartIdentifier();
+  let cart;
 
-  // Try to get existing cart
-  if (identifier) {
-    let existingCart;
-
-    if (identifier.type === "user") {
-      // Logged-in user - query by userId
-      existingCart = await sanityFetch<Cart>({
-        query: `*[_type == "cart" && user._ref == $userId && status == "active"][0]`,
-        params: { userId: identifier.userId },
-        tags: ["cart"],
-      });
-    } else {
-      // Guest user - query by sessionId
-      existingCart = await sanityFetch<Cart>({
-        query: `*[_type == "cart" && sessionId == $sessionId && status == "active"][0]`,
-        params: { sessionId: identifier.sessionId },
-        tags: ["cart"],
-      });
-
-      // If cookie exists but no cart found, delete the orphaned cookie
-      if (!existingCart) {
-        const cookieStore = await cookies();
-        cookieStore.delete("cart_session");
-        console.log("🧹 Deleted orphaned guest session cookie (cart was likely migrated)");
-      }
-    }
-
-    if (existingCart) {
-      return existingCart as Cart & {
-        _id: string;
-        items?: Array<CartItem & { _key: string }>;
-      };
-    }
-  }
-
-  // No cart exists - create new one
   const session = await auth();
 
   if (session?.user?.googleId) {
-    // Logged-in user
     const userId = await getUserIdByGoogleId(session.user.googleId);
+
     if (userId) {
-      return await createUserCart(userId);
+      cart = await getUserCartWithDetails(userId);
+    } else {
+      throw new Error("User not found");
+    }
+  } else {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("cart_session")?.value;
+
+    if (sessionId) {
+      cart = await getGuestCartWithDetails(sessionId);
     }
   }
 
-  // Guest user
-  return await createGuestCart();
+  if (!cart) {
+    return null;
+  } else {
+    return cart;
+  }
 }
 
-/**
- * Add item to cart or increment quantity if already exists
- * @param params - Product details to add
- */
-export async function addItemToCart(params: {
-  productId: string;
-  variantSku: string;
-  quantity: number;
-  priceSnapshot: number;
-}) {
-  const { productId, variantSku, quantity, priceSnapshot } = params;
+export async function getUserCartWithDetails(
+  userId: string,
+): Promise<USER_CART_WITH_DETAILS_QUERYResult> {
+  return await sanityFetchNoCache<USER_CART_WITH_DETAILS_QUERYResult>({
+    query: USER_CART_WITH_DETAILS_QUERY,
+    params: { userId },
+  });
+}
 
-  // Get or create cart
-  const cart = await getOrCreateCart();
+export async function getGuestCartWithDetails(
+  sessionId: string,
+): Promise<GUEST_CART_WITH_DETAILS_QUERYResult> {
+  return await sanityFetchNoCache<GUEST_CART_WITH_DETAILS_QUERYResult>({
+    query: GUEST_CART_WITH_DETAILS_QUERY,
+    params: { sessionId },
+  });
+}
 
-  // Check if item already in cart
-  const existingItemIndex = cart.items?.findIndex(
-    (item) => item.variantSku === variantSku,
-  );
+export async function getCartItemCount(): Promise<number> {
+  let cart;
 
-  if (existingItemIndex !== undefined && existingItemIndex >= 0) {
-    // Item exists - increment quantity
-    const existingItem = cart.items![existingItemIndex];
-    const newQuantity = (existingItem.quantity || 0) + quantity;
+  const session = await auth();
 
-    await writeClient
-      .patch(cart._id)
-      .set({
-        [`items[_key == "${existingItem._key}"].quantity`]: newQuantity,
-      })
-      .commit();
+  if (session?.user?.googleId) {
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+
+    if (userId) {
+      cart = await getUserCartItemsWithQuantity(userId);
+    } else {
+      throw new Error("User not found");
+    }
   } else {
-    // New item - append to array
-    await writeClient
-      .patch(cart._id)
-      .setIfMissing({ items: [] })
-      .append("items", [
-        {
-          _type: "cartItem",
-          _key: `item-${Date.now()}`,
-          product: { _type: "reference", _ref: productId },
-          variantSku,
-          quantity,
-          priceSnapshot,
-        },
-      ])
-      .commit();
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("cart_session")?.value;
+
+    if (sessionId) {
+      cart = await getGuestCartItemsWithQuantity(sessionId);
+    }
   }
+
+  if (!cart?.items) {
+    return 0;
+  }
+
+  return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+export async function getUserCartItemsWithQuantity(
+  userId: string,
+): Promise<USER_CART_ITEMS_WITH_QUANTITY_QUERYResult> {
+  return await sanityFetchNoCache({
+    query: USER_CART_ITEMS_WITH_QUANTITY_QUERY,
+    params: { userId },
+  });
+}
+
+export async function getGuestCartItemsWithQuantity(
+  sessionId: string,
+): Promise<GUEST_CART_ITEMS_WITH_QUANTITY_QUERYResult> {
+  return await sanityFetchNoCache({
+    query: GUEST_CART_ITEMS_WITH_QUANTITY_QUERY,
+    params: { sessionId },
+  });
 }
