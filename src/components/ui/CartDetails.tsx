@@ -18,8 +18,8 @@ import Link from "next/link";
 
 interface CartDetailsProps {
   cart:
-    | USER_CART_WITH_DETAILS_QUERYResult
-    | GUEST_CART_WITH_DETAILS_QUERYResult;
+    | NonNullable<USER_CART_WITH_DETAILS_QUERYResult>
+    | NonNullable<GUEST_CART_WITH_DETAILS_QUERYResult>;
 }
 
 type OptimisticAction =
@@ -220,7 +220,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               variantSku: cartItem.variantSku,
                             });
 
-                            await incrementCartItemAction(cartItem.variantSku);
+                            await incrementCartItemAction(cart._id, cartItem);
                           });
                         }}
                         aria-label="Increase quantity"

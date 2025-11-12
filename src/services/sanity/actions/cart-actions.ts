@@ -114,34 +114,26 @@ export async function addToCartAction({
 
 /**
  * Server Action: Increment cart item quantity
- * Increases quantity by 1 and revalidates cart page
+ * Uses atomic increment operation for better performance and race condition safety
  */
-export async function incrementCartItemAction(variantSku: string) {
+export async function incrementCartItemAction(
+  cartId: string,
+  cartItem: {
+    _key: string;
+    variantSku: string;
+  },
+): Promise<{ success: boolean; error?: string }> {
   try {
-    console.log("incrementCartItemAction");
-    const cart = await getCartWithDetails();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
-    }
-
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
-    const newQuantity = (item.quantity || 0) + 1;
-
+    // Atomic increment - no need to fetch current quantity
     await writeClient
-      .patch(cart._id)
-      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .patch(cartId)
+      .inc({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {
