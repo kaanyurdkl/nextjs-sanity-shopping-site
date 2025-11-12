@@ -171,7 +171,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               type: "remove",
                               variantSku: cartItem.variantSku,
                             });
-                            await removeCartItemAction(cartItem.variantSku);
+                            await removeCartItemAction(cart._id, cartItem._key);
                           });
                         }}
                         aria-label={`Remove ${product?.name} from cart`}
@@ -195,7 +195,7 @@ export default function CartDetails({ cart }: CartDetailsProps) {
                               type: "decrement",
                               variantSku: cartItem.variantSku,
                             });
-                            await decrementCartItemAction(cartItem.variantSku);
+                            await decrementCartItemAction(cart._id, cartItem);
                           });
                         }}
                         aria-label="Decrease quantity"

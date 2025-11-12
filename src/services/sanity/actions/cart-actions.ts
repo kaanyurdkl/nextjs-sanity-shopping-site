@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import {
   createGuestCart,
   createUserCart,
-  getCartWithDetails,
   getGuestCart,
   getUserCart,
 } from "../lib/cart-utils";
@@ -148,33 +147,33 @@ export async function incrementCartItemAction(
 
 /**
  * Server Action: Decrement cart item quantity
- * Decreases quantity by 1 (minimum 1) and revalidates cart page
+ * Uses atomic decrement operation for better performance and race condition safety
+ * Note: Minimum quantity of 1 is enforced - use removeCartItemAction to delete items
  */
-export async function decrementCartItemAction(variantSku: string) {
+export async function decrementCartItemAction(
+  cartId: string,
+  cartItem: {
+    _key: string;
+    variantSku: string;
+    quantity: number;
+  },
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const cart = await getCartWithDetails();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
+    // Check if quantity is already at minimum
+    if (cartItem.quantity <= 1) {
+      return { success: true }; // No-op if already at minimum
     }
 
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
-    const newQuantity = Math.max((item.quantity || 1) - 1, 1);
-
+    // Atomic decrement
     await writeClient
-      .patch(cart._id)
-      .set({ [`items[_key == "${item._key}"].quantity`]: newQuantity })
+      .patch(cartId)
+      .dec({ [`items[_key == "${cartItem._key}"].quantity`]: 1 })
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {
@@ -189,31 +188,22 @@ export async function decrementCartItemAction(variantSku: string) {
 
 /**
  * Server Action: Remove item from cart
- * Removes item completely and revalidates cart page
+ * Removes item completely using optimized approach without fetching full cart
  */
-export async function removeCartItemAction(variantSku: string) {
+export async function removeCartItemAction(
+  cartId: string,
+  itemKey: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const cart = await getCartWithDetails();
-
-    if (!cart?.items) {
-      return { success: false, error: "Cart not found" };
-    }
-
-    const item = cart.items.find((item) => item.variantSku === variantSku);
-
-    if (!item?._key) {
-      return { success: false, error: "Item not found in cart" };
-    }
-
     await writeClient
-      .patch(cart._id)
-      .unset([`items[_key == "${item._key}"]`])
+      .patch(cartId)
+      .unset([`items[_key == "${itemKey}"]`])
       .commit();
 
     // Revalidate paths for immediate UI updates
     revalidatePath("/cart");
-    revalidatePath("/"); // Revalidate home page
-    revalidatePath("/", "layout"); // Revalidate layout
+    revalidatePath("/");
+    revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error) {
