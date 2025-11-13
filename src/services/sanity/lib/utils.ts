@@ -59,7 +59,7 @@ import { PRODUCTS_PER_PAGE } from "@/constants/pagination";
  * Joins slug array into a single path string for GROQ query
  */
 export async function getCategoryBySlug(
-  slug: string[]
+  slug: string[],
 ): Promise<CATEGORY_BY_SLUG_QUERYResult> {
   const fullSlug = slug.join("/");
 
@@ -77,7 +77,7 @@ export async function getCategoryBySlug(
  * Returns direct children of the current category for sidebar display
  */
 export async function getCategoryChildren(
-  parentCategoryId: string
+  parentCategoryId: string,
 ): Promise<CATEGORY_CHILDREN_QUERYResult> {
   const children = await sanityFetch<CATEGORY_CHILDREN_QUERYResult>({
     query: CATEGORY_CHILDREN_QUERY,
@@ -108,7 +108,7 @@ export async function getNavbarCategories(): Promise<NAVBAR_CATEGORIES_QUERYResu
  * Single-query approach: Direct product fetch with category ID
  */
 export async function getProductsByCategoryId(
-  categoryId: string
+  categoryId: string,
 ): Promise<PRODUCTS_BY_CATEGORYID_QUERYResult> {
   return await sanityFetch<PRODUCTS_BY_CATEGORYID_QUERYResult>({
     query: PRODUCTS_BY_CATEGORYID_QUERY,
@@ -123,7 +123,7 @@ export async function getProductsByCategoryId(
  */
 export async function getPaginatedProductsByCategoryId(
   categoryId: string,
-  page: number
+  page: number,
 ): Promise<PAGINATED_PRODUCTS_BY_CATEGORYID_QUERYResult> {
   const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
   const endIndex = startIndex + PRODUCTS_PER_PAGE;
@@ -148,7 +148,7 @@ export async function getPaginatedProductsByCategoryId(
  * Used for product detail page
  */
 export async function getProductById(
-  id: string
+  id: string,
 ): Promise<PRODUCT_BY_ID_QUERYResult> {
   return await sanityFetch({
     query: PRODUCT_BY_ID_QUERY,
@@ -167,7 +167,7 @@ export async function getProductById(
  * Uses no-cache to always fetch fresh user data after profile updates
  */
 export async function getUserByEmail(
-  email: string
+  email: string,
 ): Promise<USER_BY_EMAIL_QUERYResult> {
   return await sanityFetchNoCache({
     query: USER_BY_EMAIL_QUERY,
@@ -181,7 +181,7 @@ export async function getUserByEmail(
  * Uses no-cache to always fetch fresh user data after profile updates
  */
 export async function getUserByGoogleId(
-  googleId: string
+  googleId: string,
 ): Promise<USER_BY_GOOGLE_ID_QUERYResult> {
   return await sanityFetchNoCache({
     query: USER_BY_GOOGLE_ID_QUERY,
@@ -196,7 +196,7 @@ export async function getUserByGoogleId(
  * @returns The user's _id string, or null if not found
  */
 export async function getUserIdByGoogleId(
-  googleId: string
+  googleId: string,
 ): Promise<string | null> {
   const result = await sanityFetchNoCache<USER_ID_BY_GOOGLE_ID_QUERYResult>({
     query: USER_ID_BY_GOOGLE_ID_QUERY,
@@ -217,7 +217,7 @@ export async function updateUserProfile(
     firstName: string;
     lastName: string;
     phoneNumber: string | null;
-  }
+  },
 ) {
   return await writeClient
     .patch(userId)
@@ -238,7 +238,7 @@ export async function updateUserProfile(
  */
 export async function addAddress(
   userId: string,
-  address: Omit<Address, "_type">
+  address: Omit<Address, "_type">,
 ) {
   // Start building the patch operation
   let patch = writeClient.patch(userId).setIfMissing({ addresses: [] });
@@ -246,10 +246,9 @@ export async function addAddress(
   // If new address is marked as default, unset all existing default flags
   if (address.isDefault) {
     // First, fetch current user to check for existing addresses
-    const user = await writeClient.fetch(
-      `*[_id == $userId][0]{ addresses }`,
-      { userId }
-    );
+    const user = await writeClient.fetch(`*[_id == $userId][0]{ addresses }`, {
+      userId,
+    });
 
     if (user?.addresses && user.addresses.length > 0) {
       // Manually update each address's isDefault field to false
@@ -282,7 +281,7 @@ export async function addAddress(
 export async function updateAddress(
   userId: string,
   addressKey: string,
-  address: Omit<Address, "_type" | "_key">
+  address: Omit<Address, "_type" | "_key">,
 ) {
   // Start building the patch operation
   let patch = writeClient.patch(userId);
@@ -290,10 +289,9 @@ export async function updateAddress(
   // If address is being set as default, unset all other default flags first
   if (address.isDefault) {
     // Fetch current user to check for existing addresses
-    const user = await writeClient.fetch(
-      `*[_id == $userId][0]{ addresses }`,
-      { userId }
-    );
+    const user = await writeClient.fetch(`*[_id == $userId][0]{ addresses }`, {
+      userId,
+    });
 
     if (user?.addresses && user.addresses.length > 0) {
       // Unset isDefault for all addresses EXCEPT the one being updated
@@ -339,10 +337,9 @@ export async function deleteAddress(userId: string, addressKey: string) {
  */
 export async function setDefaultAddress(userId: string, addressKey: string) {
   // Fetch current user to check for existing addresses
-  const user = await writeClient.fetch(
-    `*[_id == $userId][0]{ addresses }`,
-    { userId }
-  );
+  const user = await writeClient.fetch(`*[_id == $userId][0]{ addresses }`, {
+    userId,
+  });
 
   if (!user?.addresses || user.addresses.length === 0) {
     throw new Error("User has no addresses");
@@ -376,7 +373,7 @@ export async function setDefaultAddress(userId: string, addressKey: string) {
  * Used for category page filters
  */
 export async function getCategoryFilterValues(
-  categoryId: string
+  categoryId: string,
 ): Promise<CATEGORY_FILTER_VALUES_QUERYResult> {
   return await sanityFetch({
     query: CATEGORY_FILTER_VALUES_QUERY,
@@ -386,7 +383,7 @@ export async function getCategoryFilterValues(
 }
 
 export async function getColorsByName(
-  colorNames: string[]
+  colorNames: string[],
 ): Promise<COLORS_BY_NAMEResult> {
   return await sanityFetch({
     query: COLORS_BY_NAME,
@@ -400,7 +397,7 @@ export async function getColorsByName(
  */
 export async function parseColorFilters(
   colorNamesString: string | undefined,
-  categoryId: string
+  categoryId: string,
 ): Promise<string[]> {
   if (!colorNamesString) return [];
 
@@ -419,84 +416,8 @@ export async function parseColorFilters(
   return colorIds;
 }
 
-/**
- * Get total count of filtered products by category ID
- * Used for pagination calculations when filters are applied
- */
-export async function getProductsFilteredCountByCategoryId(
-  categoryId: string,
-  colorIds: string[]
-): Promise<number> {
-  return await sanityFetch<number>({
-    query: PRODUCTS_FILTERED_COUNT_BY_CATEGORY_QUERY,
-    params: { categoryId, colorIds },
-    tags: ["product", "category", "color"],
-  });
-}
-
-/**
- * Fetch filtered and paginated products by category ID
- * Used when color filters are applied
- */
-export async function getProductsFilteredPaginatedByCategoryId(
-  categoryId: string,
-  page: number,
-  colorIds: string[]
-): Promise<PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult> {
-  const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
-  const endIndex = startIndex + PRODUCTS_PER_PAGE;
-
-  return await sanityFetch<PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERYResult>(
-    {
-      query: PRODUCTS_FILTERED_PAGINATED_BY_CATEGORY_QUERY,
-      params: {
-        categoryId,
-        startIndex,
-        endIndex,
-        colorIds,
-      },
-      tags: ["product", "category", "color"],
-    }
-  );
-}
-
-export async function getPaginatedFilteredProductsByCategoryId(
-  categoryId: string,
-  colorIds: string[],
-  pageNumber: number
-): Promise<PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult> {
-  const startIndex = (pageNumber - 1) * PRODUCTS_PER_PAGE;
-  const endIndex = startIndex + PRODUCTS_PER_PAGE;
-
-  return await sanityFetch<PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERYResult>(
-    {
-      query: PAGINATED_FILTERED_PRODUCTS_BY_CATEGORYID_QUERY,
-      params: {
-        categoryId,
-        colorIds,
-        startIndex,
-        endIndex,
-      },
-      tags: ["product", "category", "color"],
-    }
-  );
-}
-
-export async function getFilteredProductsCountByCategoryId(
-  categoryId: string,
-  colorIds: string[]
-): Promise<FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult> {
-  return await sanityFetch({
-    query: FILTERED_PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
-    params: {
-      categoryId,
-      colorIds,
-    },
-  });
-}
-
 export async function getProductsCountByCategoryId(
-  categoryId: string
+  categoryId: string,
 ): Promise<PRODUCTS_COUNT_BY_CATEGORYID_QUERYResult> {
   return await sanityFetch({
     query: PRODUCTS_COUNT_BY_CATEGORYID_QUERY,
@@ -511,7 +432,7 @@ export async function getProductsCountByCategoryId(
  * Used to convert size names from URL to size IDs
  */
 export async function getSizesByCode(
-  sizeCodes: string[]
+  sizeCodes: string[],
 ): Promise<SIZES_BY_CODEResult> {
   return await sanityFetch({
     query: SIZES_BY_CODE,
@@ -526,7 +447,7 @@ export async function getSizesByCode(
 export async function getPriceRangeForCategory(
   categoryId: string,
   colorIds?: string[] | null,
-  sizeIds?: string[] | null
+  sizeIds?: string[] | null,
 ): Promise<GET_PRICE_RANGE_FOR_CATEGORY_QUERYResult> {
   return await sanityFetch({
     query: GET_PRICE_RANGE_FOR_CATEGORY_QUERY,
@@ -573,7 +494,7 @@ export async function getCategoryFilterData(
     sizes?: string;
     minPrice?: string;
     maxPrice?: string;
-  }
+  },
 ): Promise<FilterData[]> {
   const filterResults: FilterData[] = [];
 
@@ -642,7 +563,7 @@ export async function getCategoryFilterData(
     const priceRange = await getPriceRangeForCategory(
       category._id,
       colorIds,
-      sizeIds
+      sizeIds,
     );
     if (priceRange.minPrice !== null && priceRange.maxPrice !== null) {
       filterResults.push({ type: "price", data: priceRange });
@@ -674,7 +595,7 @@ export async function getProductsWithFilters(
   sizeIds?: string[] | null,
   minPrice?: number | null,
   maxPrice?: number | null,
-  sortOrder?: string | null
+  sortOrder?: string | null,
 ): Promise<PRODUCTS_WITH_FILTERS_QUERYResult> {
   const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
   const endIndex = startIndex + PRODUCTS_PER_PAGE;
@@ -708,7 +629,7 @@ export async function getProductsCountWithFilters(
   colorIds?: string[] | null,
   sizeIds?: string[] | null,
   minPrice?: number | null,
-  maxPrice?: number | null
+  maxPrice?: number | null,
 ): Promise<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult> {
   return await sanityFetch<PRODUCTS_COUNT_WITH_FILTERS_QUERYResult>({
     query: PRODUCTS_COUNT_WITH_FILTERS_QUERY,
