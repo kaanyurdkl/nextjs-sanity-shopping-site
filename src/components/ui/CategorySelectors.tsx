@@ -1,7 +1,7 @@
 // COMPONENTS
 import CategorySidebarItem from "@/components/ui/CategorySidebarItem";
 // UTILS
-import { getCategoryChildren } from "@/services/sanity/lib/utils";
+import { getCategoryChildren } from "@/services/sanity/utils/category-utils";
 // TYPES
 import { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 

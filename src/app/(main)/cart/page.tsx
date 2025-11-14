@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import CartDetails from "@/components/ui/CartDetails";
-import { getCartWithDetails } from "@/services/sanity/lib/cart-utils";
+import { getCartWithDetails } from "@/services/sanity/utils/cart-utils";
 
 export const metadata: Metadata = {
   title: "Shopping Cart | Your Store",

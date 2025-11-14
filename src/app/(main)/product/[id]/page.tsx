@@ -2,7 +2,7 @@
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ProductDetails from "@/components/ui/ProductDetails";
 // UTILS
-import { getProductById } from "@/services/sanity/lib/utils";
+import { getProductById } from "@/services/sanity/utils/product-utils";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;

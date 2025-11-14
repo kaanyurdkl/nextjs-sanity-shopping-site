@@ -9,7 +9,7 @@ import {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
-} from "@/services/sanity/lib/utils";
+} from "@/services/sanity/utils/user-utils";
 import { profileUpdateSchema } from "@/lib/validations/profile";
 import { addressSchema } from "@/lib/validations/address";
 

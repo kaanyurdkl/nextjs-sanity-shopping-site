@@ -6,11 +6,11 @@ import {
   createUserCart,
   getGuestCart,
   getUserCart,
-} from "../lib/cart-utils";
+} from "../utils/cart-utils";
 import { writeClient } from "../lib/client";
 import { cookies } from "next/headers";
 import { auth } from "@/services/next-auth/lib";
-import { getUserIdByGoogleId } from "../lib/utils";
+import { getUserIdByGoogleId } from "../utils/user-utils";
 
 export async function addToCartAction({
   productId,

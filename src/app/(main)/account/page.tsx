@@ -1,5 +1,5 @@
 import { auth } from "@/services/next-auth/lib";
-import { getUserByGoogleId } from "@/services/sanity/lib/utils";
+import { getUserByGoogleId } from "@/services/sanity/utils/user-utils";
 import AccountPage from "@/components/pages/AccountPage";
 
 export default async function Page() {

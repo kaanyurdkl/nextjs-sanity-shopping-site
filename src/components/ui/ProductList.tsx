@@ -4,9 +4,11 @@ import ProductListWrapper from "@/components/ui/ProductListWrapper";
 import {
   getColorsByName,
   getSizesByCode,
+} from "@/services/sanity/utils/filter-utils";
+import {
   getProductsWithFilters,
   getProductsCountWithFilters,
-} from "@/services/sanity/lib/utils";
+} from "@/services/sanity/utils/product-utils";
 // TYPES
 import { CATEGORY_BY_SLUG_QUERYResult } from "@/services/sanity/types/sanity.types";
 // CONSTANTS

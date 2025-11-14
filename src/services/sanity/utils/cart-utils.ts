@@ -11,7 +11,7 @@ import {
   USER_CART_QUERY,
   USER_CART_WITH_DETAILS_QUERY,
 } from "@/services/sanity/lib/queries";
-import { getUserIdByGoogleId } from "@/services/sanity/lib/utils";
+import { getUserIdByGoogleId } from "@/services/sanity/utils/user-utils";
 import type {
   Cart,
   GUEST_CART_ITEMS_WITH_QUANTITY_QUERYResult,
