@@ -26,13 +26,23 @@ export type Cart = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "active" | "abandoned" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "active" | "abandoned" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "shipping" | "payment";
+    contactInfo?: {
+      email?: string;
+    };
+    shippingAddress?: Address;
+    billingAddress?: Address;
+    useSameAddressForBilling?: boolean;
+    shippingMethod?: "standard" | "express";
+  };
 };
 
 export type PromoCode = {
@@ -621,7 +631,7 @@ export type BlockContent = Array<
 
 export type Address = {
   _type: "address";
-  nickname: string;
+  nickname?: string;
   firstName: string;
   lastName: string;
   phoneNumber?: string;
@@ -1460,13 +1470,23 @@ export type USER_CART_QUERYResult = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "abandoned" | "active" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "abandoned" | "active" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
+    contactInfo?: {
+      email?: string;
+    };
+    shippingAddress?: Address;
+    billingAddress?: Address;
+    useSameAddressForBilling?: boolean;
+    shippingMethod?: "express" | "standard";
+  };
 } | null;
 // Variable: GUEST_CART_QUERY
 // Query: *[_type == "cart" && sessionId == $sessionId && status == "active"][0]
@@ -1483,13 +1503,23 @@ export type GUEST_CART_QUERYResult = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "abandoned" | "active" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "abandoned" | "active" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
+    contactInfo?: {
+      email?: string;
+    };
+    shippingAddress?: Address;
+    billingAddress?: Address;
+    useSameAddressForBilling?: boolean;
+    shippingMethod?: "express" | "standard";
+  };
 } | null;
 // Variable: USER_CART_WITH_DETAILS_QUERY
 // Query: *[_type == "cart" && status == "active" && user._ref == $userId  ][0] {    _id,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
