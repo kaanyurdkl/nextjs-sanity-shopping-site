@@ -9,7 +9,7 @@ export default function Breadcrumbs({ slug }: BreadcrumbsProps) {
   const breadcrumbItems = buildBreadcrumbs(slug);
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-12">
+    <nav aria-label="Breadcrumb" className="my-12">
       <ul className="flex items-center space-x-2 text-sm text-gray-600">
         {breadcrumbItems.map((item, index) => (
           <BreadcrumbItem

@@ -15,7 +15,7 @@ interface MegaMenuProps {
   categories: Category[];
 }
 
-export function MegaMenu({ categories }: MegaMenuProps) {
+export default function MegaMenu({ categories }: MegaMenuProps) {
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
 
   return (

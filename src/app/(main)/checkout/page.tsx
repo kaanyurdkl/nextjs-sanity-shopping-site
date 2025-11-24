@@ -1,72 +1,33 @@
-"use client";
-
+// LIBRARIES
+import { redirect } from "next/navigation";
+// COMPONENTS
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+// UTILS
+import { getCartWithDetails } from "@/services/sanity/utils/cart-utils";
+// AUTH
+import { auth } from "@/services/next-auth/lib";
+import CheckoutContactSection from "@/components/layout/CheckoutContactSection";
 
-export default function CheckoutPage() {
-  const [state, setState] = useState({
-    currentStep: "contact",
-    steps: {
-      contact: {
-        status: "current",
-        details: {
-          email: "",
-        },
-      },
-      shipping: {
-        status: "notCompleted",
-        details: {
-          shippingAddress: {},
-          billingAddress: {},
-          shippingMethod: "standard",
-        },
-      },
-    },
-  });
+export default async function CheckoutPage() {
+  const cart = await getCartWithDetails();
+
+  if (!cart || !cart.items) {
+    redirect("/cart");
+  }
+
+  const session = await auth();
+
   return (
     <main className="px-6">
       <Breadcrumbs slug={["cart", "checkout"]} />
       <h1 className="mb-12 font-bold uppercase text-4xl">Checkout</h1>
 
-      <div className="">
-        <h2 className="font-bold uppercase text-xl mb-4">
-          Contact Information
-        </h2>
-        <div className="space-y-4">
-          <div className="border p-4 space-y-4">
-            <h3 className="font-bold text-lg">Guest Checkout</h3>
-            <p>Checkout without an account</p>
-            <div>
-              <Label
-                htmlFor="email"
-                className="mb-1 uppercase font-bold text-xs"
-              >
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your.email@gmail.com"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-x-4">
-            <span className="inline-block h-0.5 w-full border-b"></span>
-            <span>or</span>
-            <span className="inline-block h-0.5 w-full border-b"></span>
-          </div>
-          <div className="border p-4 space-y-4">
-            <h3 className="font-bold text-lg">User Checkout</h3>
-            <p>Log in for faster checkout</p>
-            <Button className="w-full uppercase">Login</Button>
-          </div>
-        </div>
-      </div>
+      <CheckoutContactSection session={session} />
 
       <div className="mt-6">
         <h2 className="font-bold uppercase text-xl mb-4">

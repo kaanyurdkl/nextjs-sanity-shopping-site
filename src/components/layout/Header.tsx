@@ -3,7 +3,7 @@ import { Search, User, ShoppingCart, LogOut } from "lucide-react";
 import { auth, signOut } from "@/services/next-auth/lib";
 import { getNavbarCategories } from "@/services/sanity/utils/category-utils";
 import { getCartItemCount } from "@/services/sanity/utils/cart-utils";
-import { MegaMenu } from "./MegaMenu";
+import MegaMenu from "@/components/layout/MegaMenu";
 
 export default async function Header() {
   const session = await auth();

@@ -2,7 +2,7 @@
 import { auth } from "@/services/next-auth/lib";
 // COMPONENTS
 import { AuthProvider } from "@/services/next-auth/components";
-import { Header } from "@/components/layout";
+import Header from "@/components/layout/Header";
 
 export default async function MainLayout({
   children,
