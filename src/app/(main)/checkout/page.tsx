@@ -27,7 +27,11 @@ export default async function CheckoutPage() {
       <Breadcrumbs slug={["cart", "checkout"]} />
       <h1 className="mb-12 font-bold uppercase text-4xl">Checkout</h1>
 
-      <CheckoutContactSection session={session} />
+      <CheckoutContactSection
+        session={session}
+        status={cart.checkout?.contact?.status || "current"}
+        email={cart.checkout?.contact?.email}
+      />
 
       <div className="mt-6">
         <h2 className="font-bold uppercase text-xl mb-4">

@@ -126,32 +126,32 @@
         "value": {
           "type": "object",
           "attributes": {
-            "currentStep": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "union",
-                "of": [
-                  {
-                    "type": "string",
-                    "value": "contact"
-                  },
-                  {
-                    "type": "string",
-                    "value": "shipping"
-                  },
-                  {
-                    "type": "string",
-                    "value": "payment"
-                  }
-                ]
-              },
-              "optional": false
-            },
-            "contactInfo": {
+            "contact": {
               "type": "objectAttribute",
               "value": {
                 "type": "object",
                 "attributes": {
+                  "status": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "not-started"
+                        },
+                        {
+                          "type": "string",
+                          "value": "current"
+                        },
+                        {
+                          "type": "string",
+                          "value": "completed"
+                        }
+                      ]
+                    },
+                    "optional": false
+                  },
                   "email": {
                     "type": "objectAttribute",
                     "value": {
@@ -163,43 +163,103 @@
               },
               "optional": true
             },
-            "shippingAddress": {
+            "shipping": {
               "type": "objectAttribute",
               "value": {
-                "type": "inline",
-                "name": "address"
-              },
-              "optional": true
-            },
-            "billingAddress": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "address"
-              },
-              "optional": true
-            },
-            "useSameAddressForBilling": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "boolean"
-              },
-              "optional": true
-            },
-            "shippingMethod": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "union",
-                "of": [
-                  {
-                    "type": "string",
-                    "value": "standard"
+                "type": "object",
+                "attributes": {
+                  "status": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "not-started"
+                        },
+                        {
+                          "type": "string",
+                          "value": "current"
+                        },
+                        {
+                          "type": "string",
+                          "value": "completed"
+                        }
+                      ]
+                    },
+                    "optional": false
                   },
-                  {
-                    "type": "string",
-                    "value": "express"
+                  "shippingAddress": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "address"
+                    },
+                    "optional": true
+                  },
+                  "billingAddress": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "address"
+                    },
+                    "optional": true
+                  },
+                  "useSameAddressForBilling": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "boolean"
+                    },
+                    "optional": true
+                  },
+                  "shippingMethod": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "standard"
+                        },
+                        {
+                          "type": "string",
+                          "value": "express"
+                        }
+                      ]
+                    },
+                    "optional": true
                   }
-                ]
+                }
+              },
+              "optional": true
+            },
+            "payment": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "status": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "not-started"
+                        },
+                        {
+                          "type": "string",
+                          "value": "current"
+                        },
+                        {
+                          "type": "string",
+                          "value": "completed"
+                        }
+                      ]
+                    },
+                    "optional": false
+                  }
+                }
               },
               "optional": true
             }

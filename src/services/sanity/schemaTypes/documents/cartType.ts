@@ -95,30 +95,30 @@ export const cartType = defineType({
       name: "checkout",
       title: "Checkout Data",
       type: "object",
-      description: "All checkout-related information grouped together",
+      description: "All checkout-related information organized by step",
       fieldset: "checkout",
       fields: [
         defineField({
-          name: "currentStep",
-          title: "Current Step",
-          type: "string",
-          options: {
-            list: [
-              { title: "Contact", value: "contact" },
-              { title: "Shipping", value: "shipping" },
-              { title: "Payment", value: "payment" },
-            ],
-            layout: "radio",
-          },
-          initialValue: "contact",
-          validation: (Rule) => Rule.required(),
-          description: "Current step in checkout process",
-        }),
-        defineField({
-          name: "contactInfo",
-          title: "Contact Information",
+          name: "contact",
+          title: "Contact Step",
           type: "object",
+          description: "Contact information step",
           fields: [
+            defineField({
+              name: "status",
+              title: "Status",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Not Started", value: "not-started" },
+                  { title: "Current", value: "current" },
+                  { title: "Completed", value: "completed" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "current",
+              validation: (Rule) => Rule.required(),
+            }),
             defineField({
               name: "email",
               title: "Email",
@@ -126,39 +126,84 @@ export const cartType = defineType({
               validation: (Rule) => Rule.email(),
             }),
           ],
-          description: "Customer contact information",
         }),
         defineField({
-          name: "shippingAddress",
-          title: "Shipping Address",
-          type: "address",
-          description: "Delivery address",
+          name: "shipping",
+          title: "Shipping Step",
+          type: "object",
+          description: "Shipping information step",
+          fields: [
+            defineField({
+              name: "status",
+              title: "Status",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Not Started", value: "not-started" },
+                  { title: "Current", value: "current" },
+                  { title: "Completed", value: "completed" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "not-started",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "shippingAddress",
+              title: "Shipping Address",
+              type: "address",
+              description: "Delivery address",
+            }),
+            defineField({
+              name: "billingAddress",
+              title: "Billing Address",
+              type: "address",
+              description: "Billing address (if different from shipping)",
+            }),
+            defineField({
+              name: "useSameAddressForBilling",
+              title: "Same Address for Billing",
+              type: "boolean",
+              initialValue: true,
+              description: "Whether billing address is same as shipping",
+            }),
+            defineField({
+              name: "shippingMethod",
+              title: "Shipping Method",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Standard (5-7 days) - $9.99", value: "standard" },
+                  { title: "Express (2-3 days) - $19.99", value: "express" },
+                ],
+                layout: "radio",
+              },
+              description: "Selected shipping method",
+            }),
+          ],
         }),
         defineField({
-          name: "billingAddress",
-          title: "Billing Address",
-          type: "address",
-          description: "Billing address (if different from shipping)",
-        }),
-        defineField({
-          name: "useSameAddressForBilling",
-          title: "Same Address for Billing",
-          type: "boolean",
-          initialValue: true,
-          description: "Whether billing address is same as shipping",
-        }),
-        defineField({
-          name: "shippingMethod",
-          title: "Shipping Method",
-          type: "string",
-          options: {
-            list: [
-              { title: "Standard (5-7 days) - $9.99", value: "standard" },
-              { title: "Express (2-3 days) - $19.99", value: "express" },
-            ],
-            layout: "radio",
-          },
-          description: "Selected shipping method",
+          name: "payment",
+          title: "Payment Step",
+          type: "object",
+          description: "Payment information step",
+          fields: [
+            defineField({
+              name: "status",
+              title: "Status",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Not Started", value: "not-started" },
+                  { title: "Current", value: "current" },
+                  { title: "Completed", value: "completed" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "not-started",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
         }),
       ],
     }),
@@ -170,12 +215,20 @@ export const cartType = defineType({
       sessionId: "sessionId",
       itemsCount: "items",
       status: "status",
-      checkoutStep: "checkout.currentStep",
+      contactStatus: "checkout.contact.status",
+      shippingStatus: "checkout.shipping.status",
+      paymentStatus: "checkout.payment.status",
     },
-    prepare({ userName, userLastName, sessionId, itemsCount, status, checkoutStep }) {
+    prepare({ userName, userLastName, sessionId, itemsCount, status, contactStatus, shippingStatus, paymentStatus }) {
       const isGuest = !userName;
       const itemCount = Array.isArray(itemsCount) ? itemsCount.length : 0;
-      const stepInfo = checkoutStep ? ` • Checkout: ${checkoutStep}` : "";
+
+      // Determine current step based on status
+      let currentStep = "contact";
+      if (contactStatus === "completed" && shippingStatus === "current") currentStep = "shipping";
+      else if (contactStatus === "completed" && shippingStatus === "completed" && paymentStatus === "current") currentStep = "payment";
+
+      const stepInfo = contactStatus ? ` • Checkout: ${currentStep}` : "";
 
       return {
         title: isGuest
