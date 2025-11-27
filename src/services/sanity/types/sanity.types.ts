@@ -26,13 +26,28 @@ export type Cart = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "active" | "abandoned" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "active" | "abandoned" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "shipping" | "payment";
+    contact?: {
+      email?: string;
+    };
+    shipping?: {
+      shippingAddress?: Address;
+      billingAddress?: Address;
+      useSameAddressForBilling?: boolean;
+      shippingMethod?: "standard" | "express";
+    };
+    payment?: {
+      placeholder?: boolean;
+    };
+  };
 };
 
 export type PromoCode = {
@@ -621,7 +636,7 @@ export type BlockContent = Array<
 
 export type Address = {
   _type: "address";
-  nickname: string;
+  nickname?: string;
   firstName: string;
   lastName: string;
   phoneNumber?: string;
@@ -1460,13 +1475,28 @@ export type USER_CART_QUERYResult = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "abandoned" | "active" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "abandoned" | "active" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
+    contact?: {
+      email?: string;
+    };
+    shipping?: {
+      shippingAddress?: Address;
+      billingAddress?: Address;
+      useSameAddressForBilling?: boolean;
+      shippingMethod?: "express" | "standard";
+    };
+    payment?: {
+      placeholder?: boolean;
+    };
+  };
 } | null;
 // Variable: GUEST_CART_QUERY
 // Query: *[_type == "cart" && sessionId == $sessionId && status == "active"][0]
@@ -1483,18 +1513,48 @@ export type GUEST_CART_QUERYResult = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "user";
   };
+  status: "abandoned" | "active" | "converted";
+  expiresAt?: string;
   items?: Array<
     {
       _key: string;
     } & CartItem
   >;
-  status: "abandoned" | "active" | "converted";
-  expiresAt?: string;
+  checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
+    contact?: {
+      email?: string;
+    };
+    shipping?: {
+      shippingAddress?: Address;
+      billingAddress?: Address;
+      useSameAddressForBilling?: boolean;
+      shippingMethod?: "express" | "standard";
+    };
+    payment?: {
+      placeholder?: boolean;
+    };
+  };
 } | null;
 // Variable: USER_CART_WITH_DETAILS_QUERY
-// Query: *[_type == "cart" && status == "active" && user._ref == $userId  ][0] {    _id,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
+// Query: *[_type == "cart" && status == "active" && user._ref == $userId  ][0] {    _id,    checkout,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
 export type USER_CART_WITH_DETAILS_QUERYResult = {
   _id: string;
+  checkout: {
+    currentStep: "contact" | "payment" | "shipping";
+    contact?: {
+      email?: string;
+    };
+    shipping?: {
+      shippingAddress?: Address;
+      billingAddress?: Address;
+      useSameAddressForBilling?: boolean;
+      shippingMethod?: "express" | "standard";
+    };
+    payment?: {
+      placeholder?: boolean;
+    };
+  } | null;
   items: Array<{
     _key: string;
     variantSku: string;
@@ -1527,9 +1587,24 @@ export type USER_CART_WITH_DETAILS_QUERYResult = {
   }> | null;
 } | null;
 // Variable: GUEST_CART_WITH_DETAILS_QUERY
-// Query: *[_type == "cart" && status == "active" && sessionId == $sessionId  ][0] {    _id,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
+// Query: *[_type == "cart" && status == "active" && sessionId == $sessionId  ][0] {    _id,    checkout,    items[] {      _key,      variantSku,      quantity,      priceSnapshot,      "product": *[_type == "product" && _id == ^.product._ref][0] {        _id,        name,        basePrice,        thumbnail {          asset-> { url }        },        "variant": variants[sku == ^.^.variantSku][0] {          sku,          stockQuantity,          color-> {            _id,            name,            hexCode          },          size-> {            _id,            name,            code          }        }      }    }  }
 export type GUEST_CART_WITH_DETAILS_QUERYResult = {
   _id: string;
+  checkout: {
+    currentStep: "contact" | "payment" | "shipping";
+    contact?: {
+      email?: string;
+    };
+    shipping?: {
+      shippingAddress?: Address;
+      billingAddress?: Address;
+      useSameAddressForBilling?: boolean;
+      shippingMethod?: "express" | "standard";
+    };
+    payment?: {
+      placeholder?: boolean;
+    };
+  } | null;
   items: Array<{
     _key: string;
     variantSku: string;
@@ -1609,8 +1684,8 @@ declare module "@sanity/client" {
     '\n  count(*[_type == "product"\n    && $categoryId in categoryHierarchy\n    && isActive == true\n    && (!defined($minPrice) || basePrice >= $minPrice)\n    && (!defined($maxPrice) || basePrice <= $maxPrice)\n    && count(variants[\n      isActive == true\n      && stockQuantity > 0\n      && (!defined($colorIds) || color._ref in $colorIds)\n      && (!defined($sizeIds) || size._ref in $sizeIds)\n    ]) > 0\n  ])\n': PRODUCTS_COUNT_WITH_FILTERS_QUERYResult;
     '\n*[_type == "cart" && user._ref == $userId && status == "active"][0]\n': USER_CART_QUERYResult;
     '\n*[_type == "cart" && sessionId == $sessionId && status == "active"][0]\n': GUEST_CART_QUERYResult;
-    '\n  *[_type == "cart" && status == "active" && user._ref == $userId\n  ][0] {\n    _id,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': USER_CART_WITH_DETAILS_QUERYResult;
-    '\n  *[_type == "cart" && status == "active" && sessionId == $sessionId\n  ][0] {\n    _id,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': GUEST_CART_WITH_DETAILS_QUERYResult;
+    '\n  *[_type == "cart" && status == "active" && user._ref == $userId\n  ][0] {\n    _id,\n    checkout,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': USER_CART_WITH_DETAILS_QUERYResult;
+    '\n  *[_type == "cart" && status == "active" && sessionId == $sessionId\n  ][0] {\n    _id,\n    checkout,\n    items[] {\n      _key,\n      variantSku,\n      quantity,\n      priceSnapshot,\n      "product": *[_type == "product" && _id == ^.product._ref][0] {\n        _id,\n        name,\n        basePrice,\n        thumbnail {\n          asset-> { url }\n        },\n        "variant": variants[sku == ^.^.variantSku][0] {\n          sku,\n          stockQuantity,\n          color-> {\n            _id,\n            name,\n            hexCode\n          },\n          size-> {\n            _id,\n            name,\n            code\n          }\n        }\n      }\n    }\n  }\n': GUEST_CART_WITH_DETAILS_QUERYResult;
     '\n  *[_type == "cart" && user._ref == $userId && status == "active"][0] {\n    items[] {\n      quantity\n      }\n    }': USER_CART_ITEMS_WITH_QUANTITY_QUERYResult;
     '\n  *[_type == "cart" && sessionId == $sessionId && status == "active"][0] {\n    items[] {\n      quantity\n      }\n    }': GUEST_CART_ITEMS_WITH_QUANTITY_QUERYResult;
   }

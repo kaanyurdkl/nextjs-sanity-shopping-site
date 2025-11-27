@@ -71,28 +71,6 @@
         },
         "optional": true
       },
-      "items": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "cartItem"
-            }
-          }
-        },
-        "optional": true
-      },
       "status": {
         "type": "objectAttribute",
         "value": {
@@ -118,6 +96,139 @@
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "items": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "cartItem"
+            }
+          }
+        },
+        "optional": true
+      },
+      "checkout": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "currentStep": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "contact"
+                  },
+                  {
+                    "type": "string",
+                    "value": "shipping"
+                  },
+                  {
+                    "type": "string",
+                    "value": "payment"
+                  }
+                ]
+              },
+              "optional": false
+            },
+            "contact": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "email": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  }
+                }
+              },
+              "optional": true
+            },
+            "shipping": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "shippingAddress": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "address"
+                    },
+                    "optional": true
+                  },
+                  "billingAddress": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "address"
+                    },
+                    "optional": true
+                  },
+                  "useSameAddressForBilling": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "boolean"
+                    },
+                    "optional": true
+                  },
+                  "shippingMethod": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "standard"
+                        },
+                        {
+                          "type": "string",
+                          "value": "express"
+                        }
+                      ]
+                    },
+                    "optional": true
+                  }
+                }
+              },
+              "optional": true
+            },
+            "payment": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "placeholder": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "boolean"
+                    },
+                    "optional": true
+                  }
+                }
+              },
+              "optional": true
+            }
+          }
         },
         "optional": true
       }
@@ -3952,7 +4063,7 @@
           "value": {
             "type": "string"
           },
-          "optional": false
+          "optional": true
         },
         "firstName": {
           "type": "objectAttribute",

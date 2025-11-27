@@ -28,6 +28,12 @@ export async function createUserCart(userId: string): Promise<Cart> {
     user: { _type: "reference", _ref: userId },
     items: [],
     status: "active",
+    checkout: {
+      currentStep: "contact",
+      shipping: {
+        useSameAddressForBilling: true,
+      },
+    },
   });
 
   return cart;
@@ -53,6 +59,12 @@ export async function createGuestCart(): Promise<Cart> {
     items: [],
     status: "active",
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    checkout: {
+      currentStep: "contact",
+      shipping: {
+        useSameAddressForBilling: true,
+      },
+    },
   });
 
   return cart;

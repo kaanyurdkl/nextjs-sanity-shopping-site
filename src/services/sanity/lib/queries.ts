@@ -757,6 +757,7 @@ export const USER_CART_WITH_DETAILS_QUERY = defineQuery(`
   *[_type == "cart" && status == "active" && user._ref == $userId
   ][0] {
     _id,
+    checkout,
     items[] {
       _key,
       variantSku,
@@ -792,6 +793,7 @@ export const GUEST_CART_WITH_DETAILS_QUERY = defineQuery(`
   *[_type == "cart" && status == "active" && sessionId == $sessionId
   ][0] {
     _id,
+    checkout,
     items[] {
       _key,
       variantSku,
