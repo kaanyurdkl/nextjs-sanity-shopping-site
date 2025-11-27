@@ -29,7 +29,7 @@ export default async function CheckoutPage() {
 
       <CheckoutContactSection
         session={session}
-        status={cart.checkout?.contact?.status || "current"}
+        currentStep={cart.checkout?.currentStep || "contact"}
         email={cart.checkout?.contact?.email}
       />
 

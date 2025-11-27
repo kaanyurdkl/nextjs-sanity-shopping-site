@@ -34,19 +34,18 @@ export type Cart = {
     } & CartItem
   >;
   checkout?: {
+    currentStep: "contact" | "shipping" | "payment";
     contact?: {
-      status: "not-started" | "current" | "completed";
       email?: string;
     };
     shipping?: {
-      status: "not-started" | "current" | "completed";
       shippingAddress?: Address;
       billingAddress?: Address;
       useSameAddressForBilling?: boolean;
       shippingMethod?: "standard" | "express";
     };
     payment?: {
-      status: "not-started" | "current" | "completed";
+      placeholder?: boolean;
     };
   };
 };
@@ -1484,19 +1483,18 @@ export type USER_CART_QUERYResult = {
     } & CartItem
   >;
   checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
     contact?: {
-      status: "completed" | "current" | "not-started";
       email?: string;
     };
     shipping?: {
-      status: "completed" | "current" | "not-started";
       shippingAddress?: Address;
       billingAddress?: Address;
       useSameAddressForBilling?: boolean;
       shippingMethod?: "express" | "standard";
     };
     payment?: {
-      status: "completed" | "current" | "not-started";
+      placeholder?: boolean;
     };
   };
 } | null;
@@ -1523,19 +1521,18 @@ export type GUEST_CART_QUERYResult = {
     } & CartItem
   >;
   checkout?: {
+    currentStep: "contact" | "payment" | "shipping";
     contact?: {
-      status: "completed" | "current" | "not-started";
       email?: string;
     };
     shipping?: {
-      status: "completed" | "current" | "not-started";
       shippingAddress?: Address;
       billingAddress?: Address;
       useSameAddressForBilling?: boolean;
       shippingMethod?: "express" | "standard";
     };
     payment?: {
-      status: "completed" | "current" | "not-started";
+      placeholder?: boolean;
     };
   };
 } | null;
@@ -1544,19 +1541,18 @@ export type GUEST_CART_QUERYResult = {
 export type USER_CART_WITH_DETAILS_QUERYResult = {
   _id: string;
   checkout: {
+    currentStep: "contact" | "payment" | "shipping";
     contact?: {
-      status: "completed" | "current" | "not-started";
       email?: string;
     };
     shipping?: {
-      status: "completed" | "current" | "not-started";
       shippingAddress?: Address;
       billingAddress?: Address;
       useSameAddressForBilling?: boolean;
       shippingMethod?: "express" | "standard";
     };
     payment?: {
-      status: "completed" | "current" | "not-started";
+      placeholder?: boolean;
     };
   } | null;
   items: Array<{
@@ -1595,19 +1591,18 @@ export type USER_CART_WITH_DETAILS_QUERYResult = {
 export type GUEST_CART_WITH_DETAILS_QUERYResult = {
   _id: string;
   checkout: {
+    currentStep: "contact" | "payment" | "shipping";
     contact?: {
-      status: "completed" | "current" | "not-started";
       email?: string;
     };
     shipping?: {
-      status: "completed" | "current" | "not-started";
       shippingAddress?: Address;
       billingAddress?: Address;
       useSameAddressForBilling?: boolean;
       shippingMethod?: "express" | "standard";
     };
     payment?: {
-      status: "completed" | "current" | "not-started";
+      placeholder?: boolean;
     };
   } | null;
   items: Array<{

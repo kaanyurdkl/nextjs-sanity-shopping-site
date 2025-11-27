@@ -29,15 +29,9 @@ export async function createUserCart(userId: string): Promise<Cart> {
     items: [],
     status: "active",
     checkout: {
-      contact: {
-        status: "current",
-      },
+      currentStep: "contact",
       shipping: {
-        status: "not-started",
         useSameAddressForBilling: true,
-      },
-      payment: {
-        status: "not-started",
       },
     },
   });
@@ -66,15 +60,9 @@ export async function createGuestCart(): Promise<Cart> {
     status: "active",
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     checkout: {
-      contact: {
-        status: "current",
-      },
+      currentStep: "contact",
       shipping: {
-        status: "not-started",
         useSameAddressForBilling: true,
-      },
-      payment: {
-        status: "not-started",
       },
     },
   });

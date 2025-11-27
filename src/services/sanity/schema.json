@@ -126,32 +126,32 @@
         "value": {
           "type": "object",
           "attributes": {
+            "currentStep": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "contact"
+                  },
+                  {
+                    "type": "string",
+                    "value": "shipping"
+                  },
+                  {
+                    "type": "string",
+                    "value": "payment"
+                  }
+                ]
+              },
+              "optional": false
+            },
             "contact": {
               "type": "objectAttribute",
               "value": {
                 "type": "object",
                 "attributes": {
-                  "status": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "union",
-                      "of": [
-                        {
-                          "type": "string",
-                          "value": "not-started"
-                        },
-                        {
-                          "type": "string",
-                          "value": "current"
-                        },
-                        {
-                          "type": "string",
-                          "value": "completed"
-                        }
-                      ]
-                    },
-                    "optional": false
-                  },
                   "email": {
                     "type": "objectAttribute",
                     "value": {
@@ -168,27 +168,6 @@
               "value": {
                 "type": "object",
                 "attributes": {
-                  "status": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "union",
-                      "of": [
-                        {
-                          "type": "string",
-                          "value": "not-started"
-                        },
-                        {
-                          "type": "string",
-                          "value": "current"
-                        },
-                        {
-                          "type": "string",
-                          "value": "completed"
-                        }
-                      ]
-                    },
-                    "optional": false
-                  },
                   "shippingAddress": {
                     "type": "objectAttribute",
                     "value": {
@@ -238,26 +217,12 @@
               "value": {
                 "type": "object",
                 "attributes": {
-                  "status": {
+                  "placeholder": {
                     "type": "objectAttribute",
                     "value": {
-                      "type": "union",
-                      "of": [
-                        {
-                          "type": "string",
-                          "value": "not-started"
-                        },
-                        {
-                          "type": "string",
-                          "value": "current"
-                        },
-                        {
-                          "type": "string",
-                          "value": "completed"
-                        }
-                      ]
+                      "type": "boolean"
                     },
-                    "optional": false
+                    "optional": true
                   }
                 }
               },

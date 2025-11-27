@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Session } from "next-auth";
 import { Button } from "@/components/ui/button";
@@ -10,30 +9,31 @@ import { Label } from "@/components/ui/label";
 import {
   signOutAction,
   submitContactInfoAction,
+  editContactStepAction,
 } from "@/app/(main)/checkout/actions";
 
-type StepStatus = "not-started" | "current" | "completed";
+type CheckoutStep = "contact" | "shipping" | "payment";
 
 export default function CheckoutContactSection({
   session,
-  status,
+  currentStep,
   email,
 }: {
   session: Session | null;
-  status: StepStatus;
+  currentStep: CheckoutStep;
   email?: string | null;
 }) {
-  const user = session?.user;
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Don't render if step hasn't started yet
-  if (status === "not-started") {
+  const user = session?.user;
+  const isCompleted = !!email && currentStep !== "contact";
+  const isCurrent = currentStep === "contact";
+
+  if (!email && !isCurrent) {
     return null;
   }
 
-  // Show summary if completed
-  if (status === "completed") {
+  if (isCompleted) {
     return (
       <div className="mb-6 border p-4">
         <div className="flex items-center justify-between">
@@ -41,15 +41,22 @@ export default function CheckoutContactSection({
             <h2 className="font-bold uppercase text-sm">Contact</h2>
             <p className="text-sm">{email}</p>
           </div>
-          <Button variant="link" className="p-0 h-auto">
+          <Button
+            onClick={() => {
+              startTransition(async () => {
+                await editContactStepAction();
+              });
+            }}
+            variant="link"
+            className="p-0 h-auto"
+            disabled={isPending}
+          >
             Edit
           </Button>
         </div>
       </div>
     );
   }
-
-  // Show full form if current
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

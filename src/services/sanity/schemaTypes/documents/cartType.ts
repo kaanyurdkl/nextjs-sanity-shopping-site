@@ -99,26 +99,27 @@ export const cartType = defineType({
       fieldset: "checkout",
       fields: [
         defineField({
+          name: "currentStep",
+          title: "Current Step",
+          type: "string",
+          description: "The current active step in the checkout process",
+          options: {
+            list: [
+              { title: "Contact", value: "contact" },
+              { title: "Shipping", value: "shipping" },
+              { title: "Payment", value: "payment" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "contact",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
           name: "contact",
           title: "Contact Step",
           type: "object",
           description: "Contact information step",
           fields: [
-            defineField({
-              name: "status",
-              title: "Status",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Not Started", value: "not-started" },
-                  { title: "Current", value: "current" },
-                  { title: "Completed", value: "completed" },
-                ],
-                layout: "radio",
-              },
-              initialValue: "current",
-              validation: (Rule) => Rule.required(),
-            }),
             defineField({
               name: "email",
               title: "Email",
@@ -133,21 +134,6 @@ export const cartType = defineType({
           type: "object",
           description: "Shipping information step",
           fields: [
-            defineField({
-              name: "status",
-              title: "Status",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Not Started", value: "not-started" },
-                  { title: "Current", value: "current" },
-                  { title: "Completed", value: "completed" },
-                ],
-                layout: "radio",
-              },
-              initialValue: "not-started",
-              validation: (Rule) => Rule.required(),
-            }),
             defineField({
               name: "shippingAddress",
               title: "Shipping Address",
@@ -186,22 +172,14 @@ export const cartType = defineType({
           name: "payment",
           title: "Payment Step",
           type: "object",
-          description: "Payment information step",
+          description: "Payment information step (placeholder for future implementation)",
           fields: [
             defineField({
-              name: "status",
-              title: "Status",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Not Started", value: "not-started" },
-                  { title: "Current", value: "current" },
-                  { title: "Completed", value: "completed" },
-                ],
-                layout: "radio",
-              },
-              initialValue: "not-started",
-              validation: (Rule) => Rule.required(),
+              name: "placeholder",
+              title: "Placeholder",
+              type: "boolean",
+              description: "Placeholder field - payment fields to be added later",
+              hidden: true,
             }),
           ],
         }),
@@ -215,20 +193,13 @@ export const cartType = defineType({
       sessionId: "sessionId",
       itemsCount: "items",
       status: "status",
-      contactStatus: "checkout.contact.status",
-      shippingStatus: "checkout.shipping.status",
-      paymentStatus: "checkout.payment.status",
+      currentStep: "checkout.currentStep",
     },
-    prepare({ userName, userLastName, sessionId, itemsCount, status, contactStatus, shippingStatus, paymentStatus }) {
+    prepare({ userName, userLastName, sessionId, itemsCount, status, currentStep }) {
       const isGuest = !userName;
       const itemCount = Array.isArray(itemsCount) ? itemsCount.length : 0;
 
-      // Determine current step based on status
-      let currentStep = "contact";
-      if (contactStatus === "completed" && shippingStatus === "current") currentStep = "shipping";
-      else if (contactStatus === "completed" && shippingStatus === "completed" && paymentStatus === "current") currentStep = "payment";
-
-      const stepInfo = contactStatus ? ` • Checkout: ${currentStep}` : "";
+      const stepInfo = currentStep ? ` • Checkout: ${currentStep}` : "";
 
       return {
         title: isGuest
