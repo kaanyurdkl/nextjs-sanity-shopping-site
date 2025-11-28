@@ -29,7 +29,11 @@ export default async function CheckoutPage() {
         email={cart.checkout?.contact?.email}
       />
 
-      <CheckoutShippingSection />
+      <CheckoutShippingSection
+        session={session}
+        currentStep={cart.checkout?.currentStep}
+        data={cart.checkout?.shipping}
+      />
     </main>
   );
 }

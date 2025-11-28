@@ -114,3 +114,7 @@ export async function editContactStepAction() {
 
   revalidateTag("cart");
 }
+
+export async function submitShippingInfoAction() {
+  console.log("Shipping info submitted");
+}
