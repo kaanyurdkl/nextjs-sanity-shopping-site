@@ -1,29 +1,36 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import CheckoutAnotherAddressSection from "@/components/ui/CheckoutAnotherAddressSection";
+import { Badge } from "@/components/ui/badge";
+import { submitShippingInfoAction } from "@/app/(main)/checkout/actions";
 import {
   Address,
   USER_BY_GOOGLE_ID_QUERYResult,
 } from "@/services/sanity/types/sanity.types";
-import { submitShippingInfoAction } from "@/app/(main)/checkout/actions";
-import { useState } from "react";
+
+type AddressWithKey = Address & { _key: string };
 
 export default function CheckoutShippingForm({
   user,
 }: {
   user: USER_BY_GOOGLE_ID_QUERYResult;
 }) {
-  const userAddresses: Address[] = user?.addresses || [];
-  const defaultUserAddress: Address | null =
+  const userAddresses: AddressWithKey[] = user?.addresses || [];
+  const defaultUserAddress: AddressWithKey | null =
     userAddresses?.find((address) => address.isDefault) || null;
 
-  const [selectedUserAddress, setSelectedUserAddress] =
-    useState(defaultUserAddress);
+  console.log("User addresses:", userAddresses);
+
+  // Initialize with default -> first saved -> null (show form)
+  const initialAddress = defaultUserAddress || userAddresses[0] || null;
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressWithKey | Address | null>(initialAddress);
 
   async function handleSubmit(formData: FormData) {
     await submitShippingInfoAction();
@@ -33,25 +40,66 @@ export default function CheckoutShippingForm({
     <form action={handleSubmit} className="space-y-4">
       <div className="border space-y-4 p-4">
         <h3 className="font-bold text-lg">Shipping Address</h3>
-        {selectedUserAddress && (
-          <div className="p-4 border">
-            <div className="flex justify-between">
-              <h4>{selectedUserAddress.nickname}</h4>
-              {selectedUserAddress.isDefault && (
-                <div className="p-2 bg-black text-white">Default</div>
-              )}
-            </div>
-            <div>
-              <Button>Change</Button>
-            </div>
+
+        {userAddresses.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="font-medium text-sm">Saved Addresses</h4>
+            {userAddresses.map((userAddress) => {
+              const isSelected = selectedAddress && "_key" in selectedAddress && selectedAddress._key === userAddress._key;
+              return (
+                <div
+                  key={userAddress._key}
+                  onClick={() => setSelectedAddress(userAddress)}
+                  className={`p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors ${
+                    isSelected ? "ring-2 ring-black" : ""
+                  }`}
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-medium">{userAddress.nickname}</span>
+                    <div className="flex gap-2">
+                      {userAddress.isDefault && (
+                        <Badge variant="secondary">Default</Badge>
+                      )}
+                      {isSelected && <Badge>Selected</Badge>}
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {userAddress.streetAddress}, {userAddress.city},{" "}
+                    {userAddress.province} {userAddress.postalCode}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
-        <div className="flex items-center gap-x-4">
-          <span className="inline-block h-0.5 w-full border-b"></span>
-          <span>or</span>
-          <span className="inline-block h-0.5 w-full border-b"></span>
-        </div>
-        <CheckoutAnotherAddressSection />
+
+        {userAddresses.length > 0 && (
+          <div className="flex items-center gap-x-4">
+            <span className="inline-block h-0.5 w-full border-b"></span>
+            <span>or</span>
+            <span className="inline-block h-0.5 w-full border-b"></span>
+          </div>
+        )}
+
+        {selectedAddress && "_key" in selectedAddress ? (
+          <Button
+            type="button"
+            onClick={() => setSelectedAddress(null)}
+            className="w-full uppercase"
+          >
+            Choose a different address
+          </Button>
+        ) : (
+          <div>
+            <h4 className="font-medium text-sm mb-2">
+              {userAddresses.length > 0 ? "Enter a different address" : "Enter shipping address"}
+            </h4>
+            <CheckoutAnotherAddressSection
+              value={selectedAddress && !("_key" in selectedAddress) ? selectedAddress : null}
+              onChange={setSelectedAddress}
+            />
+          </div>
+        )}
       </div>
       <div className="border space-y-4 p-4">
         <h3 className="font-bold text-lg">Billing Address</h3>
