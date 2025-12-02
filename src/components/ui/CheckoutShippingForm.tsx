@@ -35,6 +35,9 @@ export default function CheckoutShippingForm({
   const [useSameAddressForBilling, setUseSameAddressForBilling] =
     useState(true);
   const [billingAddress, setBillingAddress] = useState<Address | null>(null);
+  const [shippingMethod, setShippingMethod] = useState<"standard" | "express">(
+    "standard"
+  );
 
   async function handleSubmit(formData: FormData) {
     await submitShippingInfoAction();
@@ -137,8 +140,8 @@ export default function CheckoutShippingForm({
         )}
       </div>
       <div className="border space-y-4 p-4">
-        <h3>Shipping Method</h3>
-        <RadioGroup defaultValue="standard">
+        <h3 className="font-bold text-lg">Shipping Method</h3>
+        <RadioGroup value={shippingMethod} onValueChange={(value) => setShippingMethod(value as "standard" | "express")}>
           <div className="flex items-center gap-x-2">
             <RadioGroupItem id="standardShipping" value="standard" />
             <Label htmlFor="standardShipping">Standard Shipping - $9.99</Label>
