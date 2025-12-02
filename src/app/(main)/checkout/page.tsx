@@ -36,10 +36,7 @@ export default async function CheckoutPage() {
         data={cart.checkout?.shipping}
       />
 
-      <PaymentSection
-        session={session}
-        currentStep={cart.checkout?.currentStep}
-      />
+      <PaymentSection currentStep={cart.checkout?.currentStep} />
     </main>
   );
 }

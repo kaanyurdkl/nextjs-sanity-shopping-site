@@ -161,3 +161,42 @@ export async function submitShippingInfoAction(
 
   revalidateTag("cart");
 }
+
+/**
+ * Create Stripe PaymentIntent
+ * Returns client secret for payment form
+ */
+export async function createPaymentIntentAction(): Promise<{
+  client_secret: string | null;
+}> {
+  const { stripe } = await import("@/services/stripe/server");
+  const { getCartWithDetails } = await import(
+    "@/services/sanity/utils/cart-utils"
+  );
+
+  const cart = await getCartWithDetails();
+
+  if (!cart || !cart.items) {
+    throw new Error("Cart not found");
+  }
+
+  // Calculate total amount
+  const subtotal = cart.items.reduce((total, item) => {
+    return total + (item.product?.basePrice || 0) * item.quantity;
+  }, 0);
+
+  const shippingCost =
+    cart.checkout?.shipping?.shippingMethod === "express" ? 19.99 : 9.99;
+  const total = subtotal + shippingCost;
+
+  // Create PaymentIntent
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: Math.round(total * 100), // Convert to cents
+    currency: "cad",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  return { client_secret: paymentIntent.client_secret };
+}
