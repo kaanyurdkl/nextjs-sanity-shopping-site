@@ -115,6 +115,49 @@ export async function editContactStepAction() {
   revalidateTag("cart");
 }
 
-export async function submitShippingInfoAction() {
-  console.log("Shipping info submitted");
+/**
+ * Submit shipping information to cart
+ * Updates cart.checkout.shipping and advances to payment step
+ */
+export async function submitShippingInfoAction(
+  shippingAddress: any,
+  billingAddress: any,
+  useSameAddressForBilling: boolean,
+  shippingMethod: "standard" | "express"
+) {
+  let cart;
+  const session = await auth();
+
+  if (session?.user?.googleId) {
+    const userId = await getUserIdByGoogleId(session.user.googleId);
+    if (userId) {
+      cart = await getUserCart(userId);
+    } else {
+      throw new Error("User not found");
+    }
+  } else {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("cart_session")?.value;
+    if (sessionId) {
+      cart = await getGuestCart(sessionId);
+    }
+  }
+
+  if (!cart) {
+    throw new Error("Cart not found");
+  }
+
+  // Update the cart with shipping info and advance to payment step
+  await writeClient
+    .patch(cart._id)
+    .set({
+      "checkout.shipping.shippingAddress": shippingAddress,
+      "checkout.shipping.billingAddress": billingAddress,
+      "checkout.shipping.useSameAddressForBilling": useSameAddressForBilling,
+      "checkout.shipping.shippingMethod": shippingMethod,
+      "checkout.currentStep": "payment",
+    })
+    .commit();
+
+  revalidateTag("cart");
 }

@@ -8,6 +8,7 @@ import CheckoutShippingSection from "@/components/layout/CheckoutShippingSection
 import { getCartWithDetails } from "@/services/sanity/utils/cart-utils";
 // AUTH
 import { auth } from "@/services/next-auth/lib";
+import PaymentSection from "@/components/ui/PaymentSection";
 
 export default async function CheckoutPage() {
   const cart = await getCartWithDetails();
@@ -33,6 +34,11 @@ export default async function CheckoutPage() {
         session={session}
         currentStep={cart.checkout?.currentStep}
         data={cart.checkout?.shipping}
+      />
+
+      <PaymentSection
+        session={session}
+        currentStep={cart.checkout?.currentStep}
       />
     </main>
   );

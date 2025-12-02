@@ -10,13 +10,14 @@ export default function CheckoutAnotherAddressSection({
   onChange: (address: Address) => void;
 }) {
   const address = value || {
+    _type: "address" as const,
     firstName: "",
     lastName: "",
     streetAddress: "",
     city: "",
-    province: "",
+    province: "QC" as const,
     postalCode: "",
-    phone: "",
+    phoneNumber: "",
   };
 
   const handleChange = (field: keyof Address, fieldValue: string) => {
@@ -130,8 +131,8 @@ export default function CheckoutAnotherAddressSection({
           Phone
         </Label>
         <Input
-          value={address.phone || ""}
-          onChange={(e) => handleChange("phone", e.target.value)}
+          value={address.phoneNumber || ""}
+          onChange={(e) => handleChange("phoneNumber", e.target.value)}
           id="shippingPhone"
           type="phone"
           placeholder="+1 (514) 555-0123"

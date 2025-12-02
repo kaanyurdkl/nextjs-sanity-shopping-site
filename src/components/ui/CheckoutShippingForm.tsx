@@ -40,7 +40,45 @@ export default function CheckoutShippingForm({
   );
 
   async function handleSubmit(formData: FormData) {
-    await submitShippingInfoAction();
+    // Validate shipping address
+    if (!selectedAddress) {
+      alert("Please select or enter a shipping address");
+      return;
+    }
+
+    // Normalize shipping address (remove _key if present)
+    const shippingAddress: Address = selectedAddress && "_key" in selectedAddress
+      ? {
+          _type: "address",
+          firstName: selectedAddress.firstName,
+          lastName: selectedAddress.lastName,
+          streetAddress: selectedAddress.streetAddress,
+          city: selectedAddress.city,
+          province: selectedAddress.province,
+          postalCode: selectedAddress.postalCode,
+          phoneNumber: selectedAddress.phoneNumber,
+          nickname: selectedAddress.nickname,
+          isDefault: selectedAddress.isDefault,
+        }
+      : selectedAddress;
+
+    // Determine final billing address
+    const finalBillingAddress: Address = useSameAddressForBilling
+      ? shippingAddress
+      : billingAddress!;
+
+    // Validate billing address if not using same as shipping
+    if (!useSameAddressForBilling && !billingAddress) {
+      alert("Please enter a billing address");
+      return;
+    }
+
+    await submitShippingInfoAction(
+      shippingAddress,
+      finalBillingAddress,
+      useSameAddressForBilling,
+      shippingMethod,
+    );
   }
 
   return (
