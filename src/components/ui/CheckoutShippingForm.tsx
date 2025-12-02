@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -25,12 +24,17 @@ export default function CheckoutShippingForm({
   const defaultUserAddress: AddressWithKey | null =
     userAddresses?.find((address) => address.isDefault) || null;
 
-  console.log("User addresses:", userAddresses);
+  console.log("CheckoutShippingForm");
 
   // Initialize with default -> first saved -> null (show form)
   const initialAddress = defaultUserAddress || userAddresses[0] || null;
-  const [selectedAddress, setSelectedAddress] =
-    useState<AddressWithKey | Address | null>(initialAddress);
+  const [selectedAddress, setSelectedAddress] = useState<
+    AddressWithKey | Address | null
+  >(initialAddress);
+
+  const [useSameAddressForBilling, setUseSameAddressForBilling] =
+    useState(true);
+  const [billingAddress, setBillingAddress] = useState<Address | null>(null);
 
   async function handleSubmit(formData: FormData) {
     await submitShippingInfoAction();
@@ -45,7 +49,10 @@ export default function CheckoutShippingForm({
           <div className="space-y-2">
             <h4 className="font-medium text-sm">Saved Addresses</h4>
             {userAddresses.map((userAddress) => {
-              const isSelected = selectedAddress && "_key" in selectedAddress && selectedAddress._key === userAddress._key;
+              const isSelected =
+                selectedAddress &&
+                "_key" in selectedAddress &&
+                selectedAddress._key === userAddress._key;
               return (
                 <div
                   key={userAddress._key}
@@ -92,10 +99,16 @@ export default function CheckoutShippingForm({
         ) : (
           <div>
             <h4 className="font-medium text-sm mb-2">
-              {userAddresses.length > 0 ? "Enter a different address" : "Enter shipping address"}
+              {userAddresses.length > 0
+                ? "Enter a different address"
+                : "Enter shipping address"}
             </h4>
             <CheckoutAnotherAddressSection
-              value={selectedAddress && !("_key" in selectedAddress) ? selectedAddress : null}
+              value={
+                selectedAddress && !("_key" in selectedAddress)
+                  ? selectedAddress
+                  : null
+              }
               onChange={setSelectedAddress}
             />
           </div>
@@ -104,59 +117,24 @@ export default function CheckoutShippingForm({
       <div className="border space-y-4 p-4">
         <h3 className="font-bold text-lg">Billing Address</h3>
         <div className="flex items-center gap-x-2">
-          <Checkbox id="sameAsShipping" />
+          <Checkbox
+            id="sameAsShipping"
+            checked={useSameAddressForBilling}
+            onCheckedChange={(checked) => {
+              setUseSameAddressForBilling(checked === true);
+              if (checked === true) {
+                setBillingAddress(null);
+              }
+            }}
+          />
           <Label htmlFor="sameAsShipping">Same as shipping address</Label>
         </div>
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-x-4">
-            <div>
-              <Label className="mb-1" htmlFor="billingFirstName">
-                First Name
-              </Label>
-              <Input id="billingFirstName" type="text" placeholder="John" />
-            </div>
-            <div>
-              <Label className="mb-1" htmlFor="billingLastName">
-                Last Name
-              </Label>
-              <Input id="billingLastName" type="text" placeholder="Doe" />
-            </div>
-          </div>
-          <div>
-            <Label className="mb-1" htmlFor="billingAddress">
-              Address
-            </Label>
-            <Input id="billingAddress" type="text" placeholder="1234 Main St" />
-          </div>
-          <div className="grid grid-cols-3 gap-x-4">
-            <div>
-              <Label className="mb-1" htmlFor="billingCity">
-                City
-              </Label>
-              <Input id="billingCity" type="text" placeholder="Montreal" />
-            </div>
-            <div>
-              <Label className="mb-1" htmlFor="billingProvince">
-                Province
-              </Label>
-              <Input id="billingProvince" type="text" placeholder="Quebec" />
-            </div>
-            <div>
-              <Label className="mb-1" htmlFor="billingPostalCode">
-                Postal Code
-              </Label>
-              <Input id="billingPostalCode" type="text" placeholder="H2K 1A1" />
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="billingPhone">Phone</Label>
-            <Input
-              id="billingPhone"
-              type="phone"
-              placeholder="+1 (514) 555-0123"
-            />
-          </div>
-        </div>
+        {!useSameAddressForBilling && (
+          <CheckoutAnotherAddressSection
+            value={billingAddress}
+            onChange={setBillingAddress}
+          />
+        )}
       </div>
       <div className="border space-y-4 p-4">
         <h3>Shipping Method</h3>
